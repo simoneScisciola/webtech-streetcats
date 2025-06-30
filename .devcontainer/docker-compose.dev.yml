@@ -1,12 +1,13 @@
-# Webtech's Streetcats Compose file
+# Webtech's Streetcats Development Compose file
 
-name: webtech-streetcats-compose
+name: webtech-streetcats-dev-compose
 
 services:
 
   # Update this to the name of the service you want to work with in your docker-compose.yml file
-  app:
+  workspace:
     container_name: webtech-streetcats-DevEnv
+    profiles: [dev] # This service will be started only in these profiles
     # Uncomment if you want to override the service's Dockerfile to one in the .devcontainer 
     # folder. Note that the path of the Dockerfile and context is relative to the *primary* 
     # docker-compose.yml file (the first in the devcontainer.json "dockerComposeFile"
@@ -32,3 +33,23 @@ services:
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
+
+    networks:
+      - backend-network
+      - frontend-network
+
+  # Doc: https://github.com/dbeaver/cloudbeaver/
+  cloudbeaver:
+    container_name: cloudbeaver
+    profiles: [dev] # This service will be started only in these profiles
+    image: dbeaver/cloudbeaver:latest
+    ports:
+      - 8978:8978
+    volumes:
+      - cloudbeaver-data:/opt/cloudbeaver/workspace
+    networks:
+      - backend-network
+      - frontend-network
+
+volumes:
+  cloudbeaver-data:
