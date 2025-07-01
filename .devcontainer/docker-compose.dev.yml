@@ -17,13 +17,21 @@ services:
       context: .
       dockerfile: Dockerfile
 
+    environment: # Defines the environment variables
+      SONAR_TOKEN: ${SONAR_TOKEN}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin} # default: admin
+
+    # List of the ports to be forwarded from the container (necessary if not using the "host" network)
+    ports: # Maps <hostPort>:<containerPort>
+      - ${DEV_BACKEND_PORT:-55511}:3000 # default: 55511
+
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
       - ..:/workspaces/webtech-streetcats:cached
 
-    # List of the ports to be forwarded from the container (necessary if not using the "host" network)
-    ports:
-      - 3000:3000 # Maps <hostPort>:<containerPort>
+    networks:
+      - backend-network
+      - frontend-network
 
     # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
     # cap_add:
@@ -34,17 +42,13 @@ services:
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
 
-    networks:
-      - backend-network
-      - frontend-network
-
   # Doc: https://github.com/dbeaver/cloudbeaver/
   cloudbeaver:
     container_name: cloudbeaver
     profiles: [dev] # This service will be started only in these profiles
     image: dbeaver/cloudbeaver:latest
     ports:
-      - 8978:8978
+      - ${DEV_CLOUDBEAVER_PORT:-55513}:8978 # default: 55513
     volumes:
       - cloudbeaver-data:/opt/cloudbeaver/workspace
     networks:

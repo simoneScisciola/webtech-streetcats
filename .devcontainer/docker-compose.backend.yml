@@ -14,6 +14,8 @@ services:
       database:
         condition: service_healthy # The backend will not be started until the condition defined by "healthcheck" is verified
     restart: unless-stopped
+    environment: # Defines the environment variables
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin} # default: admin
     ports: # Maps <hostPort>:<containerPort>
       - 55501:3000
     networks:
@@ -25,7 +27,7 @@ services:
     profiles: [prod, dev] # This service will be started only in these profiles
     image: postgres:17.5 # Ready-made Postgres image
     restart: unless-stopped
-    environment:
+    environment: # Defines the environment variables
       POSTGRES_DB: backend
       POSTGRES_USER: tecweb-admin
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin} # default: admin

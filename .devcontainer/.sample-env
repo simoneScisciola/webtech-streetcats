@@ -1,3 +1,28 @@
 # Development settings
 
-COMPOSE_PROFILES=dev # Configures the Docker Compose profiles to use
+
+## Docker Compose
+
+### Configures the Docker Compose profiles to use
+COMPOSE_PROFILES=dev
+
+
+## Ports
+
+### Configures the port on wich we will access the backend
+DEV_BACKEND_PORT=
+
+### Configures the port on wich we will access cloudbeaver
+DEV_CLOUDBEAVER_PORT=
+
+
+## API
+
+### Sets the token necessary for SonarQube scanning
+SONAR_TOKEN=
+
+
+## Database
+
+### Sets the PostgreSQL admin password
+POSTGRES_PASSWORD=
