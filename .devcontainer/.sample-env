@@ -21,8 +21,17 @@ DEV_CLOUDBEAVER_PORT=
 ### Sets the token necessary for SonarQube scanning
 SONAR_TOKEN=
 
+### Sets the JWT Token Secret
+JWT_SECRET_TOKEN=
+
 
 ## Database
 
-### Sets the PostgreSQL admin password
-POSTGRES_PASSWORD=
+### Sets the database name
+DB_NAME=
+
+### Sets the database admin username
+DB_USER=
+
+### Sets the database admin password
+DB_PASSWORD=

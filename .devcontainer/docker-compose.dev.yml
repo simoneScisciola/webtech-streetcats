@@ -19,7 +19,10 @@ services:
 
     environment: # Defines the environment variables
       SONAR_TOKEN: ${SONAR_TOKEN}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin} # default: admin
+      JWT_SECRET_TOKEN: ${JWT_SECRET_TOKEN}
+      DB_NAME: ${DB_NAME:-backend} # default: backend
+      DB_USER: ${DB_USER:-tecweb-admin} # default: tecweb-admin
+      DB_PASSWORD: ${DB_PASSWORD:-admin} # default: admin
 
     # List of the ports to be forwarded from the container (necessary if not using the "host" network)
     ports: # Maps <hostPort>:<containerPort>
