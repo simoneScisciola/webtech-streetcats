@@ -50,10 +50,20 @@ services:
     container_name: cloudbeaver
     profiles: [dev] # This service will be started only in these profiles
     image: dbeaver/cloudbeaver:latest
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+    environment: # Defines the environment variables
+      CB_SERVER_NAME: "CloudBeaver CE Server"
+      CB_SERVER_URL: http://cloudbeaver:8978/
+      CB_ADMIN_NAME: ${CB_ADMIN_NAME:-tecweb-admin} # default: tecweb-admin
+      CB_ADMIN_PASSWORD: ${CB_ADMIN_PASSWORD:-admin} # default: admin
     ports:
       - ${DEV_CLOUDBEAVER_PORT:-55513}:8978 # default: 55513
     volumes:
       - cloudbeaver-data:/opt/cloudbeaver/workspace
+      - ./config/cloudbeaver/data-sources-dev.json:/opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources-dev.json:ro
     networks:
       - backend-network
       - frontend-network

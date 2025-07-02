@@ -30,6 +30,7 @@ export function createModel(database: Sequelize) {
                 const saltRounds = 12;
                 let hash = bcrypt.hashSync(value, saltRounds);
                 this.setDataValue('password', hash);
+                // TODO: Switch to async version of bcrypt
             }
         }
     }, { 

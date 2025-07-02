@@ -41,7 +41,7 @@ database.sync()
     .then( () => {
         console.log("Database synced correctly");
     })
-    .catch( err => {
+    .catch((err: Error) => {
         console.error("Error with database synchronization: " + err.message);
         throw err; // Raise error
     });
