@@ -28,9 +28,10 @@ export function createModel(database: Sequelize) {
                 // We shouldn't save passwords in plaintext in a database!
                 // We are storing a secure hash of the password and using a random salt to protect against rainbow tables
                 const saltRounds = 12;
-                let hash = bcrypt.hashSync(value, saltRounds);
-                this.setDataValue('password', hash);
-                // TODO: Switch to async version of bcrypt
+                bcrypt.hash(value, saltRounds)
+                    .then(hash => {
+                        this.setDataValue('password', hash);
+                    });
             }
         }
     }, { 
