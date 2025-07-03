@@ -10,7 +10,7 @@
     "build": "tsc",
     "prestart": "npm run build",
     "start": "node dist/index.js",
-    "dev": "CHOKIDAR_USEPOLLING=true tsx watch src/index.ts",
+    "dev": "CHOKIDAR_USEPOLLING=true tsx watch --clear-screen=false src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "imports": {

@@ -10,12 +10,11 @@ const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_HOST = 'database';
 const DB_PORT = '5432';
-const DB_DIALECT = 'postgresql'
 
 // Building the connection URL
-const DB_URL = `${DB_DIALECT}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
+const POSTGRESQL_URL = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
-export const database = new Sequelize(DB_URL);
+export const database = new Sequelize(POSTGRESQL_URL);
 
 try {
     await database.authenticate();

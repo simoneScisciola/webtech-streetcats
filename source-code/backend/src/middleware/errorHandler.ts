@@ -9,19 +9,32 @@ import { HttpError } from "http-errors" // HTTP errors middleware (https://www.n
  * @param res HTTP Response object to send
  * @param next Callback function to call the next middleware in the chain
  */
-export const errorHandler: ErrorRequestHandler = (err: HttpError, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler: ErrorRequestHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
 
     // Prints full stack on console
     console.log(err.stack);
 
-    // Sets Error properties
-    let status = err.status ?? 500
-    
-    let expose: boolean;   
-    if (typeof err.expose === 'boolean') { // If err.expose exists and is a boolean
-        expose = err.expose; // Get err.expose
-    } else { 
-        expose = status < 500; // Mimics the default behavior of "http-errors"
+    let status: number;
+    let expose: boolean;
+
+    if ((err as HttpError).status) { // In a HttpError we always have a status code
+
+        const httpError = (err as HttpError);
+
+        // Sets Error properties
+        status = httpError.status;
+        
+        if (typeof httpError.expose === 'boolean') { // If httpError.expose exists and is a boolean
+            expose = httpError.expose; // Get httpError.expose
+        } else { 
+            expose = status < 500; // Mimics the default behavior of "http-errors"
+        }
+  
+    } else { // Regular Error
+        
+        // Sets Error properties
+        status = 500;
+        expose = false;
     }
 
     let message: string;   

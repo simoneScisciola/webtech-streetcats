@@ -1,6 +1,7 @@
 import { Request, Response } from "express"; // Express framework (https://expressjs.com/)
 import Jwt from "jsonwebtoken"; // JWT middleware (https://www.npmjs.com/package/jsonwebtoken)
 import bcrypt from "bcrypt"; // bcrypt hashing algorithm (https://www.npmjs.com/package/bcrypt)
+import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
 import { User } from "#config/database.js";
 
@@ -16,8 +17,8 @@ export class AuthController {
         let isValid = false;
 
         // Retrieve user credentials specified in the request
-        let loggingUsername = req.body.usr;
-        let loggingPassword = req.body.pwd;
+        let loggingUsername: string = req.body.usr;
+        let loggingPassword: string = req.body.pwd;
 
         // Retrieve the User with the requested username
         let foundUser = await User.findOne({
@@ -37,17 +38,59 @@ export class AuthController {
      */
     static async saveUser(req: Request, res: Response){
         
+        // Retrieve user credentials specified in the request
+        let registeringUsername: string = req.body.usr;
+        let registeringPassword: string = req.body.pwd;
+
+        // Validate user credentials
+        if (!isUsernameValid(registeringUsername)) {
+            throw new createError.BadRequest('Username non valido');
+        }
+
+        if (!isPasswordValid(registeringPassword)) {
+            throw new createError.BadRequest('Password non valida');
+        }
+
         // Save new User
         const registeringUser = User.build ({
-            username: req.body.usr, 
-            password: req.body.pwd
+            username: registeringUsername, 
+            password: registeringPassword
         });
 
         return registeringUser.save(); //returns a Promise
+
+        // Helper functions
+        function isUsernameValid(username: any): boolean {
+            const isString = typeof username === 'string';
+            let isEmpty: boolean = true;
+            if (isString) {
+                isEmpty = username.trim().length <= 0;
+            }
+
+            return isString && !isEmpty;
+        }
+
+        function isPasswordValid(password: any): boolean {
+            const isString = typeof password === 'string';
+
+            let isEmpty: boolean = true;
+            let hasUpperCase: boolean = false;
+            let hasNumber: boolean = false;
+            let hasSpecialChar: boolean = false;
+            if (isString) {
+                isEmpty = password.trim().length <= 0;
+                if (!isEmpty) {
+                    hasUpperCase = /[A-Z]/.test(password);
+                    hasNumber = /[0-9]/.test(password);
+                    hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+                }
+            }
+
+            return isString && !isEmpty && hasUpperCase && hasNumber && hasSpecialChar;
+        }
     }
 
     static issueToken(username: string){
-        console.log();
         return Jwt.sign({user:username}, process.env.JWT_SECRET_TOKEN, {expiresIn: `${24*60*60}s`});
     }
 

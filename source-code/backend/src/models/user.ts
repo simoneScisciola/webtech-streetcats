@@ -24,19 +24,20 @@ export function createModel(database: Sequelize) {
         password: {
             type: DataTypes.STRING,
             allowNull: false,
-            set(value: string) { // Custom setter method
-                // We shouldn't save passwords in plaintext in a database!
-                // We are storing a secure hash of the password and using a random salt to protect against rainbow tables
-                const saltRounds = 12;
-                bcrypt.hash(value, saltRounds)
-                    .then(hash => {
-                        this.setDataValue('password', hash);
-                    });
-            }
         }
     }, { 
         // Other model options go here
         // NOTE: The actual table name is inferred from the model name (pluralized) by default
+    });
+
+    // We shouldn't save passwords in plaintext in a database!
+    // With this hook, that triggers before create and update, we are storing a secure hash of the password also using a random salt to protect against rainbow tables
+    User.beforeSave(async (user) => {
+        if (user.changed('password')) {
+            const saltRounds = 12;
+            const hash = await bcrypt.hash(user.password, saltRounds);
+            user.setDataValue('password', hash);
+        }
     });
 
     return User;
