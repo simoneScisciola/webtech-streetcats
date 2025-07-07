@@ -1,6 +1,6 @@
-# Webtech's Streetcats
+# Webtech's StreetCats
 
-Repository dedicata al progetto "Webtech's Streetcats" di Tecnologie Web 2024/2025
+Repository dedicata al progetto "Webtech's StreetCats" di Tecnologie Web 2024/2025
 
 ## Indice
 

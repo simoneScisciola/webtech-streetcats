@@ -5,7 +5,7 @@
 			"provider": "postgresql",
 			"driver": "postgres-jdbc",
 			"name": "PostgreSQL@backend",
-			"description": "The Webtech\u0027s Streetcats backend database",
+			"description": "The Webtech\u0027s StreetCats backend database",
 			"save-password": true,
 			"configuration": {
 				"host": "database",

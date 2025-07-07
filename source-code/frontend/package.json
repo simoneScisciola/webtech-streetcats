@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "0.0.0",
-  "description": "An Angular frontend for the Web Technologies course project: Webtech's Streetcats",
+  "description": "An Angular frontend for the Web Technologies course project: Webtech's StreetCats",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

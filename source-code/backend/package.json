@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "A REST API backend for the Web Technologies course project: Webtech's Streetcats",
+  "description": "A REST API backend for the Web Technologies course project: Webtech's StreetCats",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
