@@ -19,16 +19,26 @@ export function createModel(database: Sequelize) {
         // Define the model attributes
         username: {
             type: DataTypes.STRING,
-            primaryKey: true
+            primaryKey: true,
+            validate: {
+                notEmpty: true
+            }
         },
         email: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true
+            unique: true,
+            validate: {
+                notEmpty: true,
+                isEmail: true
+            }
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         }
         
         // By default, Sequelize adds the createdAt and updatedAt fields to all models

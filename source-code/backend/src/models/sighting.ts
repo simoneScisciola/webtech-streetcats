@@ -28,30 +28,57 @@ export function createModel(database: Sequelize) {
         photoUrl: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         title: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         description: {
             type: DataTypes.TEXT,
+            validate: {
+                notEmpty: true
+            }
         },
         latitude: {
             type: DataTypes.DECIMAL(8,6),
             allowNull: false,
+            validate: {
+                min: -90,
+                max: 90
+            },
         },
         longitude: {
             type: DataTypes.DECIMAL(9,6),
             allowNull: false,
+            validate: {
+                min: -180,
+                max: 180
+            },
         },
         address: {
             type: DataTypes.STRING,
+            validate: {
+                notEmpty: true
+            }
         }
 
         // By default, Sequelize adds the createdAt and updatedAt fields to all models
     }, { 
         // Other model options go here
         // NOTE: The actual table name is inferred from the model name (pluralized) by default
+        validate: {
+            bothCoordsOrNone() {
+                if ((this.latitude === null) !== (this.longitude === null)) {
+                    throw new Error('Either both latitude and longitude, or neither!');
+                }
+            },
+        },
     });
 
     return Sighting;

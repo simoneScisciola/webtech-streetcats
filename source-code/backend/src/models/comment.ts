@@ -23,6 +23,9 @@ export function createModel(database: Sequelize) {
         content: {
             type: DataTypes.TEXT,
             allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
 
         // By default, Sequelize adds the createdAt and updatedAt fields to all models
