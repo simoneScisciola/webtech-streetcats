@@ -1,7 +1,7 @@
 import express from "express"; // Express framework (https://expressjs.com/)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
-import { AuthController } from "#controllers/authController.js";
+import { AuthController } from "#controllers/AuthController.js";
 
 
 export const authRouter = express.Router();

@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize"; // Sequelize ORM (https://sequelize.org/)
 
-import { createModel as createUserModel } from "#models/user.js";
-import { createModel as createUserRoleModel } from "#models/userRole.js";
-import { createModel as createSightingModel } from "#models/sighting.js";
-import { createModel as createCommentModel } from "#models/comment.js";
+import { createModel as createUserModel } from "#models/User.js";
+import { createModel as createUserRoleModel } from "#models/UserRole.js";
+import { createModel as createSightingModel } from "#models/Sighting.js";
+import { createModel as createCommentModel } from "#models/Comment.js";
 
 
 // Defining database informations
@@ -17,7 +17,7 @@ const DB_PORT = '5432';
 const POSTGRESQL_URL = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`
 
 
-// Connect to database
+// Database connection
 export const database = new Sequelize(POSTGRESQL_URL);
 
 try {
@@ -28,7 +28,7 @@ try {
 }
 
 
-// Create models
+// Models creation
 export const User = createUserModel(database);
 export const UserRole = createUserRoleModel(database);
 export const Sighting = createSightingModel(database);
