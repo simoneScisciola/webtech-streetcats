@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
+    "sourceMap": true,
     "outDir": "./dist", /* Specify an output folder for all emitted files. */
     "rootDir": "./src", /* Specify the root folder within your source files. */
     "baseUrl": ".",

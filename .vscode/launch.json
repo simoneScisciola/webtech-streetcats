@@ -1,0 +1,33 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Run Script: dev (backend)",
+            "type": "node-terminal",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/source-code/backend",
+            "command": "npm run dev",
+            "skipFiles": [
+                "<node_internals>/**", // Node.js internal core modules
+                "${workspaceFolder}/source-code/backend/node_modules/**", // Ignore all dependencies (optional)
+            ],
+            //"outFiles": [
+            //    "${workspaceFolder}/source-code/backend/dist/**/*.js"
+            // ]
+        },
+        {
+            // Attach to process using: tsx --inspect-brk ./src/index.ts
+            "name": "Attach to process",
+            "type": "node",
+            "request": "attach",
+            "port": 9229,
+            "skipFiles": [
+                "<node_internals>/**", // Node.js internal core modules
+                "${workspaceFolder}/node_modules/**", // Ignore all dependencies (optional)
+            ]
+        }
+    ]
+}

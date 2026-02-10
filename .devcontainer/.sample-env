@@ -1,4 +1,4 @@
-# Development settings
+# Environment config
 
 
 ## Docker Compose
@@ -7,31 +7,16 @@
 COMPOSE_PROFILES=dev
 
 
-## Ports
+## Backend
 
 ### Sets the port on wich we will access the backend
 DEV_BACKEND_PORT=
-
-### Sets the port on wich we will access cloudbeaver
-DEV_CLOUDBEAVER_PORT=
-
-
-## Backend
 
 ### Sets the token necessary for SonarQube scanning
 SONAR_TOKEN=
 
 ### Sets the JWT Token Secret
 JWT_SECRET_TOKEN=
-
-
-## CloudBeaver
-
-### Sets the cloudbeaver admin username
-CB_ADMIN_NAME=
-
-### Sets the cloudbeaver admin password
-CB_ADMIN_PASSWORD=
 
 
 ## Database
@@ -44,3 +29,15 @@ DB_USER=
 
 ### Sets the database admin password
 DB_PASSWORD=
+
+
+## CloudBeaver
+
+### Sets the port on wich we will access cloudbeaver
+DEV_CLOUDBEAVER_PORT=
+
+### Sets the cloudbeaver admin username
+CB_ADMIN_NAME=
+
+### Sets the cloudbeaver admin password
+CB_ADMIN_PASSWORD=
