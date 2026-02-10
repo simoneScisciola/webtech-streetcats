@@ -4,8 +4,9 @@ import cors from "cors"; // Cors middleware (https://expressjs.com/en/resources/
 
 import "#config/env.js"
 import { errorHandler } from '#middleware/errorHandler.js'
-import { authRouter } from "#routes/authRouter.js";
-import { catchAllRouter } from "#routes/catchAllRouter.js";
+import { parseQueryParams } from '#middleware/parseQueryParams.js'
+import { authRouter } from "#routes/AuthRouter.js";
+import { catchAllRouter } from "#routes/CatchAllRouter.js";
 //import { enforceAuthentication } from "./middleware/authorization.js";
 //import { todoRouter } from "./routes/todoRouter.js";
 
@@ -21,6 +22,9 @@ app.use(cors());
 
 // Parse the JSON payload of incoming requests
 app.use(express.json());
+
+// Parse the query parameters of incoming requests
+app.use(parseQueryParams);
 
 // Define API routes
 app.use(authRouter);
