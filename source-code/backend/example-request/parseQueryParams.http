@@ -1,0 +1,1 @@
+http://localhost:3000/resource?page=1&size=20&filter1=value1&sort=field1,ASC&sort=field2,DESC&filter2=value2&filter1=value3
