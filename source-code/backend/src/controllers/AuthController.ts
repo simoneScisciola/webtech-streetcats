@@ -3,6 +3,7 @@ import Jwt from "jsonwebtoken"; // JWT middleware (https://www.npmjs.com/package
 import bcrypt from "bcrypt"; // bcrypt hashing algorithm (https://www.npmjs.com/package/bcrypt)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
+import { isUsernameValid, isEmailValid, isPasswordValid } from "#utils/validators.js"
 import { User } from "#config/database.js";
 
 
@@ -17,8 +18,8 @@ export class AuthController {
         let isValid: boolean = false;
 
         // Retrieve user credentials specified in the request
-        let loggingUsername: string = req.body.usr;
-        let loggingPassword: string = req.body.pwd;
+        let loggingUsername: string = req.body.username;
+        let loggingPassword: string = req.body.password;
 
         // Retrieve the User with the requested username
         let foundUser = await User.findOne({
@@ -41,14 +42,14 @@ export class AuthController {
     static async saveUser(req: Request, res: Response){
         
         // Retrieve user credentials specified in the request
-        let registeringUsername: string = req.body.usr;
+        let registeringUsername: string = req.body.username;
         let registeringEmail: string = req.body.email;
-        let registeringPassword: string = req.body.pwd;
+        let registeringPassword: string = req.body.password;
 
         registeringUsername = registeringUsername.trim();
         registeringEmail = registeringEmail.trim().toLowerCase();
 
-        // Validate user credentials
+        // Validate request
         if (!isUsernameValid(registeringUsername)) {
             throw new createError.BadRequest('Username not valid.');
         }
@@ -69,58 +70,6 @@ export class AuthController {
         });
 
         return registeringUser.save(); //returns a Promise
-
-
-        // Helper functions
-        function isUsernameValid(username: any): boolean {
-            const isString = typeof username === 'string';
-
-            let isEmpty: boolean = true;
-            if (isString) {
-                isEmpty = username.length <= 0;
-            }
-
-            return isString && !isEmpty;
-        }
-
-        function isEmailValid(email: any): boolean {
-            const isString = typeof email === 'string';
-
-            let isEmpty: boolean = true;
-            let isWellFormatted: boolean = false;
-            if (isString) {
-                isEmpty = email.length <= 0;
-                if (!isEmpty) {
-                    /* Email is of type A@B.C where:
-                        - A is at least one character and can't contain space or @
-                        - B is at least one character and can't contain space or @
-                        - C is at least one character and can't contain space or @
-                    */
-                    isWellFormatted = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-                }
-            }
-
-            return isString && !isEmpty && isWellFormatted;
-        }
-
-        function isPasswordValid(password: any): boolean {
-            const isString = typeof password === 'string';
-
-            let isEmpty: boolean = true;
-            let hasUpperCase: boolean = false;
-            let hasNumber: boolean = false;
-            let hasSpecialChar: boolean = false;
-            if (isString) {
-                isEmpty = password.length <= 0;
-                if (!isEmpty) {
-                    hasUpperCase = /[A-Z]/.test(password); // Password must contain a uppercase character
-                    hasNumber = /\d/.test(password); // Password must contain a number character
-                    hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Password must contain a special character
-                }
-            }
-
-            return isString && !isEmpty && hasUpperCase && hasNumber && hasSpecialChar;
-        }
     }
 
     /**
