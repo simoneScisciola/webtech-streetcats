@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, RequestHandler } from "express"; // Express framework (https://expressjs.com/)
 
 import { logger } from "#logging/logger.js";
-import { QueryParams } from "#types/queryParams.js";
+import { QueryParams, ParsedFilters } from "#types/queryParams.js";
 
 
 // Expected URL: /api/resource?page=0&size=20&filter1=value1&sort=field1,direction1&sort=field2,direction2
@@ -24,7 +24,7 @@ export const parseQueryParams: RequestHandler = (req: Request, res: Response, ne
     const { 
         pagination,
         filters
-    } = paginationParamsExtractor(req.query);
+    } = paramsExtractor(req.query);
 
     // Attach to request object
     req.pagination = pagination;
@@ -40,12 +40,12 @@ export const parseQueryParams: RequestHandler = (req: Request, res: Response, ne
  * @param receivedQuery Object representing the received query parameters, such as Express req.query
  * @returns Object containing the extracted pagination parameters and filters: `{ pagination: {...}, filters: {...} }`
  */
-function paginationParamsExtractor(receivedQuery: Record<string, any>): QueryParams {
+function paramsExtractor(receivedQuery: Record<string, any>): QueryParams {
 
     const OPTIONS_DEFAULT_SIZE = 20;
     const OPTIONS_DEFAULT_DELIMITER = ",";
 
-    // Extracts "page", "size", "orderBy", "orderDirection" and all other filters as string
+    // Extracts "page", "size", "sort" and all other filters as string
     let {
         page,
         size,
@@ -57,6 +57,7 @@ function paginationParamsExtractor(receivedQuery: Record<string, any>): QueryPar
     const parsedPage = parsePage(page);
     const parsedSize = parseSize(size, OPTIONS_DEFAULT_SIZE);
     const parsedSort = parseSort(sort, OPTIONS_DEFAULT_DELIMITER);
+    const parsedFilters = parseFilters(filters);
 
     // Returns the parsed object with correct typing and compute the correct `limit` and `offset` values
     // NOTE! We are assuming that minimum page size is 1 and minimum page index is 0
@@ -69,7 +70,7 @@ function paginationParamsExtractor(receivedQuery: Record<string, any>): QueryPar
             offset: parsedPage * parsedSize,
             sort: parsedSort
         },
-        filters // If there are no further filters, it'll be "{}"
+        filters: parsedFilters
     };
 }
 
@@ -148,7 +149,7 @@ function parseSort(receivedSort: receivedParameter, delimiter: string = ","): Ar
 
     let sortArray: Array<[string, string]> = []; // Default
 
-    // Always convert receivedSort into string array array di stringhe
+    // Always convert receivedSort into string array
     let items: string[] = [];
     if (receivedSort === undefined)
         items = [];
@@ -190,4 +191,21 @@ function parseSort(receivedSort: receivedParameter, delimiter: string = ","): Ar
     logger.debug(`Parsed sort: ${JSON.stringify(sortArray)}`);
     
     return sortArray;
+}
+
+function parseFilters(receivedFilters: { [x: string]: any }): ParsedFilters {
+
+    const filtersObject: ParsedFilters = {}; // Default
+
+    for (const [key, value] of Object.entries(receivedFilters)) {
+
+        if (Array.isArray(value)) {
+            // Overwrite with the last value and ignore the others
+            filtersObject[key] = String(value.at(-1)).trim();
+        } else {
+            filtersObject[key] = String(value).trim();
+        }
+    }
+
+    return filtersObject;
 }
