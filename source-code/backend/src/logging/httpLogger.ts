@@ -3,6 +3,9 @@ import morgan from "morgan"; // HTTP logging middleware (http://expressjs.com/en
 
 import { logger } from "#logging/logger.js";
 
+
+const httpLogger = logger.child({ label: "HTTP" }); // Create a child logger for Morgan
+
 /**
  * Registers the Morgan HTTP logger and redirects output to Winston
  */
@@ -14,7 +17,7 @@ export function setupMorgan(app: Application): void {
             stream: {
                 write: (message: string) => {
                     // Morgan adds a newline at the end, so we trim it before logging
-                    logger.http(message.trim());
+                    httpLogger.http(message.trim());
                 },
             },
         })
