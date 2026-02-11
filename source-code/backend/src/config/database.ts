@@ -27,7 +27,7 @@ try {
     await database.authenticate();
     logger.verbose('Connection has been established successfully.');
 } catch (error) {
-    logger.warn('Unable to connect to the database: ', error);
+    logger.warn(`Unable to connect to the database: ${error}`);
 }
 
 
@@ -87,6 +87,6 @@ database.sync()
         logger.info("Database synced correctly");
     })
     .catch((err: Error) => {
-        logger.error("Error with database synchronization: " + err.message);
+        logger.error(`Error with database synchronization: ${err.message}`);
         throw err; // Raise error
     });

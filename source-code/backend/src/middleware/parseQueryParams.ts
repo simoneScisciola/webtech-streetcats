@@ -29,7 +29,7 @@ export const parseQueryParams: RequestHandler = (req: Request, res: Response, ne
     req.pagination = pagination;
     req.filters = filters;
 
-    logger.verbose("parseQueryParams output: ", { pagination, filters });
+    logger.verbose(`parseQueryParams output: ${JSON.stringify({ pagination, filters })}`);
 
     next();
 }
@@ -94,7 +94,7 @@ function parsePage(receivedPage: receivedParameter): number {
         page = Math.max(MIN_PAGE, parseInt(receivedPage, 10) || MIN_PAGE) 
     }
 
-    logger.debug("Parsed page: ", page);
+    logger.debug(`Parsed page: ${page}`);
 
     return page;
 }
@@ -123,7 +123,7 @@ function parseSize(receivedSize: receivedParameter, defaultSize: number = 20): n
         size = Math.min(MAX_SIZE, size);
     }
 
-    logger.debug("Parsed size: ", size);
+    logger.debug(`Parsed size: ${size}`);
 
     return size;
 }
@@ -173,7 +173,7 @@ function parseSort(receivedSort: receivedParameter, delimiter: string = ","): Ar
         }
     }
 
-    logger.debug("Parsed sort: ", sort);
+    logger.debug(`Parsed sort: ${JSON.stringify(sort)}`);
     
     return sort;
 }

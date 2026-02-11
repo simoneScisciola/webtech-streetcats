@@ -33,7 +33,7 @@ authRouter.post("/signup", (req, res, next) => {
             res.json(user); // Sends the registered User
         })
         .catch((err: Error) => {
-            logger.warn("Could not save user: " + err.message);
+            logger.warn(`Could not save user: ${err.message}`);
             next(err); // Raise error
         })
 });
