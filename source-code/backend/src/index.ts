@@ -1,8 +1,9 @@
 import express, { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
-import morgan from "morgan"; // Logging middleware (http://expressjs.com/en/resources/middleware/morgan.html)
 import cors from "cors"; // Cors middleware (https://expressjs.com/en/resources/middleware/cors.html)
 
 import "#config/env.js"
+import { logger } from "#logging/logger.js";
+import { setupMorgan } from "#logging/httpLogger.js";
 import { errorHandler } from '#middleware/errorHandler.js'
 import { parseQueryParams } from '#middleware/parseQueryParams.js'
 import { authRouter } from "#routes/AuthRouter.js";
@@ -15,7 +16,7 @@ const app = express();
 const PORT = 3000;
 
 // Register the morgan logging middleware, use the 'dev' format
-app.use(morgan('dev'));
+setupMorgan(app);
 
 // Register the cors middleware
 app.use(cors());
@@ -37,5 +38,5 @@ app.use(errorHandler);
 
 // Listening for incoming requests
 app.listen(PORT, () => {
-    console.log(`Server running on (container) port ${PORT}`);
+    logger.debug(`Server running on (container) port ${PORT}`);
 });
