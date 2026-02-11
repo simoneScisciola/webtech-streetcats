@@ -1,5 +1,7 @@
 // Required environment variables values validation
 
+import { logger } from "#logging/logger.js";
+
 // List of all required environment variables
 const requiredEnv = [
     'JWT_SECRET_TOKEN',
@@ -10,10 +12,10 @@ const requiredEnv = [
 
 // Required environment variables check
 requiredEnv.forEach((key) => {
-    console.log(`Checking environment variable "${key}"...`);
+    logger.debug(`Checking environment variable "${key}"...`);
     if (!process.env[key]) {
-        console.error(`The environment variable "${key}" is missing.`);
+        logger.error(`The environment variable "${key}" is missing.`);
         process.exit(1);
     }
-    console.log(`${key} found`);
+    logger.debug(`${key} found`);
 });

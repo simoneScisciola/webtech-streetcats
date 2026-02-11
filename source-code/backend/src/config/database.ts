@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize"; // Sequelize ORM (https://sequelize.org/)
 
+import { logger } from "#logging/logger.js";
 import { createModel as createUserModel } from "#models/User.js";
 import { createModel as createUserRoleModel } from "#models/UserRole.js";
 import { createModel as createSightingModel } from "#models/Sighting.js";
@@ -18,13 +19,15 @@ const POSTGRESQL_URL = `postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_P
 
 
 // Database connection
-export const database = new Sequelize(POSTGRESQL_URL);
+export const database = new Sequelize(POSTGRESQL_URL, {
+    logging: (msg) => logger.debug(`Sequelize query: ${msg}`), // Redirect Sequelize logs to Winston
+});
 
 try {
     await database.authenticate();
-    console.log('Connection has been established successfully.');
+    logger.verbose('Connection has been established successfully.');
 } catch (error) {
-    console.error('Unable to connect to the database: ', error);
+    logger.warn('Unable to connect to the database: ', error);
 }
 
 
@@ -81,9 +84,9 @@ Comment.belongsTo(Sighting);
 // Synchronize schema (creates missing tables)
 database.sync()
     .then( () => {
-        console.log("Database synced correctly");
+        logger.info("Database synced correctly");
     })
     .catch((err: Error) => {
-        console.error("Error with database synchronization: " + err.message);
+        logger.error("Error with database synchronization: " + err.message);
         throw err; // Raise error
     });

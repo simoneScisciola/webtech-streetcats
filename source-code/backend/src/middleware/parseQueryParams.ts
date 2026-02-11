@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express"; // Express framework (https://expressjs.com/)
 
+import { logger } from "#logging/logger.js";
 import { QueryParams } from "#types/queryParams.js"
 
 
@@ -17,6 +18,8 @@ import { QueryParams } from "#types/queryParams.js"
  */
 export const parseQueryParams: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
 
+    logger.verbose("Middleware: parseQueryParams");
+
     const { 
         pagination,
         filters
@@ -25,6 +28,8 @@ export const parseQueryParams: RequestHandler = (req: Request, res: Response, ne
     // Attach to request object
     req.pagination = pagination;
     req.filters = filters;
+
+    logger.verbose("parseQueryParams output: ", { pagination, filters });
 
     next();
 }
@@ -89,6 +94,8 @@ function parsePage(receivedPage: receivedParameter): number {
         page = Math.max(MIN_PAGE, parseInt(receivedPage, 10) || MIN_PAGE) 
     }
 
+    logger.debug("Parsed page: ", page);
+
     return page;
 }
 
@@ -115,6 +122,8 @@ function parseSize(receivedSize: receivedParameter, defaultSize: number = 20): n
         // If "size" is more then MAX_SIZE, sets MAX_SIZE
         size = Math.min(MAX_SIZE, size);
     }
+
+    logger.debug("Parsed size: ", size);
 
     return size;
 }
@@ -163,6 +172,8 @@ function parseSort(receivedSort: receivedParameter, delimiter: string = ","): Ar
             }
         }
     }
+
+    logger.debug("Parsed sort: ", sort);
     
     return sort;
 }

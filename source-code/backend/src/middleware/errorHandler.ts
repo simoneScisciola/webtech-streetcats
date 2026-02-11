@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express" // Express framework (https://expressjs.com/)
 import { HttpError } from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
+import { logger } from "#logging/logger.js";
+
 
 /**
  * Handles errors raised within the application
@@ -12,7 +14,7 @@ import { HttpError } from "http-errors" // HTTP errors middleware (https://www.n
 export const errorHandler: ErrorRequestHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
 
     // Prints full stack on console
-    console.log(err.stack);
+    logger.error(err.stack);
 
     let status: number;
     let expose: boolean;

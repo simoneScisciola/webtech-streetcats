@@ -1,6 +1,7 @@
 import express from "express"; // Express framework (https://expressjs.com/)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
+import { logger } from "#logging/logger.js";
 import { AuthController } from "#controllers/AuthController.js";
 
 
@@ -32,7 +33,7 @@ authRouter.post("/signup", (req, res, next) => {
             res.json(user); // Sends the registered User
         })
         .catch((err: Error) => {
-            console.error("Could not save user: " + err.message);
+            logger.warn("Could not save user: " + err.message);
             next(err); // Raise error
         })
 });

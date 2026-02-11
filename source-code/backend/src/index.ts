@@ -38,5 +38,5 @@ app.use(errorHandler);
 
 // Listening for incoming requests
 app.listen(PORT, () => {
-    logger.debug(`Server running on (container) port ${PORT}`);
+    logger.info(`Server running on (container) port ${PORT}`);
 });

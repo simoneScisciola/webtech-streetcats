@@ -5,12 +5,13 @@ const { combine, timestamp, printf, colorize, errors } = winston.format;
 
 // Personalized color-level mapping
 winston.addColors({
-    debug: 'cyan',
-    info: 'white',
+    error: 'red bold',
     warn: 'yellow',
-    error: 'red',
-    http: 'green',
-    critical: 'red',
+    info: 'green',
+    http: 'white',
+    verbose: 'magenta',
+    debug: 'cyan',
+    silly: 'blue',
 });
 
 const logFormat = printf(({ level, message, timestamp, label, stack }) => {
