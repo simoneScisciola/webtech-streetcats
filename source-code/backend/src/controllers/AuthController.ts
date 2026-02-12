@@ -46,8 +46,8 @@ export class AuthController {
         let registeringEmail: string = req.body.email;
         let registeringPassword: string = req.body.password;
 
-        registeringUsername = registeringUsername.trim();
-        registeringEmail = registeringEmail.trim().toLowerCase();
+        registeringUsername = registeringUsername?.trim();
+        registeringEmail = registeringEmail?.trim()?.toLowerCase();
 
         // Validate request
         if (!isUsernameValid(registeringUsername)) {

@@ -16,7 +16,7 @@ authRouter.post("/auth", async (req, res, next) => {
     let isAuthenticated = await AuthController.checkCredentials(req, res);
     
     if(isAuthenticated) {
-        res.json(AuthController.issueToken(req.body.usr)); // Returns the JWT in the HTTP Response JSON body
+        res.json(AuthController.issueToken(req.body.username)); // Returns the JWT in the HTTP Response JSON body
     } else {
         next(new createError.Unauthorized); // Raise error
     }
