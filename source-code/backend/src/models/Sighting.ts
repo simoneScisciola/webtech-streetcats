@@ -5,10 +5,10 @@ interface SightingModel extends Model<InferAttributes<SightingModel>, InferCreat
     id: CreationOptional<number>;
     photoUrl: string;
     title: string;
-    description: CreationOptional<string>;
+    description: string | null;
     latitude: number;
     longitude: number;
-    address: CreationOptional<string>;
+    address: string | null;
 }
 
 /**

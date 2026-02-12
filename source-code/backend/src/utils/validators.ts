@@ -40,7 +40,7 @@ export function isTitleValid(title: any): boolean {
 }
 
 export function isDescriptionValid(description: any): boolean {
-    return isString(description) && !isEmpty(description);
+    return isNull(description) || (isString(description) && !isEmpty(description));
 }
 
 export function isLatitudeValid(latitude: any): boolean {
@@ -52,7 +52,7 @@ export function isLongitudeValid(longitude: any): boolean {
 }
 
 export function isAddressValid(address: any): boolean {
-    return isString(address) && !isEmpty(address);
+    return isNull(address) || (isString(address) && !isEmpty(address));
 }
 
 export function isContentValid(content: any): boolean {
@@ -69,8 +69,12 @@ function isNumber(value: any) {
     return !isNaN(value) && typeof value === 'number';
 }
 
+function isNull(value: any) {
+    return value === null;
+}
+
 function isEmpty(value: string) {
-    return value.length <= 0;
+    return value.trim().length <= 0;
 }
 
 /* Email is of type A@B.C where:

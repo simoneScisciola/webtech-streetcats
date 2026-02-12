@@ -9,13 +9,25 @@ import { findAllPaginated } from "#utils/findAllPaginated.js";
 export class UserController {
 
     /**
-     * Create a new user
+     * Create a new user or full update an existing one
      */
-    static async create(sentUsername: string, sentUser: UserDto) {
+    static async createOrReplace(sentUsername: string, sentUser: UserDto) {
 
         sentUser.username = sentUsername;
 
-        return User.build(sentUser).save(); // returns a Promise
+        const existingUser = await this.findById(sentUsername);
+        if (existingUser === null) {
+            return User.create(sentUser); // returns a Promise
+
+        } else {
+            // Update all fields
+            // Password hashing is handled by the model hook
+            return existingUser.update({
+                username: sentUsername,
+                email: sentUser.email,
+                password: sentUser.password
+            }); // returns a Promise
+        }
     }
 
     /**
@@ -35,20 +47,20 @@ export class UserController {
     }
 
     /**
-     * Update an existing user
+     * Partial update an existing user
      */
-    static async update(sentUsername: string, updatedUser: Partial<UserDto>) {
+    static async update(sentUsername: string, partialUser: Partial<UserDto>) {
+
+        partialUser.username = sentUsername;
 
         const existingUser = await this.findById(sentUsername);
-
         if (existingUser === null) {
             throw new createError.NotFound("User not found.");
 
         } else {
-
             // Update only provided fields
             // Password hashing is handled by the model hook
-            return existingUser.update(updatedUser); // returns a Promise
+            return existingUser.update(partialUser); // returns a Promise
         }
     }
 

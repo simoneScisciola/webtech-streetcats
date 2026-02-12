@@ -13,7 +13,7 @@ export class SightingController {
      */
     static async create(sentSighting: SightingDto) {
 
-        return Sighting.build(sentSighting).save(); // returns a Promise
+        return Sighting.create(sentSighting); // returns a Promise
     }
 
     /**
@@ -33,21 +33,44 @@ export class SightingController {
     }
 
     /**
-     * Update an existing sighting
+     * Full update an existing sighting
      */
-    static async update(sentSightingId: number, updatedSighting: Partial<SightingDto>) {
+    static async replace(sentSightingId: number, fullSighting: SightingDto) {
+
+        fullSighting.id = sentSightingId;
 
         const existingSighting = await this.findById(sentSightingId);
-
         if (existingSighting === null) {
             throw new createError.NotFound("Sighting not found.");
 
         } else {
+            // Update all fields
+            return existingSighting.update({
+                id: sentSightingId,
+                photoUrl: fullSighting.photoUrl,
+                title: fullSighting.title,
+                description: fullSighting.description ?? null,
+                latitude: fullSighting.latitude,
+                longitude: fullSighting.longitude,
+                address: fullSighting.address ?? null
+            }); // returns a Promise
+        }
+    }
 
+    /**
+     * Partial update an existing sighting
+     */
+    static async update(sentSightingId: number, partialSighting: Partial<SightingDto>) {
+
+        partialSighting.id = sentSightingId;
+
+        const existingSighting = await this.findById(sentSightingId);
+        if (existingSighting === null) {
+            throw new createError.NotFound("Sighting not found.");
+
+        } else {
             // Update only provided fields
-            existingSighting.set(updatedSighting);
-
-            return existingSighting.save(); // returns a Promise
+            return existingSighting.update(partialSighting); // returns a Promise
         }
     }
 

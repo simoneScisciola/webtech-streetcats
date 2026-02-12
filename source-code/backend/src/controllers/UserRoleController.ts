@@ -9,13 +9,22 @@ import { ParsedPagination } from "#types/queryParams.js";
 export class UserRoleController {
     
     /**
-     * Create a new user role
+     * Create a new user role or full update an existing one
      */
-    static async create(sentRoleName: string, sentUserRole: UserRoleDto){
+    static async createOrReplace(sentRoleName: string, sentUserRole: UserRoleDto){
         
         sentUserRole.roleName = sentRoleName;
 
-        return UserRole.build(sentUserRole).save(); //returns a Promise
+        const existingUserRole = await this.findById(sentRoleName);
+        if (existingUserRole === null) {
+            return UserRole.create(sentUserRole); //returns a Promise
+
+        } else {
+            // Update all fields
+            return existingUserRole.update({
+                roleName: sentRoleName
+            }); // returns a Promise
+        }
     }
 
     /**
@@ -35,21 +44,19 @@ export class UserRoleController {
     }
 
     /**
-     * Update an existing user role
+     * Partial update an existing user role
      */
-    static async update(sentRoleName: string, updatedUserRole: UserRoleDto){
+    static async update(sentRoleName: string, partialUserRole: Partial<UserRoleDto>){
+
+        partialUserRole.roleName = sentRoleName;
 
         const existingUserRole = await this.findById(sentRoleName);
-
         if (existingUserRole === null) {
-            throw new createError.NotFound("Role name not found.");
+            throw new createError.NotFound("User role not found.");
 
         } else {
-
             // Update only provided fields
-            existingUserRole.set(updatedUserRole);
-    
-            return existingUserRole.save(); //returns a Promise
+            return existingUserRole.update(partialUserRole); //returns a Promise
         }
     }
 

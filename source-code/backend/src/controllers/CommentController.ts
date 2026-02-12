@@ -13,7 +13,7 @@ export class CommentController {
      */
     static async create(sentComment: CommentDto) {
 
-        return Comment.build(sentComment).save(); // returns a Promise
+        return Comment.create(sentComment); // returns a Promise
     }
 
     /**
@@ -33,21 +33,39 @@ export class CommentController {
     }
 
     /**
-     * Update an existing comment
+     * Full update an existing comment
      */
-    static async update(sentCommentId: number, updatedComment: Partial<CommentDto>) {
+    static async replace(sentCommentId: number, fullComment: CommentDto) {
+
+        fullComment.id = sentCommentId;
 
         const existingComment = await this.findById(sentCommentId);
-
         if (existingComment === null) {
             throw new createError.NotFound("Comment not found.");
 
         } else {
+            // Update all fields
+            return existingComment.update({
+                id: sentCommentId,
+                content: fullComment.content
+            }); // returns a Promise
+        }
+    }
 
+    /**
+     * Partial update an existing comment
+     */
+    static async update(sentCommentId: number, partialComment: Partial<CommentDto>) {
+
+        partialComment.id = sentCommentId;
+
+        const existingComment = await this.findById(sentCommentId);
+        if (existingComment === null) {
+            throw new createError.NotFound("Comment not found.");
+
+        } else {
             // Update only provided fields
-            existingComment.set(updatedComment);
-
-            return existingComment.save(); // returns a Promise
+            return existingComment.update(partialComment); // returns a Promise
         }
     }
 
