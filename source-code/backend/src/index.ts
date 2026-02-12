@@ -4,10 +4,14 @@ import cors from "cors"; // Cors middleware (https://expressjs.com/en/resources/
 import "#config/env.js"
 import { logger } from "#logging/logger.js";
 import { setupMorgan } from "#logging/httpLogger.js";
+
 import { errorHandler } from '#middleware/errorHandler.js'
 import { parseQueryParams } from '#middleware/parseQueryParams.js'
-import { authRouter } from "#routes/AuthRouter.js";
+
 import { catchAllRouter } from "#routes/CatchAllRouter.js";
+import { authRouter } from "#routes/AuthRouter.js";
+import { userRoleRouter } from "#routes/UserRoleRouter.js";
+
 //import { enforceAuthentication } from "./middleware/authorization.js";
 //import { todoRouter } from "./routes/todoRouter.js";
 
@@ -29,6 +33,7 @@ app.use(parseQueryParams);
 
 // Define API routes
 app.use(authRouter);
+app.use(userRoleRouter);
 //app.use(enforceAuthentication);
 //app.use(todoRouter);
 app.use(catchAllRouter); // Catch all, if we get here it's a 404
