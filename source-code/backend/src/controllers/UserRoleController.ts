@@ -8,45 +8,57 @@ import { ParsedPagination } from "#types/queryParams.js";
 
 export class UserRoleController {
     
+    /**
+     * Create a new user role
+     */
     static async create(sentRoleName: string, sentUserRole: UserRoleDto){
         
         sentUserRole.roleName = sentRoleName;
 
-        // Save new UserRole
         return UserRole.build(sentUserRole).save(); //returns a Promise
     }
 
+    /**
+     * Find user role by primary key (roleName)
+     */
     static async findById(sentRoleName: string){
 
-        // Find user role
         return UserRole.findByPk(sentRoleName); //returns a Promise
     }
 
+    /**
+     * Find all user roles with pagination
+     */
     static async findAll(pagination: ParsedPagination){
         
-        // Find user role
         return findAllPaginated(UserRole, pagination); //returns a Promise
     }
 
+    /**
+     * Update an existing user role
+     */
     static async update(sentRoleName: string, updatedUserRole: UserRoleDto){
 
-        let existingUserRole = await this.findById(sentRoleName);
+        const existingUserRole = await this.findById(sentRoleName);
 
         if (existingUserRole === null) {
-            throw new createError.NotFound('Role name not found.');
+            throw new createError.NotFound("Role name not found.");
 
         } else {
 
-            // Update using fields which were passed in request
+            // Update only provided fields
             existingUserRole.set(updatedUserRole);
     
             return existingUserRole.save(); //returns a Promise
         }
     }
 
+    /**
+     * Delete a user role
+     */
     static async delete(sentRoleName: string){
 
-        let existingUserRole = await this.findById(sentRoleName);
+        const existingUserRole = await this.findById(sentRoleName);
         
         if (existingUserRole !== null)
             await existingUserRole.destroy();
