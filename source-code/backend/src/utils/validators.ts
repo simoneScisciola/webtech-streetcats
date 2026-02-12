@@ -55,6 +55,10 @@ export function isAddressValid(address: any): boolean {
     return isString(address) && !isEmpty(address);
 }
 
+export function isContentValid(content: any): boolean {
+    return isString(content) && !isEmpty(content);
+}
+
 // === Basic validation functions ===
 
 function isString(value: any) {
@@ -62,7 +66,7 @@ function isString(value: any) {
 }
 
 function isNumber(value: any) {
-    return typeof value === 'number';
+    return !isNaN(value) && typeof value === 'number';
 }
 
 function isEmpty(value: string) {
