@@ -12,7 +12,7 @@ export const userRoleRouter = express.Router();
 /**
  * Manages full update (or new creation) of a user role
  */
-userRoleRouter.put("/user-roles/:roleName", [validateUserRoleFields], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.put("/user-roles/:roleName", [validateUserRoleFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentUserRole = res.locals.userRole as UserRoleDto;
@@ -63,7 +63,7 @@ userRoleRouter.get("/user-roles/:roleName", async (req: Request, res: Response, 
 /**
  * Manages partial update of a user role
  */
-userRoleRouter.patch("/user-roles/:roleName", [validateUserRoleFields], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.patch("/user-roles/:roleName", [validateUserRoleFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentUserRole = res.locals.userRole as UserRoleDto;

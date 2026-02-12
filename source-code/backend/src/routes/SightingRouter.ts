@@ -12,7 +12,7 @@ export const sightingRouter = express.Router();
 /**
  * Manages new creation of a sighting
  */
-sightingRouter.post("/sightings", [validateSightingFields], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.post("/sightings", [validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;
@@ -61,7 +61,7 @@ sightingRouter.get("/sightings/:id", [validateId], async (req: Request, res: Res
 /**
  * Manages full update of a sighting
  */
-sightingRouter.put("/sightings/:id", [validateId, validateSightingFields], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.put("/sightings/:id", [validateId, validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSightingId = res.locals.id as number;
@@ -79,7 +79,7 @@ sightingRouter.put("/sightings/:id", [validateId, validateSightingFields], async
 /**
  * Manages partial update of a sighting
  */
-sightingRouter.patch("/sightings/:id", [validateId, validateSightingFields], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.patch("/sightings/:id", [validateId, validateSightingFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSightingId = res.locals.id as number;

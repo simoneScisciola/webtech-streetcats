@@ -12,7 +12,7 @@ export const userRouter = express.Router();
 /**
  * Manages full update (or new creation) of a user
  */
-userRouter.put("/users/:username", [validateUserFields], async (req: Request, res: Response, next: NextFunction) => {
+userRouter.put("/users/:username", [validateUserFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user specified in the request
         const sentUser = res.locals.user as UserDto;
@@ -61,7 +61,7 @@ userRouter.get("/users/:username", async (req: Request, res: Response, next: Nex
 /**
  * Manages partial update of a user role
  */
-userRouter.patch("/users/:username", [validateUserFields], async (req: Request, res: Response, next: NextFunction) => {
+userRouter.patch("/users/:username", [validateUserFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user specified in the request
         const sentUser = res.locals.user as UserDto;

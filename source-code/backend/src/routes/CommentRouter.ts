@@ -12,7 +12,7 @@ export const commentRouter = express.Router();
 /**
  * Manages new creation of a comment
  */
-commentRouter.post("/comments", [validateCommentFields], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.post("/comments", [validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentComment = res.locals.comment as CommentDto;
@@ -61,7 +61,7 @@ commentRouter.get("/comments/:id", [validateId], async (req: Request, res: Respo
 /**
  * Manages full update of a comment
  */
-commentRouter.put("/comments/:id", [validateId, validateCommentFields], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.put("/comments/:id", [validateId, validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentCommentId = res.locals.id as number;
@@ -79,7 +79,7 @@ commentRouter.put("/comments/:id", [validateId, validateCommentFields], async (r
 /**
  * Manages partial update of a comment
  */
-commentRouter.patch("/comments/:id", [validateId, validateCommentFields], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.patch("/comments/:id", [validateId, validateCommentFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentCommentId = res.locals.id as number;
