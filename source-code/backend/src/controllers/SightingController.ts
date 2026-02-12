@@ -35,9 +35,9 @@ export class SightingController {
     /**
      * Update an existing sighting
      */
-    static async update(sentId: number, updatedSighting: Partial<SightingDto>) {
+    static async update(sentSightingId: number, updatedSighting: Partial<SightingDto>) {
 
-        const existingSighting = await this.findById(sentId);
+        const existingSighting = await this.findById(sentSightingId);
 
         if (existingSighting === null) {
             throw new createError.NotFound("Sighting not found.");

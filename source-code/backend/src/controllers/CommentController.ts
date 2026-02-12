@@ -35,9 +35,9 @@ export class CommentController {
     /**
      * Update an existing comment
      */
-    static async update(sentId: number, updatedComment: Partial<CommentDto>) {
+    static async update(sentCommentId: number, updatedComment: Partial<CommentDto>) {
 
-        const existingComment = await this.findById(sentId);
+        const existingComment = await this.findById(sentCommentId);
 
         if (existingComment === null) {
             throw new createError.NotFound("Comment not found.");
