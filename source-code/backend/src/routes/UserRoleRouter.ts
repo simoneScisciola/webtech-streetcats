@@ -19,8 +19,8 @@ userRoleRouter.put("/user-roles/:roleName", [validateUserRoleFields(false)], asy
 
         logger.debug(`Received user role data: ${JSON.stringify(sentUserRole)}`);
 
-        const result = await UserRoleController.create(sentUserRole.roleName, sentUserRole);
-        res.status(201).json(result);
+        const result = await UserRoleController.createOrReplace(sentUserRole.roleName, sentUserRole);
+        res.status(200).json(result);
     } catch (err) {
         next(err);
     }

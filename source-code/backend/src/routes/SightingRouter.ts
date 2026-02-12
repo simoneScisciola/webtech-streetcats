@@ -64,12 +64,12 @@ sightingRouter.get("/sightings/:id", [validateId], async (req: Request, res: Res
 sightingRouter.put("/sightings/:id", [validateId, validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
-        const sentSightingId = res.locals.id as number;
         const sentSighting = res.locals.sighting as SightingDto;
+        sentSighting.id = res.locals.id as number;
 
-        logger.debug(`Received sighting data: id=${sentSightingId}, data=${JSON.stringify(sentSighting)}`);
+        logger.debug(`Received sighting data: ${JSON.stringify(sentSighting)}`);
 
-        const result = await SightingController.update(sentSightingId, sentSighting);
+        const result = await SightingController.replace(sentSighting.id, sentSighting);
         res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -82,12 +82,12 @@ sightingRouter.put("/sightings/:id", [validateId, validateSightingFields(false)]
 sightingRouter.patch("/sightings/:id", [validateId, validateSightingFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
-        const sentSightingId = res.locals.id as number;
         const sentSighting = res.locals.sighting as SightingDto;
+        sentSighting.id = res.locals.id as number;
 
-        logger.debug(`Received sighting data: id=${sentSightingId}, data=${JSON.stringify(sentSighting)}`);
+        logger.debug(`Received sighting data: ${JSON.stringify(sentSighting)}`);
 
-        const result = await SightingController.update(sentSightingId, sentSighting);
+        const result = await SightingController.update(sentSighting.id, sentSighting);
         res.status(200).json(result);
     } catch (err) {
         next(err);

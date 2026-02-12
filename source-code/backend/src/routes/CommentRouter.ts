@@ -64,12 +64,12 @@ commentRouter.get("/comments/:id", [validateId], async (req: Request, res: Respo
 commentRouter.put("/comments/:id", [validateId, validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
-        const sentCommentId = res.locals.id as number;
         const sentComment = res.locals.comment as CommentDto;
+        sentComment.id = res.locals.id as number;
 
-        logger.debug(`Received comment data: id=${sentCommentId}, data=${JSON.stringify(sentComment)}`);
+        logger.debug(`Received comment data: ${JSON.stringify(sentComment)}`);
 
-        const result = await CommentController.update(sentCommentId, sentComment);
+        const result = await CommentController.replace(sentComment.id, sentComment);
         res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -82,12 +82,12 @@ commentRouter.put("/comments/:id", [validateId, validateCommentFields(false)], a
 commentRouter.patch("/comments/:id", [validateId, validateCommentFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
-        const sentCommentId = res.locals.id as number;
         const sentComment = res.locals.comment as CommentDto;
+        sentComment.id = res.locals.id as number;
 
-        logger.debug(`Received comment data: id=${sentCommentId}, data=${JSON.stringify(sentComment)}`);
+        logger.debug(`Received comment data: ${JSON.stringify(sentComment)}`);
 
-        const result = await CommentController.update(sentCommentId, sentComment);
+        const result = await CommentController.update(sentComment.id, sentComment);
         res.status(200).json(result);
     } catch (err) {
         next(err);

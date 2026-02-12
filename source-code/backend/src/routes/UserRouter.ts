@@ -19,8 +19,8 @@ userRouter.put("/users/:username", [validateUserFields(false)], async (req: Requ
 
         logger.debug(`Received user data: ${JSON.stringify(sentUser)}`);
 
-        const result = await UserController.create(sentUser.username, sentUser);
-        res.status(201).json(result);
+        const result = await UserController.createOrReplace(sentUser.username, sentUser);
+        res.status(200).json(result);
     } catch (err) {
         next(err);
     }
