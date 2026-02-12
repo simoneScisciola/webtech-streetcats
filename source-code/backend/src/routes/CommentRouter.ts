@@ -1,19 +1,24 @@
 import express, { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
+import { logger } from "#logging/logger.js";
 import { CommentController } from "#controllers/CommentController.js";
 import { CommentDto } from "#types/dto/CommentDto.js";
-import { validateCommentFields } from "#middleware/validateRequestFields.js";
+import { validateCommentFields, validateId } from "#middleware/validateRequestFields.js";
 
 
 export const commentRouter = express.Router();
 
 /**
- * Manages the new creation of a comment
+ * Manages new creation of a comment
  */
 commentRouter.post("/comments", [validateCommentFields], async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Retrieve comment specified in the request
         const sentComment = res.locals.comment as CommentDto;
+
+        logger.debug(`Received comment data: ${JSON.stringify(sentComment)}`);
+
         const result = await CommentController.create(sentComment);
         res.status(201).json(result);
     } catch (err) {
@@ -22,7 +27,7 @@ commentRouter.post("/comments", [validateCommentFields], async (req: Request, re
 });
 
 /**
- * Manages the retrieve of all comments
+ * Manages retrieve of all comments
  */
 commentRouter.get("/comments", async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -34,14 +39,14 @@ commentRouter.get("/comments", async (req: Request, res: Response, next: NextFun
 });
 
 /**
- * Manages the retrieve of a specified comment
+ * Manages retrieve of a specified comment
  */
-commentRouter.get("/comments/:id", async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.get("/comments/:id", [validateId], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
-        const id = parseInt(req.params.id);
+        const sentCommentId = res.locals.id as number;
 
-        const result = await CommentController.findById(id);
+        const result = await CommentController.findById(sentCommentId);
 
         if (!result) {
             throw new createError.NotFound("Comment not found.");
@@ -54,14 +59,50 @@ commentRouter.get("/comments/:id", async (req: Request, res: Response, next: Nex
 });
 
 /**
- * Manages the delete of a specified comment
+ * Manages full update of a comment
  */
-commentRouter.delete("/comments/:id", async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.put("/comments/:id", [validateId, validateCommentFields], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
-        const id = parseInt(req.params.id);
+        const sentCommentId = res.locals.id as number;
+        const sentComment = res.locals.comment as CommentDto;
 
-        const result = await CommentController.delete(id);
+        logger.debug(`Received comment data: id=${sentCommentId}, data=${JSON.stringify(sentComment)}`);
+
+        const result = await CommentController.update(sentCommentId, sentComment);
+        res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
+ * Manages partial update of a comment
+ */
+commentRouter.patch("/comments/:id", [validateId, validateCommentFields], async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve comment specified in the request
+        const sentCommentId = res.locals.id as number;
+        const sentComment = res.locals.comment as CommentDto;
+
+        logger.debug(`Received comment data: id=${sentCommentId}, data=${JSON.stringify(sentComment)}`);
+
+        const result = await CommentController.update(sentCommentId, sentComment);
+        res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
+ * Manages delete of a specified comment
+ */
+commentRouter.delete("/comments/:id", [validateId], async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve comment specified in the request
+        const sentCommentId = res.locals.id as number;
+
+        const result = await CommentController.delete(sentCommentId);
 
         if (!result) {
             throw new createError.NotFound("Comment not found.");

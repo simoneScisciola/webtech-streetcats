@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
+import { logger } from "#logging/logger.js";
 import { UserController } from "#controllers/UserController.js";
 import { UserDto } from "#types/dto/UserDto.js";
 import { validateUserFields } from "#middleware/validateRequestFields.js";
@@ -9,20 +10,24 @@ import { validateUserFields } from "#middleware/validateRequestFields.js";
 export const userRouter = express.Router();
 
 /**
- * Manages the full replace (or new creation) of a user
+ * Manages full update (or new creation) of a user
  */
 userRouter.put("/users/:username", [validateUserFields], async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Retrieve user specified in the request
         const sentUser = res.locals.user as UserDto;
+
+        logger.debug(`Received user data: ${JSON.stringify(sentUser)}`);
+
         const result = await UserController.create(sentUser.username, sentUser);
-        res.status(200).json(result);
+        res.status(201).json(result);
     } catch (err) {
         next(err);
     }
 });
 
 /**
- * Manages the retrieve of all users
+ * Manages retrieve of all users
  */
 userRouter.get("/users", async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -34,7 +39,7 @@ userRouter.get("/users", async (req: Request, res: Response, next: NextFunction)
 });
 
 /**
- * Manages the retrieve of a specified user
+ * Manages retrieve of a specified user
  */
 userRouter.get("/users/:username", async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -54,7 +59,24 @@ userRouter.get("/users/:username", async (req: Request, res: Response, next: Nex
 });
 
 /**
- * Manages the delete of a specified user
+ * Manages partial update of a user role
+ */
+userRouter.patch("/users/:username", [validateUserFields], async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve user specified in the request
+        const sentUser = res.locals.user as UserDto;
+
+        logger.debug(`Received user data: ${JSON.stringify(sentUser)}`);
+
+        const result = await UserController.update(sentUser.username, sentUser);
+        res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
+ * Manages delete of a specified user
  */
 userRouter.delete("/users/:username", async (req: Request, res: Response, next: NextFunction) => {
     try {

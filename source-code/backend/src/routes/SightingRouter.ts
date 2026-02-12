@@ -1,19 +1,24 @@
 import express, { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
+import { logger } from "#logging/logger.js";
 import { SightingController } from "#controllers/SightingController.js";
 import { SightingDto } from "#types/dto/SightingDto.js";
-import { validateSightingFields } from "#middleware/validateRequestFields.js";
+import { validateId, validateSightingFields } from "#middleware/validateRequestFields.js";
 
 
 export const sightingRouter = express.Router();
 
 /**
- * Manages the new creation of a sighting
+ * Manages new creation of a sighting
  */
 sightingRouter.post("/sightings", [validateSightingFields], async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;
+
+        logger.debug(`Received sighting data: ${JSON.stringify(sentSighting)}`);
+
         const result = await SightingController.create(sentSighting);
         res.status(201).json(result);
     } catch (err) {
@@ -22,7 +27,7 @@ sightingRouter.post("/sightings", [validateSightingFields], async (req: Request,
 });
 
 /**
- * Manages the retrieve of all sightings
+ * Manages retrieve of all sightings
  */
 sightingRouter.get("/sightings", async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -34,14 +39,14 @@ sightingRouter.get("/sightings", async (req: Request, res: Response, next: NextF
 });
 
 /**
- * Manages the retrieve of a specified sighting
+ * Manages retrieve of a specified sighting
  */
-sightingRouter.get("/sightings/:id", async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.get("/sightings/:id", [validateId], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
-        const id = parseInt(req.params.id);
+        const sentSightingId = res.locals.id as number;
 
-        const result = await SightingController.findById(id);
+        const result = await SightingController.findById(sentSightingId);
 
         if (!result) {
             throw new createError.NotFound("Sighting not found.");
@@ -54,14 +59,50 @@ sightingRouter.get("/sightings/:id", async (req: Request, res: Response, next: N
 });
 
 /**
- * Manages the delete of a specified sighting
+ * Manages full update of a sighting
  */
-sightingRouter.delete("/sightings/:id", async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.put("/sightings/:id", [validateId, validateSightingFields], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
-        const id = parseInt(req.params.id);
+        const sentSightingId = res.locals.id as number;
+        const sentSighting = res.locals.sighting as SightingDto;
 
-        const result = await SightingController.delete(id);
+        logger.debug(`Received sighting data: id=${sentSightingId}, data=${JSON.stringify(sentSighting)}`);
+
+        const result = await SightingController.update(sentSightingId, sentSighting);
+        res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
+ * Manages partial update of a sighting
+ */
+sightingRouter.patch("/sightings/:id", [validateId, validateSightingFields], async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve sighting specified in the request
+        const sentSightingId = res.locals.id as number;
+        const sentSighting = res.locals.sighting as SightingDto;
+
+        logger.debug(`Received sighting data: id=${sentSightingId}, data=${JSON.stringify(sentSighting)}`);
+
+        const result = await SightingController.update(sentSightingId, sentSighting);
+        res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
+ * Manages delete of a specified sighting
+ */
+sightingRouter.delete("/sightings/:id", [validateId], async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve sighting specified in the request
+        const sentSightingId = res.locals.id as number;
+
+        const result = await SightingController.delete(sentSightingId);
 
         if (!result) {
             throw new createError.NotFound("Sighting not found.");

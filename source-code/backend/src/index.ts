@@ -11,7 +11,9 @@ import { parseQueryParams } from '#middleware/parseQueryParams.js'
 import { catchAllRouter } from "#routes/CatchAllRouter.js";
 import { authRouter } from "#routes/AuthRouter.js";
 import { userRoleRouter } from "#routes/UserRoleRouter.js";
-
+import { userRouter } from "#routes/UserRouter.js";
+import { sightingRouter } from "#routes/SightingRouter.js";
+import { commentRouter } from "#routes/CommentRouter.js";
 //import { enforceAuthentication } from "./middleware/authorization.js";
 //import { todoRouter } from "./routes/todoRouter.js";
 
@@ -34,6 +36,9 @@ app.use(parseQueryParams);
 // Define API routes
 app.use(authRouter);
 app.use(userRoleRouter);
+app.use(userRouter);
+app.use(sightingRouter);
+app.use(commentRouter);
 //app.use(enforceAuthentication);
 //app.use(todoRouter);
 app.use(catchAllRouter); // Catch all, if we get here it's a 404

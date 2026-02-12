@@ -10,20 +10,24 @@ import { validateUserRoleFields } from "#middleware/validateRequestFields.js";
 export const userRoleRouter = express.Router();
 
 /**
- * Manages the full replace (or new creation) of a user role
+ * Manages full update (or new creation) of a user role
  */
 userRoleRouter.put("/user-roles/:roleName", [validateUserRoleFields], async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Retrieve user role specified in the request
         const sentUserRole = res.locals.userRole as UserRoleDto;
+
+        logger.debug(`Received user role data: ${JSON.stringify(sentUserRole)}`);
+
         const result = await UserRoleController.create(sentUserRole.roleName, sentUserRole);
-        res.status(200).json(result);
+        res.status(201).json(result);
     } catch (err) {
         next(err);
     }
 });
 
 /**
- * Manages the retrieve of all user roles
+ * Manages retrieve of all user roles
  */
 userRoleRouter.get("/user-roles", async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -57,7 +61,24 @@ userRoleRouter.get("/user-roles/:roleName", async (req: Request, res: Response, 
 });
 
 /**
- * Manages the delete of a specified user role
+ * Manages partial update of a user role
+ */
+userRoleRouter.patch("/user-roles/:roleName", [validateUserRoleFields], async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve user role specified in the request
+        const sentUserRole = res.locals.userRole as UserRoleDto;
+
+        logger.debug(`Received user role data: ${JSON.stringify(sentUserRole)}`);
+
+        const result = await UserRoleController.update(sentUserRole.roleName, sentUserRole);
+        res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
+ * Manages delete of a specified user role
  */
 userRoleRouter.delete("/user-roles/:roleName", async (req: Request, res: Response, next: NextFunction) => {
     try {
