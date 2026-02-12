@@ -5,10 +5,10 @@ interface SightingModel extends Model<InferAttributes<SightingModel>, InferCreat
     id: CreationOptional<number>;
     photoUrl: string;
     title: string;
-    description: string;
+    description: CreationOptional<string>;
     latitude: number;
     longitude: number;
-    address: string;
+    address: CreationOptional<string>;
 }
 
 /**
@@ -41,6 +41,7 @@ export function createModel(database: Sequelize) {
         },
         description: {
             type: DataTypes.TEXT,
+            allowNull: true,
             validate: {
                 notEmpty: true
             }
@@ -63,6 +64,7 @@ export function createModel(database: Sequelize) {
         },
         address: {
             type: DataTypes.STRING,
+            allowNull: true,
             validate: {
                 notEmpty: true
             }
