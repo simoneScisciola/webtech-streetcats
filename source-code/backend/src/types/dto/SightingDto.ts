@@ -6,4 +6,5 @@ export interface SightingDto {
     latitude: number;
     longitude: number;
     address?: string;
+    username: string;
 }

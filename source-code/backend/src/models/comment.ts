@@ -4,6 +4,8 @@ import { DataTypes, Model, InferAttributes, InferCreationAttributes, Sequelize, 
 interface CommentModel extends Model<InferAttributes<CommentModel>, InferCreationAttributes<CommentModel>> {
     id: CreationOptional<number>;
     content: string;
+    username: string;
+    sightingId: number;
 }
 
 /**
@@ -27,11 +29,25 @@ export function createModel(database: Sequelize) {
                 notEmpty: true
             }
         },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            field: 'fk_username',
+            validate: {
+                notEmpty: true
+            }
+        },
+        sightingId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            field: 'fk_sighting_id'
+        },
 
         // By default, Sequelize adds the createdAt and updatedAt fields to all models
     }, { 
         // Other model options go here
         // NOTE: The actual table name is inferred from the model name (pluralized) by default
+        underscored: true
     });
 
     return Comment;

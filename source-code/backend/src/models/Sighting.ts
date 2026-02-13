@@ -9,6 +9,7 @@ interface SightingModel extends Model<InferAttributes<SightingModel>, InferCreat
     latitude: number;
     longitude: number;
     address: string | null;
+    username: string;
 }
 
 /**
@@ -68,12 +69,21 @@ export function createModel(database: Sequelize) {
             validate: {
                 notEmpty: true
             }
-        }
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            field: 'fk_username',
+            validate: {
+                notEmpty: true
+            }
+        },
 
         // By default, Sequelize adds the createdAt and updatedAt fields to all models
     }, { 
         // Other model options go here
         // NOTE: The actual table name is inferred from the model name (pluralized) by default
+        underscored: true,
         validate: {
             bothCoordsOrNone() {
                 if ((this.latitude === null) !== (this.longitude === null)) {

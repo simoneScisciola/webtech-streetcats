@@ -27,6 +27,7 @@ export function createModel(database: Sequelize) {
     }, { 
         // Other model options go here
         // NOTE: The actual table name is inferred from the model name (pluralized) by default
+        underscored: true,
     });
 
     // Hook: Populates default roles after model sync

@@ -6,6 +6,7 @@ interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttri
     username: string;
     email: string;
     password: string;
+    rolename: string;
 }
 
 /**
@@ -39,12 +40,22 @@ export function createModel(database: Sequelize) {
             validate: {
                 notEmpty: true
             }
+        },
+        rolename: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            field: 'fk_rolename',
+            validate: {
+                notEmpty: true,
+                isUppercase: true
+            }
         }
         
         // By default, Sequelize adds the createdAt and updatedAt fields to all models
     }, { 
         // Other model options go here
         // NOTE: The actual table name is inferred from the model name (pluralized) by default
+        underscored: true
     });
 
     // We shouldn't save passwords in plaintext in a database!
