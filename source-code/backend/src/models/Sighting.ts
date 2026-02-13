@@ -93,14 +93,5 @@ export function createModel(database: Sequelize) {
         },
     });
 
-    Sighting.prototype.toJSON = function () {
-        const values = { ...this.get({ plain: true }) };
-
-        // Delete foreign key field to avoid confusion
-        delete values.fk_username;
-
-        return values;
-    };
-
     return Sighting;
 }

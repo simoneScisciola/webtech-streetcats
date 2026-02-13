@@ -76,9 +76,6 @@ export function createModel(database: Sequelize) {
         delete values.password;
         delete values.rolename;
 
-        // Delete foreign key field to avoid confusion
-        delete values.fk_rolename;
-
         return values;
     };
 
