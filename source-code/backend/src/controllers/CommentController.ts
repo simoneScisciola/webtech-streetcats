@@ -22,7 +22,7 @@ export class CommentController {
                 throw new createError.BadRequest("User not found.");
             }
         }
-        if (sentComment.sightingId !== null) {
+        if (sentComment.sightingId) {
             const sightingFk = await SightingController.findById(sentComment.sightingId);
             if (sightingFk === null) {
                 throw new createError.BadRequest("Sighting not found.");
