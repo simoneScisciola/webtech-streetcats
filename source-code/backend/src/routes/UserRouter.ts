@@ -10,7 +10,7 @@ import { validateUserFields } from "#middleware/validateRequestFields.js";
 export const userRouter = express.Router();
 
 /**
- * Manages full update (or new creation) of a user
+ * Manages full update of a user
  */
 userRouter.put("/users/:username", [validateUserFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -19,7 +19,7 @@ userRouter.put("/users/:username", [validateUserFields(false)], async (req: Requ
 
         logger.debug(`Received user data: ${JSON.stringify(sentUser)}`);
 
-        const result = await UserController.createOrReplace(sentUser.username, sentUser);
+        const result = await UserController.replace(sentUser.username, sentUser);
         res.status(200).json(result);
     } catch (err) {
         next(err);

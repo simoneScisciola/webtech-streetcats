@@ -85,8 +85,11 @@ export function validateUserFields(enablePartialDto: boolean = false) {
             throw new createError.BadRequest("Username is not valid.");
         }
 
-        if (!isUndefined(sentUser.email) && !isEmailValid(sentUser.email)) {
-            throw new createError.BadRequest("Email is not valid.");
+        if (!isUndefined(sentUser.email)) {
+            sentUser.email = sentUser.email.trim().toLowerCase(); // Normalize email
+            if (!isEmailValid(sentUser.email)) {
+                throw new createError.BadRequest("Email is not valid.");
+            }
         }
         if (!isUndefined(sentUser.password) && !isPasswordValid(sentUser.password)) {
             throw new createError.BadRequest("Password is not valid.");
@@ -96,6 +99,44 @@ export function validateUserFields(enablePartialDto: boolean = false) {
 
         next();
     }
+}
+
+export function validateSignupFields(req: Request, res: Response, next: NextFunction) {
+
+    // Retrieve signup specified in the request
+    const sentSignup: UserDto = {
+        username: req.body.username?.trim(),
+        email: req.body.email,
+        password: req.body.password
+    };
+
+    // Check required request fields
+    if (isUndefined(sentSignup.username)) {
+        throw new createError.BadRequest("Username must be provided.");
+    }
+    if (isUndefined(sentSignup.email)) {
+        throw new createError.BadRequest("Email must be provided.");
+    }
+    if (isUndefined(sentSignup.password)) {
+        throw new createError.BadRequest("Password must be provided.");
+    }
+
+    sentSignup.email = sentSignup.email.trim().toLowerCase(); // Normalize email
+
+    // Validate request fields
+    if (!isUsernameValid(sentSignup.username)) {
+        throw new createError.BadRequest("Username is not valid.");
+    }
+    if (!isEmailValid(sentSignup.email)) {
+        throw new createError.BadRequest("Email is not valid.");
+    }
+    if (!isPasswordValid(sentSignup.password)) {
+        throw new createError.BadRequest("Password is not valid.");
+    }
+
+    res.locals.signup = sentSignup;
+
+    next();
 }
 
 export function validateSightingFields(enablePartialDto: boolean = false) {

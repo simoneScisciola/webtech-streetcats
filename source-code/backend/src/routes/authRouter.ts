@@ -1,8 +1,11 @@
-import express from "express"; // Express framework (https://expressjs.com/)
+import express, { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
 import { logger } from "#logging/logger.js";
 import { AuthController } from "#controllers/AuthController.js";
+import { validateSignupFields } from "#middleware/validateRequestFields.js";
+import { UserDto } from "#types/dto/UserDto.js";
+import { UserController } from "#controllers/UserController.js";
 
 
 export const authRouter = express.Router();
@@ -10,30 +13,35 @@ export const authRouter = express.Router();
 /**
  * Manages the login
  */
-authRouter.post("/auth", async (req, res, next) => {
+authRouter.post("/auth", async (req: Request, res: Response, next: NextFunction) => {
+
+    const loggingUsername: string = req.body.username;
+    const loggingPassword: string = req.body.password;
 
     // Check if the credentials are correct
-    let isAuthenticated = await AuthController.checkCredentials(req, res);
+    let isAuthenticated = await AuthController.checkCredentials(loggingUsername, loggingPassword);
     
     if(isAuthenticated) {
-        res.json(AuthController.issueToken(req.body.username)); // Returns the JWT in the HTTP Response JSON body
+        res.json(AuthController.issueToken(loggingUsername)); // Returns the JWT in the HTTP Response JSON body
     } else {
         next(new createError.Unauthorized); // Raise error
     }
 });
 
 /**
- * Manages the singup
+ * Manages the singup (new creation of a user)
  */
-authRouter.post("/signup", (req, res, next) => {
-
-    // Saves new User    
-    AuthController.saveUser(req, res)
-        .then((user) => {
-            res.json(user); // Sends the registered User
-        })
-        .catch((err: Error) => {
-            logger.warn(`Could not save user: ${err.message}`);
-            next(err); // Raise error
-        })
+authRouter.post("/signup", [validateSignupFields], async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve signup specified in the request
+        const sentSignup = res.locals.signup as UserDto;
+    
+        logger.debug(`Received signup data: ${JSON.stringify(sentSignup)}`);
+    
+        const result = await UserController.create(sentSignup.username, sentSignup);
+        res.status(201).json(result); // Sends the registered User
+    } catch (err) {
+        logger.warn(`Could not save user: ${(err as Error).message}`);
+        next(err); // Raise error
+    }
 });

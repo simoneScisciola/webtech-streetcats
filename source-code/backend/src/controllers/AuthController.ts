@@ -1,25 +1,19 @@
 import { Request, Response } from "express"; // Express framework (https://expressjs.com/)
 import Jwt from "jsonwebtoken"; // JWT middleware (https://www.npmjs.com/package/jsonwebtoken)
 import bcrypt from "bcrypt"; // bcrypt hashing algorithm (https://www.npmjs.com/package/bcrypt)
-import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
-import { isUsernameValid, isEmailValid, isPasswordValid } from "#utils/validators.js"
 import { User } from "#config/database.js";
 
 
 export class AuthController {
     /**
      * Handles post requests on /auth. Checks that the given credentials are valid
-     * @param {http.IncomingMessage} req 
-     * @param {http.ServerResponse} res 
+     * @param username
+     * @param password
      */
-    static async checkCredentials(req: Request, res: Response){
+    static async checkCredentials(loggingUsername: string, loggingPassword: string) {
         
         let isValid: boolean = false;
-
-        // Retrieve user credentials specified in the request
-        let loggingUsername: string = req.body.username;
-        let loggingPassword: string = req.body.password;
 
         // Retrieve the User with the requested username
         let foundUser = await User.findOne({
@@ -34,42 +28,6 @@ export class AuthController {
         }
 
         return isValid;
-    }
-
-    /**
-     * Attempts to create a new User
-     */
-    static async saveUser(req: Request, res: Response){
-        
-        // Retrieve user credentials specified in the request
-        let registeringUsername: string = req.body.username;
-        let registeringEmail: string = req.body.email;
-        let registeringPassword: string = req.body.password;
-
-        registeringUsername = registeringUsername?.trim();
-        registeringEmail = registeringEmail?.trim()?.toLowerCase();
-
-        // Validate request
-        if (!isUsernameValid(registeringUsername)) {
-            throw new createError.BadRequest('Username not valid.');
-        }
-
-        if (!isEmailValid(registeringPassword)) {
-            throw new createError.BadRequest('Email not valid.');
-        }
-
-        if (!isPasswordValid(registeringPassword)) {
-            throw new createError.BadRequest('Password not valid.');
-        }
-
-        // Save new User
-        const registeringUser = User.build ({
-            username: registeringUsername,
-            email: registeringEmail,
-            password: registeringPassword
-        });
-
-        return registeringUser.save(); //returns a Promise
     }
 
     /**

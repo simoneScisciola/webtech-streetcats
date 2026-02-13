@@ -9,24 +9,19 @@ import { findAllPaginated } from "#utils/findAllPaginated.js";
 export class UserController {
 
     /**
-     * Create a new user or full update an existing one
+     * Create a new user
      */
-    static async createOrReplace(sentUsername: string, sentUser: UserDto) {
+    static async create(sentUsername: string, sentUser: UserDto) {
 
         sentUser.username = sentUsername;
 
         const existingUser = await this.findById(sentUsername);
-        if (existingUser === null) {
-            return User.create(sentUser); // returns a Promise
+        if (existingUser !== null) {
+            throw new createError.Conflict("User already exists.");
 
         } else {
-            // Update all fields
             // Password hashing is handled by the model hook
-            return existingUser.update({
-                username: sentUsername,
-                email: sentUser.email,
-                password: sentUser.password
-            }); // returns a Promise
+            return User.create(sentUser); // returns a Promise
         }
     }
 
@@ -44,6 +39,28 @@ export class UserController {
     static async findAll(pagination: ParsedPagination) {
 
         return findAllPaginated(User, pagination); // returns a Promise
+    }
+
+    /**
+     * Full update an existing user
+     */
+    static async replace(sentUsername: string, fullUser: UserDto) {
+
+        fullUser.username = sentUsername;
+
+        const existingUser = await this.findById(sentUsername);
+        if (existingUser === null) {
+            throw new createError.NotFound("User not found. Use /signup to create a new user.");
+
+        } else {
+            // Update all fields
+            // Password hashing is handled by the model hook
+            return existingUser.update({
+                username: sentUsername,
+                email: fullUser.email,
+                password: fullUser.password
+            });
+        }
     }
 
     /**
