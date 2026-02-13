@@ -45,6 +45,7 @@ export function createModel(database: Sequelize) {
             type: DataTypes.STRING,
             allowNull: false,
             field: 'fk_rolename',
+            defaultValue: "USER",
             validate: {
                 notEmpty: true,
                 isUppercase: true
