@@ -14,17 +14,20 @@ export const authRouter = express.Router();
  * Manages the login
  */
 authRouter.post("/auth", async (req: Request, res: Response, next: NextFunction) => {
-
-    const loggingUsername: string = req.body.username;
-    const loggingPassword: string = req.body.password;
-
-    // Check if the credentials are correct
-    let isAuthenticated = await AuthController.checkCredentials(loggingUsername, loggingPassword);
+    try {
+        const loggingUsername: string = req.body.username;
+        const loggingPassword: string = req.body.password;
     
-    if(isAuthenticated) {
-        res.json(AuthController.issueToken(loggingUsername)); // Returns the JWT in the HTTP Response JSON body
-    } else {
-        next(new createError.Unauthorized); // Raise error
+        // Check if the credentials are correct
+        let isAuthenticated = await AuthController.checkCredentials(loggingUsername, loggingPassword);
+        
+        if (isAuthenticated) {
+            res.status(200).json(AuthController.issueToken(loggingUsername)); // Returns the JWT in the HTTP Response JSON body
+        } else {
+            next(new createError.Unauthorized("Invalid credentials.")); // Raise error
+        }
+    } catch (err) {
+        next(err);
     }
 });
 
