@@ -50,5 +50,15 @@ export function createModel(database: Sequelize) {
         underscored: true
     });
 
+    Comment.prototype.toJSON = function () {
+        const values = { ...this.get({ plain: true }) };
+
+        // Delete foreign key field to avoid confusion
+        delete values.fk_username;
+        delete values.fk_sighting_id;
+
+        return values;
+    };
+
     return Comment;
 }

@@ -6,7 +6,7 @@ interface UserModel extends Model<InferAttributes<UserModel>, InferCreationAttri
     username: string;
     email: string;
     password: string;
-    rolename: string;
+    rolename: CreationOptional<string>;
 }
 
 /**
@@ -68,6 +68,15 @@ export function createModel(database: Sequelize) {
             user.setDataValue('password', hash);
         }
     });
+
+    User.prototype.toJSON = function () {
+        const values = { ...this.get({ plain: true }) };
+
+        // Delete foreign key field to avoid confusion
+        delete values.fk_rolename;
+
+        return values;
+    };
 
     return User;
 }

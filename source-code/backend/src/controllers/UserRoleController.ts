@@ -53,11 +53,10 @@ export class UserRoleController {
         const existingUserRole = await this.findById(sentRolename);
         if (existingUserRole === null) {
             throw new createError.NotFound("User role not found.");
-
-        } else {
-            // Update only provided fields
-            return existingUserRole.update(partialUserRole); //returns a Promise
         }
+    
+        // Update only provided fields
+        return existingUserRole.update(partialUserRole); //returns a Promise
     }
 
     /**

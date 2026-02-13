@@ -4,6 +4,7 @@ import { User } from "#config/database.js";
 import { UserDto } from "#types/dto/UserDto.js";
 import { ParsedPagination } from "#types/queryParams.js";
 import { findAllPaginated } from "#utils/findAllPaginated.js";
+import { UserRoleController } from "#controllers/UserRoleController.js";
 
 
 export class UserController {
@@ -14,6 +15,14 @@ export class UserController {
     static async create(sentUsername: string, sentUser: UserDto) {
 
         sentUser.username = sentUsername;
+
+        // Check foreign key existence
+        if (sentUser.rolename) {
+            const userFk = await UserRoleController.findById(sentUser.rolename);
+            if (userFk === null) {
+                throw new createError.BadRequest("User role not found.");
+            }
+        }
 
         const existingUser = await this.findById(sentUsername);
         if (existingUser !== null) {
@@ -52,15 +61,23 @@ export class UserController {
         if (existingUser === null) {
             throw new createError.NotFound("User not found. Use /signup to create a new user.");
 
-        } else {
-            // Update all fields
-            // Password hashing is handled by the model hook
-            return existingUser.update({
-                username: sentUsername,
-                email: fullUser.email,
-                password: fullUser.password
-            });
+        } 
+
+        // Check foreign key existence
+        if (fullUser.rolename !== null) {
+            const userFk = await UserController.findById(fullUser.username);
+            if (userFk === null) {
+                throw new createError.BadRequest("User role not found.");
+            }
         }
+
+        // Update all fields
+        // Password hashing is handled by the model hook
+        return existingUser.update({
+            username: sentUsername,
+            email: fullUser.email,
+            password: fullUser.password
+        });
     }
 
     /**
@@ -74,11 +91,19 @@ export class UserController {
         if (existingUser === null) {
             throw new createError.NotFound("User not found.");
 
-        } else {
-            // Update only provided fields
-            // Password hashing is handled by the model hook
-            return existingUser.update(partialUser); // returns a Promise
         }
+        
+        // Check foreign key existence
+        if (partialUser.rolename) {
+            const userFk = await UserController.findById(partialUser.username);
+            if (userFk === null) {
+                throw new createError.BadRequest("User role not found.");
+            }
+        }
+
+        // Update only provided fields
+        // Password hashing is handled by the model hook
+        return existingUser.update(partialUser); // returns a Promise
     }
 
     /**

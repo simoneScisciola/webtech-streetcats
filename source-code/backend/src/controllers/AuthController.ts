@@ -1,4 +1,3 @@
-import { Request, Response } from "express"; // Express framework (https://expressjs.com/)
 import Jwt from "jsonwebtoken"; // JWT middleware (https://www.npmjs.com/package/jsonwebtoken)
 import bcrypt from "bcrypt"; // bcrypt hashing algorithm (https://www.npmjs.com/package/bcrypt)
 
