@@ -72,6 +72,10 @@ export function createModel(database: Sequelize) {
     User.prototype.toJSON = function () {
         const values = { ...this.get({ plain: true }) };
 
+        // Delete sensitive information
+        delete values.password;
+        delete values.rolename;
+
         // Delete foreign key field to avoid confusion
         delete values.fk_rolename;
 
