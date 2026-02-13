@@ -35,7 +35,7 @@ export class CommentController {
     /**
      * Find comment by primary key (id)
      */
-    static async findById(sentId: number) {
+    static async findById(sentId: number | undefined) {
 
         return Comment.findByPk(sentId); // returns a Promise
     }
@@ -117,7 +117,7 @@ export class CommentController {
     /**
      * Delete a comment
      */
-    static async delete(sentId: number) {
+    static async delete(sentId: number | undefined) {
 
         const existingComment = await this.findById(sentId);
 

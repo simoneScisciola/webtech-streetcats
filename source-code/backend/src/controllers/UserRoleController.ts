@@ -30,7 +30,7 @@ export class UserRoleController {
     /**
      * Find user role by primary key (rolename)
      */
-    static async findById(sentRolename: string){
+    static async findById(sentRolename: string | undefined){
 
         return UserRole.findByPk(sentRolename); //returns a Promise
     }
@@ -62,7 +62,7 @@ export class UserRoleController {
     /**
      * Delete a user role
      */
-    static async delete(sentRolename: string){
+    static async delete(sentRolename: string | undefined){
 
         const existingUserRole = await this.findById(sentRolename);
         

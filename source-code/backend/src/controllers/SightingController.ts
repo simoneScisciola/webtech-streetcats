@@ -28,7 +28,7 @@ export class SightingController {
     /**
      * Find sighting by primary key (id)
      */
-    static async findById(sentId: number) {
+    static async findById(sentId: number | undefined) {
 
         return Sighting.findByPk(sentId); // returns a Promise
     }
@@ -101,7 +101,7 @@ export class SightingController {
     /**
      * Delete a sighting
      */
-    static async delete(sentId: number) {
+    static async delete(sentId: number | undefined) {
 
         const existingSighting = await this.findById(sentId);
 

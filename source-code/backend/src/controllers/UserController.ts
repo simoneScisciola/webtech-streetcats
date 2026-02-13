@@ -37,7 +37,7 @@ export class UserController {
     /**
      * Find user by primary key (username)
      */
-    static async findById(sentUsername: string) {
+    static async findById(sentUsername: string | undefined) {
 
         return User.findByPk(sentUsername); // returns a Promise
     }
@@ -109,7 +109,7 @@ export class UserController {
     /**
      * Delete a user
      */
-    static async delete(sentUsername: string) {
+    static async delete(sentUsername: string | undefined) {
 
         const existingUser = await this.findById(sentUsername);
 
