@@ -12,14 +12,14 @@ export const userRoleRouter = express.Router();
 /**
  * Manages full update (or new creation) of a user role
  */
-userRoleRouter.put("/user-roles/:roleName", [validateUserRoleFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.put("/user-roles/:rolename", [validateUserRoleFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentUserRole = res.locals.userRole as UserRoleDto;
 
         logger.debug(`Received user role data: ${JSON.stringify(sentUserRole)}`);
 
-        const result = await UserRoleController.createOrReplace(sentUserRole.roleName, sentUserRole);
+        const result = await UserRoleController.createOrReplace(sentUserRole.rolename, sentUserRole);
         res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -41,14 +41,14 @@ userRoleRouter.get("/user-roles", async (req: Request, res: Response, next: Next
 /**
  * Manages the retrieve of a specified user role
  */
-userRoleRouter.get("/user-roles/:roleName", async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.get("/user-roles/:rolename", async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
-        const sentUserRoleName = req.params.roleName?.trim();
+        const sentRolename = req.params.rolename?.trim();
     
-        logger.debug(sentUserRoleName);
+        logger.debug(sentRolename);
 
-        const result = await UserRoleController.findById(sentUserRoleName);
+        const result = await UserRoleController.findById(sentRolename);
 
         if (!result) {
             throw new createError.NotFound("User role not found.");
@@ -63,14 +63,14 @@ userRoleRouter.get("/user-roles/:roleName", async (req: Request, res: Response, 
 /**
  * Manages partial update of a user role
  */
-userRoleRouter.patch("/user-roles/:roleName", [validateUserRoleFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.patch("/user-roles/:rolename", [validateUserRoleFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentUserRole = res.locals.userRole as UserRoleDto;
 
         logger.debug(`Received user role data: ${JSON.stringify(sentUserRole)}`);
 
-        const result = await UserRoleController.update(sentUserRole.roleName, sentUserRole);
+        const result = await UserRoleController.update(sentUserRole.rolename, sentUserRole);
         res.status(200).json(result);
     } catch (err) {
         next(err);
@@ -80,12 +80,12 @@ userRoleRouter.patch("/user-roles/:roleName", [validateUserRoleFields(true)], as
 /**
  * Manages delete of a specified user role
  */
-userRoleRouter.delete("/user-roles/:roleName", async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.delete("/user-roles/:rolename", async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
-        const sentUserRoleName = req.params.roleName?.trim();
+        const sentRolename = req.params.rolename?.trim();
     
-        const result = await UserRoleController.delete(sentUserRoleName);
+        const result = await UserRoleController.delete(sentRolename);
 
         if (!result) {
             throw new createError.NotFound("User role not found.");

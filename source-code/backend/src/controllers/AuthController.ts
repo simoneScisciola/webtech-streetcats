@@ -52,7 +52,7 @@ export class AuthController {
     static async canUserModifyTodo(user: any, todoId: any){
         const todo = await Todo.findByPk(todoId);
         //todo must exist and be associated with user
-        return todo && todo.UserUserName === user;
+        return todo && todo.UserUsername === user;
         }
     */
 }

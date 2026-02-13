@@ -1,3 +1,3 @@
 export interface UserRoleDto {
-    roleName: string;
+    rolename: string;
 }

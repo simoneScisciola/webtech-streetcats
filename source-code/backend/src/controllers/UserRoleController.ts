@@ -11,28 +11,28 @@ export class UserRoleController {
     /**
      * Create a new user role or full update an existing one
      */
-    static async createOrReplace(sentRoleName: string, sentUserRole: UserRoleDto){
+    static async createOrReplace(sentRolename: string, sentUserRole: UserRoleDto){
         
-        sentUserRole.roleName = sentRoleName;
+        sentUserRole.rolename = sentRolename;
 
-        const existingUserRole = await this.findById(sentRoleName);
+        const existingUserRole = await this.findById(sentRolename);
         if (existingUserRole === null) {
             return UserRole.create(sentUserRole); //returns a Promise
 
         } else {
             // Update all fields
             return existingUserRole.update({
-                roleName: sentRoleName
+                rolename: sentRolename
             }); // returns a Promise
         }
     }
 
     /**
-     * Find user role by primary key (roleName)
+     * Find user role by primary key (rolename)
      */
-    static async findById(sentRoleName: string){
+    static async findById(sentRolename: string){
 
-        return UserRole.findByPk(sentRoleName); //returns a Promise
+        return UserRole.findByPk(sentRolename); //returns a Promise
     }
 
     /**
@@ -46,11 +46,11 @@ export class UserRoleController {
     /**
      * Partial update an existing user role
      */
-    static async update(sentRoleName: string, partialUserRole: Partial<UserRoleDto>){
+    static async update(sentRolename: string, partialUserRole: Partial<UserRoleDto>){
 
-        partialUserRole.roleName = sentRoleName;
+        partialUserRole.rolename = sentRolename;
 
-        const existingUserRole = await this.findById(sentRoleName);
+        const existingUserRole = await this.findById(sentRolename);
         if (existingUserRole === null) {
             throw new createError.NotFound("User role not found.");
 
@@ -63,9 +63,9 @@ export class UserRoleController {
     /**
      * Delete a user role
      */
-    static async delete(sentRoleName: string){
+    static async delete(sentRolename: string){
 
-        const existingUserRole = await this.findById(sentRoleName);
+        const existingUserRole = await this.findById(sentRolename);
         
         if (existingUserRole !== null)
             await existingUserRole.destroy();

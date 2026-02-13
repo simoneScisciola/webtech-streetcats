@@ -27,8 +27,8 @@ export function isPasswordValid(password: any): boolean {
     return isString(password) && !isEmpty(password) && hasUpperCase(password) && hasNumber(password) && hasSpecialChar(password);
 }
 
-export function isRoleNameValid(roleName: any): boolean {
-    return isString(roleName) && !isEmpty(roleName) && isUpperCase(roleName);
+export function isRolenameValid(rolename: any): boolean {
+    return isString(rolename) && !isEmpty(rolename) && isUpperCase(rolename);
 }
 
 export function isPhotoUrlValid(photoUrl: any): boolean {

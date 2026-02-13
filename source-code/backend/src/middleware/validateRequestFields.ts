@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express" // Express framework (https://expressjs.com/)
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
-import { isAddressValid, isContentValid, isDescriptionValid, isEmailValid, isIdValid, isLatitudeValid, isLongitudeValid, isPasswordValid, isPhotoUrlValid, isRoleNameValid, isTitleValid, isUndefined, isUsernameValid } from "#utils/validators.js";
+import { isAddressValid, isContentValid, isDescriptionValid, isEmailValid, isIdValid, isLatitudeValid, isLongitudeValid, isPasswordValid, isPhotoUrlValid, isRolenameValid, isTitleValid, isUndefined, isUsernameValid } from "#utils/validators.js";
 import { UserRoleDto } from "#types/dto/UserRoleDto.js"
 import { UserDto } from "#types/dto/UserDto.js";
 import { SightingDto } from "#types/dto/SightingDto.js";
@@ -34,18 +34,18 @@ export function validateUserRoleFields(enablePartialDto: boolean = false) {
     return (req: Request, res: Response, next: NextFunction) => {
 
         // Retrieve user role specified in the request
-        const sentUserRoleName = req.params.roleName?.trim();
+        const sentUserRolename = req.params.rolename?.trim();
         const sentUserRole: UserRoleDto = {
-            roleName: sentUserRoleName // Always update the sent id with the one specified as parameter
+            rolename: sentUserRolename // Always update the sent id with the one specified as parameter
         }
 
         // Check required request fields
-        if (isUndefined(sentUserRole.roleName)) {
+        if (isUndefined(sentUserRole.rolename)) {
             throw new createError.BadRequest("Role name must be provided.");
         }
 
         // Validate request fields
-        if (!isRoleNameValid(sentUserRole.roleName)) {
+        if (!isRolenameValid(sentUserRole.rolename)) {
             throw new createError.BadRequest("Role name not valid.");
         }
 

@@ -44,41 +44,45 @@ UserRole.hasMany(User, {
     onDelete: 'SET DEFAULT', // What happens when UserRole is deleted
     onUpdate: 'CASCADE', // What happens when UserRole is updated
     foreignKey: {
+        name: 'rolename',
         allowNull: false,
         defaultValue: "USER"
     }
 });
-User.belongsTo(UserRole);
+User.belongsTo(UserRole, { foreignKey: 'rolename' });
 
 // User 1:N Sighting (foreign key in Sighting)
 User.hasMany(Sighting, {
     onDelete: 'RESTRICT', // What happens when User is deleted
     onUpdate: 'CASCADE', // What happens when User is updated
     foreignKey: {
+        name: 'username',
         allowNull: false
     }
 });
-Sighting.belongsTo(User);
+Sighting.belongsTo(User, { foreignKey: 'username' });
 
 // User 1:N Comment (foreign key in Comment)
 User.hasMany(Comment, {
     onDelete: 'CASCADE', // What happens when User is deleted
     onUpdate: 'CASCADE', // What happens when User is updated
     foreignKey: {
+        name: 'username',
         allowNull: false,
     }
 });
-Comment.belongsTo(User);
+Comment.belongsTo(User, { foreignKey: 'username' });
 
 // Sighting 1:N Comment (foreign key in Comment)
 Sighting.hasMany(Comment, {
     onDelete: 'CASCADE', // What happens when Sighting is deleted
     onUpdate: 'CASCADE', // What happens when Sighting is updated
     foreignKey: {
+        name: 'sightingId',
         allowNull: false,
     }
 });
-Comment.belongsTo(Sighting);
+Comment.belongsTo(Sighting, { foreignKey: 'sightingId' });
 
 
 // Synchronize schema (creates missing tables)

@@ -2,7 +2,7 @@ import { DataTypes, Model, InferAttributes, InferCreationAttributes, Sequelize, 
 
 
 interface UserRoleModel extends Model<InferAttributes<UserRoleModel>, InferCreationAttributes<UserRoleModel>> {
-    roleName: string;
+    rolename: string;
 }
 
 /**
@@ -14,7 +14,7 @@ export function createModel(database: Sequelize) {
     const UserRole = database.define<UserRoleModel>('UserRole', {
         
         // Define the model attributes
-        roleName: {
+        rolename: {
             type: DataTypes.STRING,
             primaryKey: true,
             validate: {
@@ -33,10 +33,10 @@ export function createModel(database: Sequelize) {
     UserRole.afterSync(async () => {
         const defaultUserRoles = [ 
             { 
-                roleName: 'ADMIN'
+                rolename: 'ADMIN'
             },
             { 
-                roleName: 'USER',
+                rolename: 'USER',
             }
         ];
 
