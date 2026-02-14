@@ -49,6 +49,23 @@ export class UserController {
     }
 
     /**
+     * Gets the role of the User with the given username
+     * @param sentUsername The username of the User
+     * @returns The role of the User, or throw exception if not found
+     */
+    static async getRole(sentUsername: string) {
+        return await User.findOne(
+            {
+                where: {
+                    username: sentUsername
+                },
+                attributes: ["rolename"],
+                rejectOnEmpty: true
+            }
+        );
+    }
+
+    /**
      * Find all users with pagination
      */
     static async findAll(pagination: ParsedPagination) {

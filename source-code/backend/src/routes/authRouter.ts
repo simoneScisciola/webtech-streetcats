@@ -15,17 +15,33 @@ export const authRouter = express.Router();
  */
 authRouter.post("/auth", async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Retrieve user specified in the request
         const loggingUsername: string = req.body.username;
         const loggingPassword: string = req.body.password;
     
         // Check if the credentials are correct
-        let isAuthenticated = await AuthController.checkCredentials(loggingUsername, loggingPassword);
-        
-        if (isAuthenticated) {
-            res.status(200).json(AuthController.issueToken(loggingUsername)); // Returns the JWT in the HTTP Response JSON body
-        } else {
+        let success = await AuthController.checkCredentials(loggingUsername, loggingPassword);
+
+        if (!success) {
             next(new createError.Unauthorized("Invalid credentials.")); // Raise error
         }
+
+        try {
+            const loggingUserRole = await UserController.getRole(loggingUsername);
+            const expiresIn = 24*60*60; // 24 hours in seconds
+            const jwtToken = AuthController.issueToken(loggingUsername, loggingUserRole.rolename, expiresIn);
+
+            // Send the JWT in the HTTP Response JSON body
+            res.status(200).json({
+                authToken: jwtToken,
+                // refreshToken: null, // TODO: implement refresh token
+                expiresIn: expiresIn
+            });
+        } catch (err) {
+            logger.warn(`Could not retrieve role for user ${loggingUsername}: ${(err as Error).message}`);
+            return next(new createError.InternalServerError("Could not retrieve user role."));
+        }
+
     } catch (err) {
         next(err);
     }
