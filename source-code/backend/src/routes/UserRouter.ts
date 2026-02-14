@@ -5,6 +5,9 @@ import { logger } from "#logging/logger.js";
 import { UserController } from "#controllers/UserController.js";
 import { UserDto } from "#types/dto/UserDto.js";
 import { validateUserFields } from "#middleware/validateRequestFields.js";
+import { authenticateJWT } from "#middleware/authenticate.js";
+import { requireRole } from "#middleware/authorize.js";
+import { canModifyUser } from "#middleware/canModify.js";
 
 
 export const userRouter = express.Router();
@@ -12,7 +15,7 @@ export const userRouter = express.Router();
 /**
  * Manages full update of a user
  */
-userRouter.put("/users/:username", [validateUserFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+userRouter.put("/users/:username", [authenticateJWT, requireRole("ADMIN"), validateUserFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user specified in the request
         const sentUser = res.locals.user as UserDto;
@@ -29,7 +32,7 @@ userRouter.put("/users/:username", [validateUserFields(false)], async (req: Requ
 /**
  * Manages retrieve of all users
  */
-userRouter.get("/users", async (req: Request, res: Response, next: NextFunction) => {
+userRouter.get("/users", [authenticateJWT, requireRole("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await UserController.findAll(req.pagination);
         res.status(200).json(result);
@@ -41,7 +44,7 @@ userRouter.get("/users", async (req: Request, res: Response, next: NextFunction)
 /**
  * Manages retrieve of a specified user
  */
-userRouter.get("/users/:username", async (req: Request, res: Response, next: NextFunction) => {
+userRouter.get("/users/:username", [authenticateJWT, requireRole("USER")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user specified in the request
         const username = req.params.username?.trim();
@@ -61,7 +64,7 @@ userRouter.get("/users/:username", async (req: Request, res: Response, next: Nex
 /**
  * Manages partial update of a user role
  */
-userRouter.patch("/users/:username", [validateUserFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+userRouter.patch("/users/:username", [authenticateJWT, canModifyUser, validateUserFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user specified in the request
         const sentUser = res.locals.user as UserDto;
@@ -78,7 +81,7 @@ userRouter.patch("/users/:username", [validateUserFields(true)], async (req: Req
 /**
  * Manages delete of a specified user
  */
-userRouter.delete("/users/:username", async (req: Request, res: Response, next: NextFunction) => {
+userRouter.delete("/users/:username", [authenticateJWT, requireRole("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const username = req.params.username?.trim();

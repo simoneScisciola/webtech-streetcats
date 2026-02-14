@@ -5,6 +5,9 @@ import { logger } from "#logging/logger.js";
 import { CommentController } from "#controllers/CommentController.js";
 import { CommentDto } from "#types/dto/CommentDto.js";
 import { validateCommentFields, validateId } from "#middleware/validateRequestFields.js";
+import { authenticateJWT } from "#middleware/authenticate.js";
+import { requireRole } from "#middleware/authorize.js";
+import { canModifyComment } from "#middleware/canModify.js";
 
 
 export const commentRouter = express.Router();
@@ -12,7 +15,7 @@ export const commentRouter = express.Router();
 /**
  * Manages new creation of a comment
  */
-commentRouter.post("/comments", [validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.post("/comments", [authenticateJWT, requireRole("USER"), validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentComment = res.locals.comment as CommentDto;
@@ -29,7 +32,7 @@ commentRouter.post("/comments", [validateCommentFields(false)], async (req: Requ
 /**
  * Manages retrieve of all comments
  */
-commentRouter.get("/comments", async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.get("/comments", [authenticateJWT, requireRole("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await CommentController.findAll(req.pagination);
         res.status(200).json(result);
@@ -41,7 +44,7 @@ commentRouter.get("/comments", async (req: Request, res: Response, next: NextFun
 /**
  * Manages retrieve of a specified comment
  */
-commentRouter.get("/comments/:id", [validateId], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.get("/comments/:id", [authenticateJWT, requireRole("ADMIN"), validateId], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentCommentId = res.locals.id as number;
@@ -61,7 +64,7 @@ commentRouter.get("/comments/:id", [validateId], async (req: Request, res: Respo
 /**
  * Manages full update of a comment
  */
-commentRouter.put("/comments/:id", [validateId, validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.put("/comments/:id", [authenticateJWT, requireRole("ADMIN"), validateId, validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentComment = res.locals.comment as CommentDto;
@@ -79,7 +82,7 @@ commentRouter.put("/comments/:id", [validateId, validateCommentFields(false)], a
 /**
  * Manages partial update of a comment
  */
-commentRouter.patch("/comments/:id", [validateId, validateCommentFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.patch("/comments/:id", [authenticateJWT, canModifyComment, validateId, validateCommentFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentComment = res.locals.comment as CommentDto;
@@ -97,7 +100,7 @@ commentRouter.patch("/comments/:id", [validateId, validateCommentFields(true)], 
 /**
  * Manages delete of a specified comment
  */
-commentRouter.delete("/comments/:id", [validateId], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.delete("/comments/:id", [authenticateJWT, canModifyComment, validateId], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentCommentId = res.locals.id as number;
