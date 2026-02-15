@@ -64,6 +64,8 @@
 
                 "Angular.ng-template", // Angular extension
                 "Syler.sass-indented", // Sass extension
+				"hossaini.bootstrap-intellisense", // Bootstrap extension
+				"AnbuselvanRocky.bootstrap5-vscode", // Bootstrap extension
                 "ms-playwright.playwright" // Playwright extension
 			]
 		}

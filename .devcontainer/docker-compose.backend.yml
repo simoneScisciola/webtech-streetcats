@@ -14,16 +14,15 @@ services:
       database:
         condition: service_healthy # The backend will not be started until the condition defined by "healthcheck" is verified
     restart: unless-stopped
+    ports: # Maps <hostPort>:<containerPort>
+      - ${PROD_BACKEND_PORT:-55501}:3000 # Port used to access backend app (production mode). Default: 55501
     environment: # Defines the environment variables
-      JWT_SECRET_TOKEN: ${JWT_SECRET_TOKEN}
+      JWT_SECRET_TOKEN: ${JWT_SECRET_TOKEN} # JWT Secret for token generation
       DB_NAME: ${DB_NAME:-backend} # default: backend
       DB_USER: ${DB_USER:-tecweb-admin} # default: tecweb-admin
       DB_PASSWORD: ${DB_PASSWORD:-admin} # default: admin
-    ports: # Maps <hostPort>:<containerPort>
-      - 55501:3000
     networks:
       - backend-network
-    command: sleep infinity # Overrides default command so things don't shut down after the process ends.
 
   database:
     container_name: webtech-streetcats-postgresDB

@@ -10,11 +10,14 @@ services:
     build:
       context: ../source-code/frontend
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports: # Maps <hostPort>:<containerPort>
-      - 55502:3000
+      - ${PROD_FRONTEND_PORT:-55502}:80 # Port used to access frontend app (production mode). Default: 55502
+    environment: # Defines the environment variables
+      BACKEND_ADDRESS: ${BACKEND_ADDRESS:-localhost} # The address from the user browser
+      BACKEND_PORT: ${PROD_BACKEND_PORT:-55501} # The port from the user browser
     networks:
       - frontend-network
-    command: sleep infinity # Overrides default command so things don't shut down after the process ends.
 
 networks:
   frontend-network:

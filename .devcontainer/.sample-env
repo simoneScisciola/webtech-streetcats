@@ -9,11 +9,9 @@ COMPOSE_PROFILES=dev
 
 ## Backend
 
-### Sets the port on wich we will access the backend
+### Sets the backend port
 DEV_BACKEND_PORT=
-
-### Sets the token necessary for SonarQube scanning
-SONAR_TOKEN=
+PROD_BACKEND_PORT=
 
 ### Sets the JWT Token Secret
 JWT_SECRET_TOKEN=
@@ -31,9 +29,28 @@ DB_USER=
 DB_PASSWORD=
 
 
+## Frontend
+
+#### Sets the frontend port
+DEV_FRONTEND_PORT=
+PROD_FRONTEND_PORT=
+DEV_KARMA_PORT=
+DEV_PLAYWRIGHT_PORT=
+
+### Sets the backend address
+BACKEND_ADDRESS=
+
+
+## SonarQube
+
+### Sets the variables necessary for SonarQube scanning
+SONAR_TOKEN=
+SONAR_HOST_URL=
+
+
 ## CloudBeaver
 
-### Sets the port on wich we will access cloudbeaver
+### Sets the cloudbeaver port
 DEV_CLOUDBEAVER_PORT=
 
 ### Sets the cloudbeaver admin username
