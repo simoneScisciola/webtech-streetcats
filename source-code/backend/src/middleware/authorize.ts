@@ -14,6 +14,8 @@ import { logger } from "#logging/logger.js";
 export function allowedRoles(...allowedRoles: string[]) {
     return async (req: AuthRequest, res: Response, next: NextFunction) => {
 
+        logger.verbose("Middleware: allowedRoles");
+
         logger.debug(`Authorizing user with role: ${req.role}, allowed roles: [${allowedRoles}]`);
 
         if (!req.user || !req.role) {
@@ -23,6 +25,8 @@ export function allowedRoles(...allowedRoles: string[]) {
         if (!allowedRoles.includes(req.role)) {
             throw new createError.Forbidden("Access denied.");
         }
+
+        logger.verbose("allowedRoles output: Authorized");
 
         next();
     };

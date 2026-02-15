@@ -5,9 +5,10 @@ import { logger } from "#logging/logger.js";
 import { CommentController } from "#controllers/CommentController.js";
 import { CommentDto } from "#types/dto/CommentDto.js";
 import { validateCommentFields, validateId } from "#middleware/validateRequestFields.js";
-import { authenticateJWT } from "#middleware/authenticate.js";
+import { authenticateJWT, optionalAuthJWT } from "#middleware/authenticate.js";
 import { allowedRoles } from "#middleware/authorize.js";
 import { canModifyComment } from "#middleware/canModify.js";
+import { validateCommentQueryParams } from "#middleware/validateQueryParams.js";
 
 
 export const commentRouter = express.Router();
@@ -32,24 +33,13 @@ commentRouter.post("/comments", [authenticateJWT, allowedRoles("USER", "ADMIN"),
 /**
  * Manages retrieve of comments (optionally filtered by sighting)
  */
-commentRouter.get("/comments", async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.get("/comments", [optionalAuthJWT, validateCommentQueryParams], async (req: Request, res: Response, next: NextFunction) => {
     try {
-            const sightingId = req.query.sightingId;
-
-            if (Object.keys(req.filters).length === 0) { // Case 1: No filter
-                const result = await CommentController.findAll(req.pagination);
-                res.status(200).json(result);
-
-            } else if (req.filters.sightingId !== undefined) { // Case 2: filter by sighting                
-                const result = await CommentController.findAll(
-                    req.pagination,
-                    { sightingId: req.filters.sightingId }
-                );
-                res.status(200).json(result);
-            }
-        } catch (err) {
-            next(err);
-        }
+        const result = await CommentController.findAll(req.pagination, req.filters);
+        res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
 });
 
 /**
