@@ -51,12 +51,4 @@ export class AuthController {
     static isTokenValid(token: string){
         return Jwt.verify(token, process.env.JWT_SECRET_TOKEN);
     }
-
-    /*
-    static async canUserModifyTodo(user: any, todoId: any){
-        const todo = await Todo.findByPk(todoId);
-        //todo must exist and be associated with user
-        return todo && todo.UserUsername === user;
-        }
-    */
 }
