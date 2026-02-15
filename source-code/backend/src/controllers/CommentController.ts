@@ -2,10 +2,12 @@ import createError from "http-errors"; // HTTP errors middleware (https://www.np
 
 import { Comment } from "#config/database.js";
 import { CommentDto } from "#types/dto/CommentDto.js";
-import { ParsedPagination } from "#types/queryParams.js";
+import { ParsedFilters, ParsedPagination } from "#types/queryParams.js";
 import { findAllPaginated } from "#utils/findAllPaginated.js";
 import { UserController } from "#controllers/UserController.js";
 import { SightingController } from "#controllers/SightingController.js";
+import { buildWhereClause } from "#utils/buildWhereClause.js";
+import { Op } from "sequelize";
 
 
 export class CommentController {
@@ -43,9 +45,18 @@ export class CommentController {
     /**
      * Find all comments with pagination
      */
-    static async findAll(pagination: ParsedPagination) {
+    static async findAll(pagination: ParsedPagination, filters: ParsedFilters = {}) {
 
-        return findAllPaginated(Comment, pagination); // returns a Promise
+        const where = buildWhereClause(filters, {
+            sightingId: {
+                type: "number",
+                column: "sightingId",
+                op: Op.eq,
+                allowInOp: false
+            }
+        });
+
+        return findAllPaginated(Comment, pagination, { where }); // returns a Promise
     }
 
     /**

@@ -30,15 +30,26 @@ commentRouter.post("/comments", [authenticateJWT, requireRole("USER"), validateC
 });
 
 /**
- * Manages retrieve of all comments
+ * Manages retrieve of comments (optionally filtered by sighting)
  */
-commentRouter.get("/comments", [authenticateJWT, requireRole("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.get("/comments", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const result = await CommentController.findAll(req.pagination);
-        res.status(200).json(result);
-    } catch (err) {
-        next(err);
-    }
+            const sightingId = req.query.sightingId;
+
+            if (Object.keys(req.filters).length === 0) { // Case 1: No filter
+                const result = await CommentController.findAll(req.pagination);
+                res.status(200).json(result);
+
+            } else if (req.filters.sightingId !== undefined) { // Case 2: filter by sighting                
+                const result = await CommentController.findAll(
+                    req.pagination,
+                    { sightingId: req.filters.sightingId }
+                );
+                res.status(200).json(result);
+            }
+        } catch (err) {
+            next(err);
+        }
 });
 
 /**
