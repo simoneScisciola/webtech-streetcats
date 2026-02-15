@@ -6,7 +6,7 @@ import { SightingController } from "#controllers/SightingController.js";
 import { SightingDto } from "#types/dto/SightingDto.js";
 import { validateId, validateSightingFields } from "#middleware/validateRequestFields.js";
 import { authenticateJWT } from "#middleware/authenticate.js";
-import { requireRole } from "#middleware/authorize.js";
+import { allowedRoles } from "#middleware/authorize.js";
 import { canModifySighting } from "#middleware/canModify.js";
 
 
@@ -15,7 +15,7 @@ export const sightingRouter = express.Router();
 /**
  * Manages new creation of a sighting
  */
-sightingRouter.post("/sightings", [authenticateJWT, requireRole("USER", "ADMIN"), validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.post("/sightings", [authenticateJWT, allowedRoles("USER", "ADMIN"), validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;
@@ -64,7 +64,7 @@ sightingRouter.get("/sightings/:id", [validateId], async (req: Request, res: Res
 /**
  * Manages full update of a sighting
  */
-sightingRouter.put("/sightings/:id", [authenticateJWT, requireRole("ADMIN"), validateId, validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.put("/sightings/:id", [authenticateJWT, allowedRoles("ADMIN"), validateId, validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;
@@ -82,7 +82,7 @@ sightingRouter.put("/sightings/:id", [authenticateJWT, requireRole("ADMIN"), val
 /**
  * Manages partial update of a sighting
  */
-sightingRouter.patch("/sightings/:id", [authenticateJWT, requireRole("USER", "ADMIN"), canModifySighting, validateId, validateSightingFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.patch("/sightings/:id", [authenticateJWT, allowedRoles("USER", "ADMIN"), canModifySighting, validateId, validateSightingFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;
@@ -100,7 +100,7 @@ sightingRouter.patch("/sightings/:id", [authenticateJWT, requireRole("USER", "AD
 /**
  * Manages delete of a specified sighting
  */
-sightingRouter.delete("/sightings/:id", [authenticateJWT, requireRole("USER", "ADMIN"), canModifySighting, validateId], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.delete("/sightings/:id", [authenticateJWT, allowedRoles("USER", "ADMIN"), canModifySighting, validateId], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSightingId = res.locals.id as number;

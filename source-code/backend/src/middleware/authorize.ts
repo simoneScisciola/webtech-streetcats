@@ -11,7 +11,7 @@ import { logger } from "#logging/logger.js";
  * @param allowedRoles The roles that are allowed to access the resource
  * @returns A middleware function that checks the user's role and either allows access or returns an error
  */
-export function requireRole(...allowedRoles: string[]) {
+export function allowedRoles(...allowedRoles: string[]) {
     return async (req: AuthRequest, res: Response, next: NextFunction) => {
 
         logger.debug(`Authorizing user with role: ${req.role}, allowed roles: [${allowedRoles}]`);
