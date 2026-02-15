@@ -12,8 +12,11 @@ import { AuthController } from "#controllers/AuthController.js";
 export function authenticateJWT(req: AuthRequest, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        throw new createError.Unauthorized("Missing or broken token.");
+    if (!authHeader || authHeader.trim() === "") {
+        throw new createError.Unauthorized("Missing token.");
+    }
+    if (!authHeader.startsWith("Bearer ")) {
+        throw new createError.Unauthorized("Malformed token.");
     }
 
     const token = authHeader.split(" ")[1];

@@ -15,7 +15,7 @@ export const commentRouter = express.Router();
 /**
  * Manages new creation of a comment
  */
-commentRouter.post("/comments", [authenticateJWT, requireRole("USER"), validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.post("/comments", [authenticateJWT, requireRole("USER", "ADMIN"), validateCommentFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentComment = res.locals.comment as CommentDto;
@@ -93,7 +93,7 @@ commentRouter.put("/comments/:id", [authenticateJWT, requireRole("ADMIN"), valid
 /**
  * Manages partial update of a comment
  */
-commentRouter.patch("/comments/:id", [authenticateJWT, canModifyComment, validateId, validateCommentFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.patch("/comments/:id", [authenticateJWT, requireRole("USER", "ADMIN"), canModifyComment, validateId, validateCommentFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentComment = res.locals.comment as CommentDto;
@@ -111,7 +111,7 @@ commentRouter.patch("/comments/:id", [authenticateJWT, canModifyComment, validat
 /**
  * Manages delete of a specified comment
  */
-commentRouter.delete("/comments/:id", [authenticateJWT, canModifyComment, validateId], async (req: Request, res: Response, next: NextFunction) => {
+commentRouter.delete("/comments/:id", [authenticateJWT, requireRole("USER", "ADMIN"), canModifyComment, validateId], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve comment specified in the request
         const sentCommentId = res.locals.id as number;

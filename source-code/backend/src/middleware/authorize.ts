@@ -2,6 +2,7 @@ import { Response, NextFunction } from "express"; // Express framework (https://
 import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
 import { AuthRequest } from "#types/authRequest.js";
+import { logger } from "#logging/logger.js";
 
 
 /**
@@ -12,6 +13,8 @@ import { AuthRequest } from "#types/authRequest.js";
  */
 export function requireRole(...allowedRoles: string[]) {
     return async (req: AuthRequest, res: Response, next: NextFunction) => {
+
+        logger.debug(`Authorizing user with role: ${req.role}, allowed roles: [${allowedRoles}]`);
 
         if (!req.user || !req.role) {
             throw new createError.Unauthorized("Unauthenticated.");

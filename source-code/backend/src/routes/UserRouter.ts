@@ -44,7 +44,7 @@ userRouter.get("/users", [authenticateJWT, requireRole("ADMIN")], async (req: Re
 /**
  * Manages retrieve of a specified user
  */
-userRouter.get("/users/:username", [authenticateJWT, requireRole("USER")], async (req: Request, res: Response, next: NextFunction) => {
+userRouter.get("/users/:username", [authenticateJWT, requireRole("USER", "ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user specified in the request
         const username = req.params.username?.trim();
@@ -64,7 +64,7 @@ userRouter.get("/users/:username", [authenticateJWT, requireRole("USER")], async
 /**
  * Manages partial update of a user role
  */
-userRouter.patch("/users/:username", [authenticateJWT, canModifyUser, validateUserFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+userRouter.patch("/users/:username", [authenticateJWT, requireRole("USER", "ADMIN"), canModifyUser, validateUserFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user specified in the request
         const sentUser = res.locals.user as UserDto;
