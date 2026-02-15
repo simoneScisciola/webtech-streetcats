@@ -5,7 +5,7 @@ import { logger } from "#logging/logger.js";
 import { UserRoleController } from "#controllers/UserRoleController.js";
 import { UserRoleDto } from "#types/dto/UserRoleDto.js";
 import { validateUserRoleFields } from "#middleware/validateRequestFields.js";
-import { authenticateJWT } from "#middleware/authenticate.js";
+import { requireAuthJWT } from "#middleware/authenticate.js";
 import { allowedRoles } from "#middleware/authorize.js";
 
 
@@ -14,7 +14,7 @@ export const userRoleRouter = express.Router();
 /**
  * Manages full update (or new creation) of a user role
  */
-userRoleRouter.put("/user-roles/:rolename", [authenticateJWT, allowedRoles("ADMIN"), validateUserRoleFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.put("/user-roles/:rolename", [requireAuthJWT, allowedRoles("ADMIN"), validateUserRoleFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentUserRole = res.locals.userRole as UserRoleDto;
@@ -31,7 +31,7 @@ userRoleRouter.put("/user-roles/:rolename", [authenticateJWT, allowedRoles("ADMI
 /**
  * Manages retrieve of all user roles
  */
-userRoleRouter.get("/user-roles", [authenticateJWT, allowedRoles("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.get("/user-roles", [requireAuthJWT, allowedRoles("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await UserRoleController.findAll(req.pagination);
         res.status(200).json(result);
@@ -43,7 +43,7 @@ userRoleRouter.get("/user-roles", [authenticateJWT, allowedRoles("ADMIN")], asyn
 /**
  * Manages the retrieve of a specified user role
  */
-userRoleRouter.get("/user-roles/:rolename", [authenticateJWT, allowedRoles("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.get("/user-roles/:rolename", [requireAuthJWT, allowedRoles("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentRolename = req.params.rolename?.trim();
@@ -65,7 +65,7 @@ userRoleRouter.get("/user-roles/:rolename", [authenticateJWT, allowedRoles("ADMI
 /**
  * Manages partial update of a user role
  */
-userRoleRouter.patch("/user-roles/:rolename", [authenticateJWT, allowedRoles("ADMIN"), validateUserRoleFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.patch("/user-roles/:rolename", [requireAuthJWT, allowedRoles("ADMIN"), validateUserRoleFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentUserRole = res.locals.userRole as UserRoleDto;
@@ -82,7 +82,7 @@ userRoleRouter.patch("/user-roles/:rolename", [authenticateJWT, allowedRoles("AD
 /**
  * Manages delete of a specified user role
  */
-userRoleRouter.delete("/user-roles/:rolename", [authenticateJWT, allowedRoles("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
+userRoleRouter.delete("/user-roles/:rolename", [requireAuthJWT, allowedRoles("ADMIN")], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve user role specified in the request
         const sentRolename = req.params.rolename?.trim();

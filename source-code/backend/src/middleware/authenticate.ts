@@ -10,7 +10,7 @@ import { logger } from "#logging/logger.js";
  * Middleware to strictly authenticate requests using JWT
  * It checks the Authorization header for a valid JWT and extracts user info from it
  */
-export function authenticateJWT(req: AuthRequest, res: Response, next: NextFunction) {
+export function requireAuthJWT(req: AuthRequest, res: Response, next: NextFunction) {
 
     logger.verbose("Middleware: requireAuthJWT");
 
@@ -18,21 +18,15 @@ export function authenticateJWT(req: AuthRequest, res: Response, next: NextFunct
 
     logger.debug(`AuthHeader: "${authHeader}"`)
 
-    // Missing Authentication header
-    if (!authHeader || authHeader.trim() === "") {
-        throw new createError.Unauthorized("Authentication required");
-    }
-    
-    const [scheme, token] = authHeader.split(" ");
-    
-    // Invalid Authentication header
-    if (scheme != "Bearer" || !token) {
-        throw new createError.Unauthorized("Invalid Authorization format");
+    const token = extractBearerToken(req.headers.authorization);
+
+    // Missing or malformed Authentication header
+    if (!token) {
+        throw new createError.Unauthorized("Missing or malformed Authentication.");
     }
 
     try {
-
-        // Verify the token
+        // Verify token
         const payload = AuthController.isTokenValid(token) as { user: string, role: string };
 
         // Save user info from token in the request object
@@ -40,7 +34,7 @@ export function authenticateJWT(req: AuthRequest, res: Response, next: NextFunct
         req.role = payload.role;
 
     } catch (err) {
-        throw new createError.Unauthorized("Invalid or expired token");
+        throw new createError.Unauthorized("Invalid or expired token.");
     }
 
     logger.verbose(`authenticateJWT output: req.user=${req.user} req.role=${req.role}`)
@@ -60,21 +54,15 @@ export function optionalAuthJWT(req: AuthRequest, res: Response, next: NextFunct
 
     logger.debug(`AuthHeader: "${authHeader}"`)
 
+    const token = extractBearerToken(req.headers.authorization);
+
     // Anonymous user
-    if (!authHeader || authHeader.trim() === "") {
+    if (!token) {
         return next();
     }
 
-    const [scheme, token] = authHeader.split(" ");
-    
-    // Invalid Authentication header
-    if (scheme != "Bearer" || !token) {
-        throw new createError.Unauthorized("Invalid Authorization format");
-    }
-
     try {
-
-        // Verify the token
+        // Verify token
         const payload = AuthController.isTokenValid(token) as { user: string, role: string };
 
         // Save user info from token in the request object
@@ -89,4 +77,26 @@ export function optionalAuthJWT(req: AuthRequest, res: Response, next: NextFunct
     logger.verbose(`authenticateJWT output: req.user=${req.user} req.role=${req.role}`);
 
     next();
+}
+
+/**
+ * Extracts Bearer token from incoming HTTP Requests
+ * @param authHeader Received Authorization header
+ * @returns Parsed token, or null if missing or malformed
+ */
+function extractBearerToken(authHeader?: string): string | null {
+
+    // Missing Authentication header
+    if (!authHeader || authHeader.trim() === "") {
+        return null;
+    }
+    
+    const [scheme, token] = authHeader.split(" ");
+    
+    // Malformed Authentication header
+    if (scheme != "Bearer" || !token) {
+        return null;
+    }
+
+    return token;
 }
