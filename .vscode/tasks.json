@@ -1,0 +1,76 @@
+// Reference:
+// - https://code.visualstudio.com/docs/debugtest/tasks
+{
+    // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558
+    "version": "2.0.0",
+    "tasks": [
+
+        // Frontend tasks
+        {
+            "label": "start: npm dev:docker",                       // The task label
+            "type": "npm",                                          // The command is interpreed as a process to execute
+            "script": "dev:docker",                                 // The script to execute
+            "options": {                                            // Override the defaults for "cwd", "env", or "shell"
+                "cwd": "${workspaceFolder}/source-code/frontend"    // Sets the working directory of the command to execute
+            }, 
+            "isBackground": true,                                   // The task will keep running in the background
+            "problemMatcher": {                                     // Defines which informations will be shown in the VSCode's "Problems" panel
+                "owner": "typescript",
+                "pattern": "$tsc",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "(.*?)"
+                    },
+                    "endsPattern": {
+                        "regexp": "bundle generation complete"
+                    }
+                }
+            },
+            "presentation": {
+                "group": "debugFrontend"
+            }
+        },
+        {
+            "label": "stop: npm dev",
+            "type": "shell",
+            "command": "pkill -f 'ng serve'",
+            "presentation": {
+                "group": "debugFrontend"
+            }
+        },
+        {
+            "label": "start: npm test",                             // The task label
+            "type": "npm",                                          // The command is interpreed as a process to execute
+            "script": "test",                                       // The script to execute
+            "options": {                                            // Override the defaults for "cwd", "env", or "shell"
+                "cwd": "${workspaceFolder}/source-code/frontend"    // Sets the working directory of the command to execute
+            }, 
+            "isBackground": true,                                   // The task will keep running in the background
+            "problemMatcher": {                                     // Defines which informations will be shown in the VSCode's "Problems" panel
+                "owner": "typescript",
+                "pattern": "$tsc",
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "(.*?)"
+                    },
+                    "endsPattern": {
+                        "regexp": "bundle generation complete"
+                    }
+                }
+            },
+            "presentation": {
+                "group": "testFrontend"
+            }
+        },
+        {
+            "label": "stop: npm test",
+            "type": "shell",
+            "command": "pkill -f 'ng test'",
+            "presentation": {
+                "group": "testFrontend"
+            }
+        }
+    ]
+}

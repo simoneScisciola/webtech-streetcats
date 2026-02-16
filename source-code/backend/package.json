@@ -5,12 +5,15 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
+    "prestart": "npm run build",
+
+    "dev": "CHOKIDAR_USEPOLLING=true tsx watch --clear-screen=false src/index.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "TSC_WATCHFILE=PriorityPollingInterval tsc --noEmit --watch",
+
     "build": "tsc",
-    "prestart": "npm run build",
     "start": "node dist/index.js",
-    "dev": "CHOKIDAR_USEPOLLING=true tsx watch --clear-screen=false src/index.ts",
+
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "imports": {

@@ -4,10 +4,25 @@
   "description": "An Angular frontend for the Web Technologies course project: Webtech's StreetCats",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+
+    "generate-env": "node scripts/generate-env.js",
+
+    "predev": "npm run generate-env",
+    "predev:docker": "npm run generate-env",
+    "prebuild": "npm run generate-env",
+    "prewatch": "npm run generate-env",
+
+    "dev": "ng serve",
+    "dev:docker": "ng serve --host 0.0.0.0 --poll 200",
+
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "serve": "npx http-server ./dist/frontend/browser -p 4200 -c-1",
+
+    "test": "ng test",
+    "e2e": "playwright test",
+    "e2e-report": "playwright show-report",
+    "e2e-report:docker": "playwright show-report --host 0.0.0.0"
   },
   "prettier": {
     "overrides": [
@@ -27,6 +42,12 @@
     "@angular/forms": "^20.0.0",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
+    "@fortawesome/angular-fontawesome": "^3.0.0",
+    "@fortawesome/free-brands-svg-icons": "^7.2.0",
+    "@fortawesome/free-regular-svg-icons": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "animate.css": "^4.1.1",
+    "css-select": "^5.2.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -36,12 +57,14 @@
     "@angular/cli": "^20.0.4",
     "@angular/compiler-cli": "^20.0.0",
     "@types/jasmine": "~5.1.0",
+    "http-server": "^14.1.1",
     "jasmine-core": "~5.7.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "sass": "^1.97.3",
     "typescript": "~5.8.2"
   }
 }
