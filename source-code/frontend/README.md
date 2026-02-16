@@ -1,6 +1,6 @@
 # Frontend
 
-Frontend dedicato al progetto Webtech's StreetCats. Questo progetto è stato generato utilizzando [Angular CLI](https://github.com/angular/angular-cli) versione `20.0.4`.
+Frontend dedicato al progetto Webtech's StreetCats. Questo progetto è stato generato utilizzando [Angular CLI](https://github.com/angular/angular-cli) versione `20.3.16`.
 
 L'interprete utilizzato è `node 22.19.0`.
 
