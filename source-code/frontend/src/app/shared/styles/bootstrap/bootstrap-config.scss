@@ -1,0 +1,18 @@
+@use "../variables";
+
+/* Importing Bootstrap SCSS file. */
+@use 'bootstrap/scss/bootstrap' with (
+
+    // Override Bootstrap theme colors
+    $theme-colors: (
+      "primary": variables.$streetcats-orange,
+      "secondary": variables.$streetcats-teal,
+      "light": variables.$streetcats-cream,
+      "dark": variables.$streetcats-brown,
+      "info": variables.$streetcats-sky,
+      "danger": variables.$streetcats-rust,
+      "success": variables.$streetcats-forest,
+      "warning": variables.$streetcats-sand
+    )
+
+);

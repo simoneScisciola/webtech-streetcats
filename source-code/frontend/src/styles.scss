@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 
-/* Importing Bootstrap SCSS file. */
-@use 'bootstrap/scss/bootstrap';
+/* Bootstrap Config Stylesheet customized through Sass (Reference: https://sass-lang.com/) */
+@use "./app/shared/styles/bootstrap/bootstrap-config";
+
+/* Animate.css */
+@import "animate.css/animate.min.css";
