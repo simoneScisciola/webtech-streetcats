@@ -45,7 +45,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy {
     // Aggiungi tile layer OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '© OpenStreetMap contributors'
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
 
     // Esempio: aggiungi un marker
