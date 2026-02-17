@@ -1,0 +1,16 @@
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 767px) {
+  button[style*="right"] {
+    right: 20px !important;
+  }
+}
+
+button:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}

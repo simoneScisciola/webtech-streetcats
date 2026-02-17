@@ -1,0 +1,16 @@
+<div class="position-relative w-100 vh-100 overflow-hidden">
+  <app-leaflet-map 
+    [sidePanelOpen]="sidePanelOpen()"
+    class="position-absolute top-0 start-0 w-100 h-100">
+  </app-leaflet-map>
+  
+  <app-side-panel 
+    [isOpen]="sidePanelOpen()"
+    (closePanel)="toggleSidePanel()">
+  </app-side-panel>
+  
+  <app-toggle-button 
+    [isOpen]="sidePanelOpen()"
+    (toggle)="toggleSidePanel()">
+  </app-toggle-button>
+</div>

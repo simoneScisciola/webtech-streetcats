@@ -1,0 +1,15 @@
+<button
+  type="button"
+  class="btn btn-primary position-fixed shadow-lg rounded-circle animate__animated"
+  [class.animate__pulse]="!isOpen"
+  style="top: 20px; right: 20px; z-index: 999; width: 56px; height: 56px;"
+  [style.right]="isOpen ? '420px' : '20px'"
+  [style.transition]="'right 0.3s ease-in-out'"
+  (click)="buttonClick.emit()"
+  [attr.aria-label]="isOpen ? 'Chiudi pannello' : 'Apri pannello'">
+  <i 
+    class="fas fa-lg"
+    [class.fa-times]="isOpen"
+    [class.fa-list]="!isOpen">
+  </i>
+</button>

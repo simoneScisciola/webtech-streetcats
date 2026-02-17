@@ -1,0 +1,6 @@
+@media (max-width: 767px) {
+  div[style*="width"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
