@@ -1,15 +1,15 @@
 <button
   type="button"
-  class="btn btn-primary position-fixed shadow-lg rounded-circle animate__animated"
-  [class.animate__pulse]="!isOpen"
-  style="top: 20px; right: 20px; z-index: 999; width: 56px; height: 56px;"
-  [style.right]="isOpen ? '420px' : '20px'"
-  [style.transition]="'right 0.3s ease-in-out'"
-  (click)="buttonClick.emit()"
-  [attr.aria-label]="isOpen ? 'Chiudi pannello' : 'Apri pannello'">
-  <i 
-    class="fas fa-lg"
-    [class.fa-times]="isOpen"
-    [class.fa-list]="!isOpen">
-  </i>
+  class="toggle-btn btn btn-primary position-fixed bottom-0 end-0 mb-4 me-4 shadow-lg rounded-circle d-flex align-items-center justify-content-center"
+  [attr.aria-label]="isPanelOpen ? 'Chiudi pannello esterno' : 'Apri pannello esterno'"
+  title="Pannello esterno"
+  (click)="onClick()"
+>
+
+  <span class="visually-hidden">
+    {{ isPanelOpen ? 'Chiudi pannello esterno' : 'Apri pannello esterno' }}
+  </span>
+
+  <fa-icon [icon]="isPanelOpen ? faXmark : faList"></fa-icon>
+
 </button>

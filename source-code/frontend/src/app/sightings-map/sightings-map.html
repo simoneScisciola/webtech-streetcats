@@ -1,16 +1,16 @@
 <div class="w-100 h-100 d-flex position-relative">
   <app-leaflet-map 
-    [sidePanelOpen]="sidePanelOpen()"
+    [sidePanelOpen]="isPanelOpen()"
   >
   </app-leaflet-map>
   
   <app-side-panel 
-    [isOpen]="sidePanelOpen()"
+    [isOpen]="isPanelOpen()"
     (closePanel)="toggleSidePanel()">
   </app-side-panel>
   
   <app-toggle-button 
-    [isOpen]="sidePanelOpen()"
-    (toggle)="toggleSidePanel()">
+    [isPanelOpen]="isPanelOpen()"
+    (toggleButtonClick)="toggleSidePanel()">
   </app-toggle-button>
 </div>

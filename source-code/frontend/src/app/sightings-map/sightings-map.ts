@@ -11,9 +11,12 @@ import { ToggleButton } from './toggle-button/toggle-button';
   styleUrl: './sightings-map.scss',
 })
 export class SightingsMap {
-  sidePanelOpen = signal(false);
+
+  isPanelOpen = signal(false);
 
   toggleSidePanel() {
-    this.sidePanelOpen.update(value => !value);
+    console.log("Toggle Side Panel");
+    this.isPanelOpen.update(value => !value);
   }
+
 }

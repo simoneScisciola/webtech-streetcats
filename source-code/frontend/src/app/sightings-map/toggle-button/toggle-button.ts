@@ -1,12 +1,25 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faXmark, faList } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-toggle-button',
-  imports: [],
+  imports: [FontAwesomeModule],
   templateUrl: './toggle-button.html',
   styleUrl: './toggle-button.scss',
 })
 export class ToggleButton {
-  @Input() isOpen = false;
-  @Output() buttonClick = new EventEmitter<void>();
+
+  @Input() isPanelOpen = false;
+  @Output() toggleButtonClick = new EventEmitter<void>();
+  
+  // Font Awesome icons
+  faXmark = faXmark;
+  faList = faList;
+
+  onClick() {
+    console.log("Toggle button clicked");
+    this.toggleButtonClick.emit();
+  }
+
 }
