@@ -3,7 +3,8 @@ import { KeyValuePipe } from '@angular/common';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faTag, faAlignLeft, faMapMarkerAlt, faCalendarAlt, faLayerGroup, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FormCard } from '../shared/components/form-card/form-card';
+
+import { FORM_CARD_IMPORTS } from '@shared/components/form-card/form-card-imports';
 import { FormField } from '../shared/components/form-field/form-field';
 
 export interface SightingFormValue {
@@ -16,7 +17,7 @@ export interface SightingFormValue {
 
 @Component({
   selector: 'app-sighting-form',
-  imports: [ReactiveFormsModule, FormCard, FormField, FontAwesomeModule, KeyValuePipe],
+  imports: [ReactiveFormsModule, FORM_CARD_IMPORTS, FormField, FontAwesomeModule, KeyValuePipe],
   templateUrl: './sighting-form.html',
   styleUrl: './sighting-form.scss',
 })

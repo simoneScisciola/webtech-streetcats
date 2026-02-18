@@ -3,12 +3,12 @@ import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angula
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faRightToBracket, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
-import { FormCard } from '../../../shared/components/form-card/form-card';
-import { FormField } from '../../../shared/components/form-field/form-field';
+import { FORM_CARD_IMPORTS } from '@shared/components/form-card/form-card-imports';
+import { FormField } from '@shared/components/form-field/form-field';
 
 @Component({
   selector: 'app-login-form',
-  imports: [ReactiveFormsModule, FormCard, FormField, FontAwesomeModule],
+  imports: [ReactiveFormsModule, FORM_CARD_IMPORTS, FormField, FontAwesomeModule],
   templateUrl: './login-form.html',
   styleUrl: './login-form.scss',
 })

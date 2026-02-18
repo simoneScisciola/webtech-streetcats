@@ -1,27 +1,9 @@
 <div class="form-card mx-auto">
   <div class="card shadow-sm border-0">
+    <ng-content select="app-form-card-header"></ng-content>
 
-    <!-- Form header -->
-    <div class="card-header bg-primary text-white text-center py-4">
-      @if (icon()) {
-        <fa-icon [icon]="icon()!" size="2x" class="d-block mb-2"></fa-icon>
-      }
-      <h4 class="mb-0 fw-bold">{{ title() }}</h4>
-      @if (subtitle()) {
-        <p class="mb-0 mt-1 opacity-75 small">{{ subtitle() }}</p>
-      }
-    </div>
+    <ng-content select="app-form-card-body"></ng-content>
 
-    <!-- Form body -->
-    <div class="card-body p-4">
-      <ng-content></ng-content>
-    </div>
-
-    <!-- Form footer -->
-    @if (true) {
-      <div class="card-footer bg-light text-center py-3">
-        <ng-content select="[slot=footer]"></ng-content>
-      </div>
-    }
+    <ng-content select="app-form-card-footer"></ng-content>
   </div>
 </div>

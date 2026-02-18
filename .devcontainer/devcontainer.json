@@ -45,6 +45,7 @@
 				"eamodio.gitlens",
 				"mhutchie.git-graph",
 				"rioj7.vscode-remove-comments",
+				"formulahendry.auto-rename-tag",
 
                 "mathematic.vscode-pdf", // PDF extensions
 
@@ -60,6 +61,7 @@
 
                 // Frontend extensions
                 "Angular.ng-template", // Angular extension
+				"tomwhite007.rename-angular-component", // Rename Angular component extension
                 "Syler.sass-indented", // Sass extension
 				"hossaini.bootstrap-intellisense", // Bootstrap extension
 				"AnbuselvanRocky.bootstrap5-vscode", // Bootstrap extension

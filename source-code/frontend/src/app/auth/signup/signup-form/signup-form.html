@@ -1,58 +1,64 @@
-<app-form-card
-  title="Crea un account"
-  subtitle="Unisciti alla community degli avvistatori."
-  [icon]="icons.signup">
+<app-form-card>
 
-  <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
+  <app-form-card-header
+    title="Crea un account"
+    subtitle="Unisciti alla community degli avvistatori."
+    [icon]="icons.signup">
+  </app-form-card-header>
 
-    <app-form-field
-      id="username"
-      label="Username"
-      placeholder="il_tuo_username"
-      [control]="username"
-      [icon]="icons.user"
-      [errors]="usernameErrors">
-    </app-form-field>
+  <app-form-card-body>
+  
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
+      <app-form-field
+        id="username"
+        label="Username"
+        placeholder="il_tuo_username"
+        [control]="username"
+        [icon]="icons.user"
+        [errors]="usernameErrors">
+      </app-form-field>
 
-    <app-form-field
-      id="email"
-      label="Email"
-      type="email"
-      placeholder="nome@esempio.com"
-      [control]="email"
-      [icon]="icons.email"
-      [errors]="emailErrors">
-    </app-form-field>
+      <app-form-field
+        id="email"
+        label="Email"
+        type="email"
+        placeholder="nome@esempio.com"
+        [control]="email"
+        [icon]="icons.email"
+        [errors]="emailErrors">
+      </app-form-field>
 
-    <app-form-field
-      id="password"
-      label="Password"
-      type="password"
-      placeholder="••••••••"
-      [control]="password"
-      [icon]="icons.lock"
-      [errors]="passwordErrors">
-    </app-form-field>
+      <app-form-field
+        id="password"
+        label="Password"
+        type="password"
+        placeholder="••••••••"
+        [control]="password"
+        [icon]="icons.lock"
+        [errors]="passwordErrors">
+      </app-form-field>
 
-    <app-form-field
-      id="confirmPassword"
-      label="Conferma Password"
-      type="password"
-      placeholder="••••••••"
-      [control]="confirmControl"
-      [icon]="icons.shield"
-      [errors]="confirmErrors">
-    </app-form-field>
+      <app-form-field
+        id="confirmPassword"
+        label="Conferma Password"
+        type="password"
+        placeholder="••••••••"
+        [control]="confirmControl"
+        [icon]="icons.shield"
+        [errors]="confirmErrors">
+      </app-form-field>
 
-    <button type="submit" class="btn btn-primary w-100">
-      <fa-icon [icon]="icons.signup" class="me-2"></fa-icon>
-      Registrati
-    </button>
+      <button type="submit" class="btn btn-primary w-100">
+        <fa-icon [icon]="icons.signup" class="me-2"></fa-icon>
+        Registrati
+      </button>
 
-  </form>
+    </form>
 
-  <div slot="footer" class="small">
+  </app-form-card-body>
+
+  <app-form-card-footer class="small">
     Hai già un account? <a href="#" class="text-primary text-decoration-none fw-semibold">Accedi</a>
-  </div>
+  </app-form-card-footer>
 
 </app-form-card>

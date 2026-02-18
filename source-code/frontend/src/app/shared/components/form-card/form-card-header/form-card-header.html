@@ -1,0 +1,9 @@
+<div class="card-header bg-primary text-white text-center py-4">
+  @if (icon) {
+    <fa-icon [icon]="icon!" size="2x" class="d-block mb-2"></fa-icon>
+  }
+  <h4 class="mb-0 fw-bold">{{ title }}</h4>
+  @if (subtitle) {
+    <p class="mb-0 mt-1 opacity-75 small">{{ subtitle }}</p>
+  }
+</div>
