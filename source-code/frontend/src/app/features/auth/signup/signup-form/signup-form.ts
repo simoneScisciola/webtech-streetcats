@@ -3,12 +3,15 @@ import { ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, For
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUserPlus, faUser, faEnvelope, faLock, faShield } from '@fortawesome/free-solid-svg-icons';
 
-import { FORM_CARD_IMPORTS } from '#shared/components/form-card/form-card-imports';
+import { FormCard } from '#shared/components/form-card/form-card';
+import { FormCardHeader } from '#shared/components/form-card/form-card-header/form-card-header';
+import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
+import { FormCardFooter } from '#shared/components/form-card/form-card-footer/form-card-footer';
 import { FormField } from '#shared/components/form-field/form-field';
 
 @Component({
   selector: 'app-signup-form',
-  imports: [ReactiveFormsModule, FORM_CARD_IMPORTS, FormField, FontAwesomeModule],
+  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardFooter, FormField, FontAwesomeModule],
   templateUrl: './signup-form.html',
   styleUrl: './signup-form.scss',
 })
