@@ -9,14 +9,14 @@
   <app-form-card-body>
     <form [formGroup]="sightingForm" (ngSubmit)="onSubmit()" novalidate>
 
-      <app-form-field
+      <app-form-card-field
         id="title"
         label="Titolo"
         placeholder="Es. Aquila reale sul monte Faito"
         [control]="title"
         [icon]="icons.tag"
         [errors]="titleErrors">
-      </app-form-field>
+      </app-form-card-field>
 
       <!-- Textarea — gestita direttamente, non tramite form-field -->
       <div class="mb-3">
@@ -44,23 +44,23 @@
         }
       </div>
 
-      <app-form-field
+      <app-form-card-field
         id="location"
         label="Posizione"
         placeholder="Es. Monte Faito, Campania"
         [control]="location"
         [icon]="icons.marker"
         [errors]="locationErrors">
-      </app-form-field>
+      </app-form-card-field>
 
-      <app-form-field
+      <app-form-card-field
         id="date"
         label="Data"
         type="date"
         [control]="date"
         [icon]="icons.calendar"
         [errors]="dateErrors">
-      </app-form-field>
+      </app-form-card-field>
 
       <!-- Select — gestita direttamente -->
       <div class="mb-4">

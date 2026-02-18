@@ -1,0 +1,36 @@
+<div class="mb-3">
+
+  <!-- Input label -->
+  <label [for]="id" class="form-label fw-semibold">{{ label }}</label>
+
+  <div class="input-group">
+
+    <!-- Input field icon -->
+    @if (icon) {
+      <span class="input-group-text text-muted">
+        <fa-icon [icon]="icon!"></fa-icon>
+      </span>
+    }
+
+    <!-- Input field -->
+    <input
+      [id]="id"
+      [type]="type"
+      [formControl]="control"
+      [placeholder]="placeholder"
+      class="form-control"
+      [class.is-invalid]="control.invalid && control.touched"
+      [class.is-valid]="control.valid && control.touched">
+  </div>
+
+  <!-- Error message -->
+  @if (control.invalid && control.touched) {
+    @for (error of errors | keyvalue; track error.key) {
+      @if (control.hasError(error.key)) {
+        <div class="invalid-feedback d-block">
+          {{ error.value }}
+        </div>
+      }
+    }
+  }
+</div>

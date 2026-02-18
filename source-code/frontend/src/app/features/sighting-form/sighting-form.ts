@@ -7,8 +7,7 @@ import { faBinoculars, faTag, faAlignLeft, faMapMarkerAlt, faCalendarAlt, faLaye
 import { FormCard } from '#shared/components/form-card/form-card';
 import { FormCardHeader } from '#shared/components/form-card/form-card-header/form-card-header';
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
-import { FormCardFooter } from '#shared/components/form-card/form-card-footer/form-card-footer';
-import { FormField } from '#shared/components/form-field/form-field';
+import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
 
 export interface SightingFormValue {
   title:       string;
@@ -20,7 +19,7 @@ export interface SightingFormValue {
 
 @Component({
   selector: 'app-sighting-form',
-  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardFooter, FormField, FontAwesomeModule, KeyValuePipe],
+  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardField, FontAwesomeModule, KeyValuePipe],
   templateUrl: './sighting-form.html',
   styleUrl: './sighting-form.scss',
 })

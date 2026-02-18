@@ -9,7 +9,7 @@
   <app-form-card-body>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
-      <app-form-field
+      <app-form-card-field
         id="email"
         label="Email"
         type="email"
@@ -17,9 +17,9 @@
         [control]="email"
         [icon]="icons.email"
         [errors]="emailErrors">
-      </app-form-field>
+      </app-form-card-field>
 
-      <app-form-field
+      <app-form-card-field
         id="password"
         label="Password"
         type="password"
@@ -27,7 +27,7 @@
         [control]="password"
         [icon]="icons.lock"
         [errors]="passwordErrors">
-      </app-form-field>
+      </app-form-card-field>
 
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="form-check">

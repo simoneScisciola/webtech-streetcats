@@ -9,16 +9,16 @@
   <app-form-card-body>
   
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
-      <app-form-field
+      <app-form-card-field
         id="username"
         label="Username"
         placeholder="il_tuo_username"
         [control]="username"
         [icon]="icons.user"
         [errors]="usernameErrors">
-      </app-form-field>
+      </app-form-card-field>
 
-      <app-form-field
+      <app-form-card-field
         id="email"
         label="Email"
         type="email"
@@ -26,9 +26,9 @@
         [control]="email"
         [icon]="icons.email"
         [errors]="emailErrors">
-      </app-form-field>
+      </app-form-card-field>
 
-      <app-form-field
+      <app-form-card-field
         id="password"
         label="Password"
         type="password"
@@ -36,9 +36,9 @@
         [control]="password"
         [icon]="icons.lock"
         [errors]="passwordErrors">
-      </app-form-field>
+      </app-form-card-field>
 
-      <app-form-field
+      <app-form-card-field
         id="confirmPassword"
         label="Conferma Password"
         type="password"
@@ -46,7 +46,7 @@
         [control]="confirmControl"
         [icon]="icons.shield"
         [errors]="confirmErrors">
-      </app-form-field>
+      </app-form-card-field>
 
       <button type="submit" class="btn btn-primary w-100">
         <fa-icon [icon]="icons.signup" class="me-2"></fa-icon>
