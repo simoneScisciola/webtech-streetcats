@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { ConfigService } from './core/services/config.service';
+import { Config } from './core/services/config/config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,7 +12,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideAppInitializer(() => {
-      const config = inject(ConfigService);
+      const config = inject(Config);
       return config.load();
     })
   ]

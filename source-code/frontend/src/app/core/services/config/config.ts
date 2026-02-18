@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
-export class ConfigService {
+@Injectable({
+  providedIn: 'root',
+})
+export class Config {
   private config: Record<string, string> = {};
 
   async load(): Promise<void> {
