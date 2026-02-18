@@ -3,7 +3,7 @@
     <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3 py-3">
       
       <!-- Logo + App name -->
-      <a class="d-flex align-items-center text-white text-decoration-none" routerLink="/home">
+      <a class="d-flex align-items-center justify-content-center text-white text-decoration-none" routerLink="/home">
         <img
           src="assets/webtech-streetcats.png"
           alt="Webtech's StreetCats logo"
@@ -12,11 +12,17 @@
         <span class="fs-5 fw-semibold">Webtech's StreetCats</span>
       </a>
 
-      <!-- Login Button -->
-      <button class="btn btn-outline-light" routerLink="/login">
-          Login
-      </button>
-
+      <!-- Signup Button -->
+      <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3">
+        <button class="btn btn-outline-light" routerLink="/sign-up">
+            Sign Up
+        </button>
+  
+        <!-- Login Button -->
+        <button class="btn btn-primary fw-medium" routerLink="/log-in">
+            Log In
+        </button>
+      </div>
     </div>
   </div>
 </header>
