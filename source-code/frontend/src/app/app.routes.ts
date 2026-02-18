@@ -6,7 +6,7 @@ import { Example } from './example/example';
 
 export const routes: Routes = [
     {
-       path: '',
+       path: 'home',
        title: "Webtech's Streetcats",
        component: Home
     },
@@ -19,5 +19,9 @@ export const routes: Routes = [
        path: 'example',
        title: "Example",
        component: Example
+    },
+    {
+      path: '**',
+      redirectTo: '/home'
     }
 ];
