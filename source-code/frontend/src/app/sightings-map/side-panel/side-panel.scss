@@ -13,3 +13,9 @@
     width: 100%;
   }
 }
+
+@media (min-width: 767px) {
+  .side-panel {
+    width: var(--panel-width);
+  }
+}

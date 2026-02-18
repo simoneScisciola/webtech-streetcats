@@ -1,14 +1,15 @@
 <button
   type="button"
-  class="toggle-btn btn btn-primary position-absolute bottom-0 end-0 mb-4 me-4 shadow-lg rounded-circle d-flex align-items-center justify-content-center"
+  class="toggle-btn btn btn-primary position-absolute top-50 end-0 me-2 shadow-lg rounded-circle d-flex align-items-center justify-content-center d-md-block"
+  [class.d-none]="isPanelOpen"
   [attr.aria-label]="isPanelOpen ? 'Chiudi pannello esterno' : 'Apri pannello esterno'"
   title="Pannello esterno"
   (click)="onClick()">
 
+  <fa-icon [icon]="isPanelOpen ? faAngleRight : faAngleLeft"></fa-icon>
+
   <span class="visually-hidden">
     {{ isPanelOpen ? 'Chiudi pannello esterno' : 'Apri pannello esterno' }}
   </span>
-
-  <fa-icon [icon]="isPanelOpen ? faXmark : faList"></fa-icon>
 
 </button>

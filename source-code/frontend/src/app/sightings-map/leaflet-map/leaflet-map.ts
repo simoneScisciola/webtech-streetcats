@@ -80,4 +80,5 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       .bindPopup('Roma')
       .openPopup();
   }
+
 }

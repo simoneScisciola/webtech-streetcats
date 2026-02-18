@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faXmark, faList } from '@fortawesome/free-solid-svg-icons'
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-toggle-button',
@@ -14,8 +14,8 @@ export class ToggleButton {
   @Output() toggleButtonClick = new EventEmitter<void>();
   
   // Font Awesome icons
-  faXmark = faXmark;
-  faList = faList;
+  faAngleRight = faAngleRight;
+  faAngleLeft = faAngleLeft;
 
   onClick() {
     this.toggleButtonClick.emit();
