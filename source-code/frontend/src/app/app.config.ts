@@ -2,8 +2,8 @@ import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalE
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
-import { routes } from './app.routes';
 import { Config } from '#core/services/config/config';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [

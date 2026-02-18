@@ -3,12 +3,12 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-panel-header',
+  selector: 'app-side-panel-header',
   imports: [FontAwesomeModule],
-  templateUrl: './panel-header.html',
-  styleUrl: './panel-header.scss',
+  templateUrl: './side-panel-header.html',
+  styleUrl: './side-panel-header.scss',
 })
-export class PanelHeader {
+export class SidePanelHeader {
 
   @Output() closeButtonClick = new EventEmitter<void>();
 

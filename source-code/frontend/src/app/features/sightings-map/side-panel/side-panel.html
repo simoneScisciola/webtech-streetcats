@@ -1,11 +1,12 @@
 <div 
   class="side-panel d-flex flex-column h-100 bg-white shadow-lg"
   [style.--panel-width]="width">
-    <!-- Header -->
-    <app-panel-header (closeButtonClick)="onClosePanel()"></app-panel-header>
 
-    <!-- Content -->
-    <div class="flex-grow-1 overflow-auto p-3">
+    <app-side-panel-header
+      (closeButtonClick)="onClosePanel()">
+    </app-side-panel-header>
+
+    <app-side-panel-body>
       <app-sighting-card
         title="Sighting #1"
         lastSeen="2 ore fa"
@@ -26,8 +27,7 @@
         description="Avvistamento confermato nella zona sud."
         accentColor="#2F714D">
       </app-sighting-card>
-    </div>
+    </app-side-panel-body>
 
-    <!-- Footer -->
-    <app-panel-footer></app-panel-footer>
+    <app-side-panel-footer />
 </div>

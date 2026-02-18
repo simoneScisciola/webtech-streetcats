@@ -3,12 +3,12 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-panel-footer',
+  selector: 'app-side-panel-footer',
   imports: [FontAwesomeModule],
-  templateUrl: './panel-footer.html',
-  styleUrl: './panel-footer.scss',
+  templateUrl: './side-panel-footer.html',
+  styleUrl: './side-panel-footer.scss',
 })
-export class PanelFooter {
+export class SidePanelFooter {
 
   // Font Awesome icons
   faPlus = faPlus;

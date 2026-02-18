@@ -2,13 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faMapMarkerAlt, faClock, faPlus, faEye } from '@fortawesome/free-solid-svg-icons';
 
-import { PanelHeader } from './panel-header/panel-header';
+import { SidePanelHeader } from './side-panel-header/side-panel-header';
+import { SidePanelBody } from './side-panel-body/side-panel-body';
+import { SidePanelFooter } from './side-panel-footer/side-panel-footer';
 import { SightingCard } from './sighting-card/sighting-card';
-import { PanelFooter } from './panel-footer/panel-footer';
 
 @Component({
   selector: 'app-side-panel',
-  imports: [FontAwesomeModule, PanelHeader, SightingCard, PanelFooter],
+  imports: [FontAwesomeModule, SidePanelHeader, SidePanelBody, SightingCard, SidePanelFooter],
   templateUrl: './side-panel.html',
   styleUrl: './side-panel.scss',
 })
