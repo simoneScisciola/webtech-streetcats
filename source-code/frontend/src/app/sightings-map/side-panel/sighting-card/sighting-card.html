@@ -1,0 +1,19 @@
+<div class="card mb-3 border-4" [style.border-color]="accentColor">
+  <div class="card-body">
+    <h6 class="card-title">
+      <fa-icon [icon]="faMapMarkerAlt" class="me-2" [style.color]="accentColor"></fa-icon>
+      {{title}}
+    </h6>
+    <p class="card-text small text-muted mb-2">
+      <fa-icon [icon]="faClock" class="me-1"></fa-icon>
+      {{lastSeen}}
+    </p>
+    <p class="card-text">
+      {{description}}
+    </p>
+    <button class="btn btn-sm btn-outline-primary">
+      <fa-icon [icon]="faEye" class="me-1"></fa-icon>
+      View
+    </button>
+  </div>
+</div>

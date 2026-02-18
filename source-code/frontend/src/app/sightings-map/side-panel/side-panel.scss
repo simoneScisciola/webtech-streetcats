@@ -1,0 +1,8 @@
+.side-panel {
+  width: var(--panel-width, 400px);
+  height: 100%;
+
+  @media (max-width: 767px) {
+    width: 100vw;
+  }
+}

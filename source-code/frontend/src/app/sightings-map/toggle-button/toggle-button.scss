@@ -1,0 +1,10 @@
+.toggle-btn {
+  width: 45px;
+  height: 45px;
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.toggle-btn:hover {
+  transform: scale(1.1);
+}

@@ -1,0 +1,33 @@
+<div 
+  class="side-panel d-flex flex-column h-100 bg-white shadow-lg"
+  [style.--panel-width]="width">
+    <!-- Header -->
+    <app-panel-header (closeButtonClick)="onClosePanel()"></app-panel-header>
+
+    <!-- Content -->
+    <div class="flex-grow-1 overflow-auto p-3">
+      <app-sighting-card
+        title="Sighting #1"
+        lastSeen="2 ore fa"
+        description="Avvistamento di esempio nella zona centrale."
+        accentColor="#C4513F">
+      </app-sighting-card>
+
+      <app-sighting-card
+        title="Sighting #2"
+        lastSeen="5 ore fa"
+        description="Altro avvistamento nella periferia nord."
+        accentColor="#E5772D">
+      </app-sighting-card>
+
+      <app-sighting-card
+        title="Sighting #3"
+        lastSeen="1 giorno fa"
+        description="Avvistamento confermato nella zona sud."
+        accentColor="#2F714D">
+      </app-sighting-card>
+    </div>
+
+    <!-- Footer -->
+    <app-panel-footer></app-panel-footer>
+</div>
