@@ -3,6 +3,10 @@
 /* Bootstrap Config Stylesheet customized through Sass (Reference: https://sass-lang.com/) */
 @use "./app/shared/styles/bootstrap/bootstrap-config";
 
+body {
+  background-color: var(--bs-light);
+}
+
 /* Animate.css */
 @import "animate.css/animate.min.css";
 

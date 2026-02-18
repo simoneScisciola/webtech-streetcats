@@ -13,7 +13,7 @@
   <div class="panel-wrapper flex-shrink-0 overflow-hidden" [class.is-open]="isPanelOpen()" [style.--panel-width]="sidePanelWidth">
     <app-side-panel 
       [isPanelOpen]="isPanelOpen()"
-      (closeButtonClick)="togglePanel()"
+      (closePanel)="togglePanel()"
       [width]="sidePanelWidth">
     </app-side-panel>
   </div>

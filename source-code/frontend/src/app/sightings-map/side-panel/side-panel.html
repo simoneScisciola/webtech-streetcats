@@ -1,91 +1,33 @@
 <div 
-  class="side-panel bg-white shadow-lg"
+  class="side-panel d-flex flex-column h-100 bg-white shadow-lg"
   [style.--panel-width]="width">
-  
-  <div class="d-flex flex-column h-100">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-primary text-white">
-      <h5 class="mb-0 fw-bold">
-        <fa-icon [icon]="faBinoculars" class="me-2"></fa-icon>
-        Sightings
-      </h5>
-      <button 
-        type="button" 
-        class="btn-close btn-close-white" 
-        aria-label="Close"
-        (click)="onClose()">
-      </button>
-    </div>
+    <app-panel-header (closeButtonClick)="onClosePanel()"></app-panel-header>
 
     <!-- Content -->
     <div class="flex-grow-1 overflow-auto p-3">
-      <div class="card mb-3 border-start border-danger border-4">
-        <div class="card-body">
-          <h6 class="card-title">
-            <fa-icon [icon]="faMapMarkerAlt" class="text-danger me-2"></fa-icon>
-            Sighting #1
-          </h6>
-          <p class="card-text small text-muted mb-2">
-            <fa-icon [icon]="faClock" class="me-1"></fa-icon>
-            2 ore fa
-          </p>
-          <p class="card-text">
-            Avvistamento di esempio nella zona centrale.
-          </p>
-          <button class="btn btn-sm btn-outline-primary">
-            <fa-icon [icon]="faEye" class="me-1"></fa-icon>
-            Visualizza
-          </button>
-        </div>
-      </div>
+      <app-sighting-card
+        title="Sighting #1"
+        lastSeen="2 ore fa"
+        description="Avvistamento di esempio nella zona centrale."
+        accentColor="#C4513F">
+      </app-sighting-card>
 
-      <div class="card mb-3 border-start border-primary border-4">
-        <div class="card-body">
-          <h6 class="card-title">
-            <fa-icon [icon]="faMapMarkerAlt" class="text-primary me-2"></fa-icon>
-            Sighting #2
-          </h6>
-          <p class="card-text small text-muted mb-2">
-            <fa-icon [icon]="faClock" class="me-1"></fa-icon>
-            5 ore fa
-          </p>
-          <p class="card-text">
-            Altro avvistamento nella periferia nord.
-          </p>
-          <button class="btn btn-sm btn-outline-primary">
-            <fa-icon [icon]="faEye" class="me-1"></fa-icon>
-            Visualizza
-          </button>
-        </div>
-      </div>
+      <app-sighting-card
+        title="Sighting #2"
+        lastSeen="5 ore fa"
+        description="Altro avvistamento nella periferia nord."
+        accentColor="#E5772D">
+      </app-sighting-card>
 
-      <div class="card mb-3 border-start border-success border-4">
-        <div class="card-body">
-          <h6 class="card-title">
-            <fa-icon [icon]="faMapMarkerAlt" class="text-success me-2"></fa-icon>
-            Sighting #3
-          </h6>
-          <p class="card-text small text-muted mb-2">
-            <fa-icon [icon]="faClock" class="me-1"></fa-icon>
-            1 giorno fa
-          </p>
-          <p class="card-text">
-            Avvistamento confermato nella zona sud.
-          </p>
-          <button class="btn btn-sm btn-outline-primary">
-            <fa-icon [icon]="faEye" class="me-1"></fa-icon>
-            Visualizza
-          </button>
-        </div>
-      </div>
+      <app-sighting-card
+        title="Sighting #3"
+        lastSeen="1 giorno fa"
+        description="Avvistamento confermato nella zona sud."
+        accentColor="#2F714D">
+      </app-sighting-card>
     </div>
 
     <!-- Footer -->
-    <div class="p-3 border-top bg-light">
-      <button class="btn btn-primary w-100">
-        <fa-icon [icon]="faPlus" class="me-2"></fa-icon>
-        Aggiungi Sighting
-      </button>
-    </div>
-  </div>
+    <app-panel-footer></app-panel-footer>
 </div>
