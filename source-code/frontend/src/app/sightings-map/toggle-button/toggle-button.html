@@ -1,10 +1,9 @@
 <button
   type="button"
-  class="toggle-btn btn btn-primary position-fixed bottom-0 end-0 mb-4 me-4 shadow-lg rounded-circle d-flex align-items-center justify-content-center"
+  class="toggle-btn btn btn-primary position-absolute bottom-0 end-0 mb-4 me-4 shadow-lg rounded-circle d-flex align-items-center justify-content-center"
   [attr.aria-label]="isPanelOpen ? 'Chiudi pannello esterno' : 'Apri pannello esterno'"
   title="Pannello esterno"
-  (click)="onClick()"
->
+  (click)="onClick()">
 
   <span class="visually-hidden">
     {{ isPanelOpen ? 'Chiudi pannello esterno' : 'Apri pannello esterno' }}

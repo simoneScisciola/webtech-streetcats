@@ -18,7 +18,6 @@ export class ToggleButton {
   faList = faList;
 
   onClick() {
-    console.log("Toggle button clicked");
     this.toggleButtonClick.emit();
   }
 

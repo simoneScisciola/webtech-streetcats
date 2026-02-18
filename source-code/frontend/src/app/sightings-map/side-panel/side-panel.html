@@ -1,73 +1,82 @@
 <div 
-  class="position-fixed top-0 end-0 h-100 bg-white shadow-lg animate__animated"
-  [class.animate__slideInRight]="isOpen"
-  [class.animate__slideOutRight]="!isOpen"
-  [class.d-none]="!isOpen && !isAnimating"
-  (animationend)="onAnimationEnd()"
-  style="width: 100%; max-width: 400px; z-index: 1000; transition: transform 0.3s ease-in-out;">
+  class="side-panel position-fixed top-0 end-0 h-100 bg-white shadow-lg"
+  [class.panel-open]="isPanelOpen"
+  [style.width]="width">
   
   <div class="d-flex flex-column h-100">
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+    <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-primary text-white">
       <h5 class="mb-0 fw-bold">
-        <i class="fas fa-binoculars me-2"></i>
+        <fa-icon [icon]="faBinoculars" class="me-2"></fa-icon>
         Sightings
       </h5>
       <button 
         type="button" 
-        class="btn-close" 
+        class="btn-close btn-close-white" 
         aria-label="Close"
-        (click)="closePanel.emit()">
+        (click)="onClose()">
       </button>
     </div>
 
     <!-- Content -->
     <div class="flex-grow-1 overflow-auto p-3">
-      <div class="card mb-3">
+      <div class="card mb-3 border-start border-danger border-4">
         <div class="card-body">
           <h6 class="card-title">
-            <i class="fas fa-map-marker-alt text-danger me-2"></i>
+            <fa-icon [icon]="faMapMarkerAlt" class="text-danger me-2"></fa-icon>
             Sighting #1
           </h6>
           <p class="card-text small text-muted mb-2">
-            <i class="far fa-clock me-1"></i>
+            <fa-icon [icon]="faClock" class="me-1"></fa-icon>
             2 ore fa
           </p>
           <p class="card-text">
             Avvistamento di esempio nella zona centrale.
           </p>
+          <button class="btn btn-sm btn-outline-primary">
+            <fa-icon [icon]="faEye" class="me-1"></fa-icon>
+            Visualizza
+          </button>
         </div>
       </div>
 
-      <div class="card mb-3">
+      <div class="card mb-3 border-start border-primary border-4">
         <div class="card-body">
           <h6 class="card-title">
-            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+            <fa-icon [icon]="faMapMarkerAlt" class="text-primary me-2"></fa-icon>
             Sighting #2
           </h6>
           <p class="card-text small text-muted mb-2">
-            <i class="far fa-clock me-1"></i>
+            <fa-icon [icon]="faClock" class="me-1"></fa-icon>
             5 ore fa
           </p>
           <p class="card-text">
             Altro avvistamento nella periferia nord.
           </p>
+          <button class="btn btn-sm btn-outline-primary">
+            <fa-icon [icon]="faEye" class="me-1"></fa-icon>
+            Visualizza
+          </button>
         </div>
       </div>
 
-      <div class="card mb-3">
+      <div class="card mb-3 border-start border-success border-4">
         <div class="card-body">
           <h6 class="card-title">
-            <i class="fas fa-map-marker-alt text-success me-2"></i>
+            <fa-icon [icon]="faMapMarkerAlt" class="text-success me-2"></fa-icon>
             Sighting #3
           </h6>
           <p class="card-text small text-muted mb-2">
-            <i class="far fa-clock me-1"></i>
+            <fa-icon [icon]="faClock" class="me-1"></fa-icon>
             1 giorno fa
           </p>
           <p class="card-text">
             Avvistamento confermato nella zona sud.
           </p>
+          <button class="btn btn-sm btn-outline-primary">
+            <fa-icon [icon]="faEye" class="me-1"></fa-icon>
+            Visualizza
+          </button>
         </div>
       </div>
     </div>
@@ -75,7 +84,7 @@
     <!-- Footer -->
     <div class="p-3 border-top bg-light">
       <button class="btn btn-primary w-100">
-        <i class="fas fa-plus me-2"></i>
+        <fa-icon [icon]="faPlus" class="me-2"></fa-icon>
         Aggiungi Sighting
       </button>
     </div>

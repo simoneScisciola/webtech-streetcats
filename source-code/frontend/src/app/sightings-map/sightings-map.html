@@ -1,16 +1,18 @@
 <div class="w-100 h-100 d-flex position-relative">
-  <app-leaflet-map 
-    [sidePanelOpen]="isPanelOpen()"
-  >
+  <app-leaflet-map
+    [isPanelOpen]="isPanelOpen()"
+    [style.width]="isPanelOpen() ? `calc(100% - ${sidePanelWidth})` : '100%'"
+    [style.transition]="'width 0.3s ease-in-out'">
   </app-leaflet-map>
   
   <app-side-panel 
-    [isOpen]="isPanelOpen()"
-    (closePanel)="toggleSidePanel()">
+    [isPanelOpen]="isPanelOpen()"
+    (closeButtonClick)="togglePanel()"
+    [width]="sidePanelWidth">
   </app-side-panel>
   
   <app-toggle-button 
     [isPanelOpen]="isPanelOpen()"
-    (toggleButtonClick)="toggleSidePanel()">
+    (toggleButtonClick)="togglePanel()">
   </app-toggle-button>
 </div>
