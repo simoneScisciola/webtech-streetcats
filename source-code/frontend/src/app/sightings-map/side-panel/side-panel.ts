@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter} from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faMapMarkerAlt, faClock, faPlus, faEye } from '@fortawesome/free-solid-svg-icons';
 
