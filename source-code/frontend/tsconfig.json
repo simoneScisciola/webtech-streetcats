@@ -7,7 +7,9 @@
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "@shared/*": ["app/shared/*"]
+      "#core/*": ["app/core/*"],
+      "#shared/*": ["app/shared/*"],
+      "#features/*": ["app/features/*"]
     },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

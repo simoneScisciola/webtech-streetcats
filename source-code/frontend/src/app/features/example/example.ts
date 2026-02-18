@@ -3,9 +3,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faApplePay } from '@fortawesome/free-brands-svg-icons'
 
-import { LoginForm } from '../auth/login/login-form/login-form';
-import { SignupForm } from '../auth/signup/signup-form/signup-form';
-import { SightingForm } from '../sighting-form/sighting-form';
+import { LoginForm } from '#features/auth/login/login-form/login-form';
+import { SignupForm } from '#features/auth/signup/signup-form/signup-form';
+import { SightingForm } from '#features/sighting-form/sighting-form';
 
 @Component({
   selector: 'app-example',

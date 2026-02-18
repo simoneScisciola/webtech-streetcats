@@ -1,5 +1,4 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars } from '@fortawesome/free-solid-svg-icons';
 

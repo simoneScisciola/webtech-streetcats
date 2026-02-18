@@ -4,8 +4,8 @@ import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angula
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faTag, faAlignLeft, faMapMarkerAlt, faCalendarAlt, faLayerGroup, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-import { FORM_CARD_IMPORTS } from '@shared/components/form-card/form-card-imports';
-import { FormField } from '../shared/components/form-field/form-field';
+import { FORM_CARD_IMPORTS } from '#shared/components/form-card/form-card-imports';
+import { FormField } from '#shared/components/form-field/form-field';
 
 export interface SightingFormValue {
   title:       string;

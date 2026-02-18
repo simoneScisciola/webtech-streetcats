@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { SightingFormValue } from '../../../sighting-form/sighting-form';
+import { SightingFormValue } from '#features/sighting-form/sighting-form';
 
 export interface SightingModel extends SightingFormValue {
   id: string;
