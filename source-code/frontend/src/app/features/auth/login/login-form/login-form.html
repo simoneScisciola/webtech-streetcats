@@ -1,19 +1,19 @@
 <app-form-card>
 
   <app-form-card-header
-    title="Accedi"
-    subtitle="Bentornato! Inserisci le tue credenziali."
+    title="Log in"
+    subtitle="Welcome back! Enter your credentials."
     [icon]="icons.login">
   </app-form-card-header>
 
   <app-form-card-body>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <app-form-card-field
         id="email"
         label="Email"
         type="email"
-        placeholder="nome@esempio.com"
+        placeholder="name@example.com"
         [control]="email"
         [icon]="icons.email"
         [errors]="emailErrors">
@@ -23,7 +23,7 @@
         id="password"
         label="Password"
         type="password"
-        placeholder="••••••••"
+        placeholder="••••••••••"
         [control]="password"
         [icon]="icons.lock"
         [errors]="passwordErrors">
@@ -32,21 +32,21 @@
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" id="remember">
-          <label class="form-check-label small" for="remember">Ricordami</label>
+          <label class="form-check-label small" for="remember">Remember me</label>
         </div>
-        <a href="#" class="small text-primary text-decoration-none">Password dimenticata?</a>
+        <a href="#" class="small text-primary text-decoration-none">Forgot password?</a>
       </div>
 
       <button type="submit" class="btn btn-primary w-100">
         <fa-icon [icon]="icons.login" class="me-2"></fa-icon>
-        Accedi
+        Log in
       </button>
-
     </form>
+
   </app-form-card-body>
 
   <app-form-card-footer class="small">
-    Non hai un account? <a href="#" class="text-primary text-decoration-none fw-semibold">Registrati</a>
+    No account? <a routerLink="/sign-up" class="text-primary text-decoration-none fw-semibold">Sign up</a>
   </app-form-card-footer>
 
 </app-form-card>
