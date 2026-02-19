@@ -2,10 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Auth } from '#core/services/auth/auth';
+import { Navbar } from '#features/navbar/navbar';
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [Navbar],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

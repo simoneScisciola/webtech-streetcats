@@ -1,0 +1,30 @@
+<nav>
+  <ul ngbNav class="nav gap-1 align-items-center mb-0 p-0 list-unstyled">
+
+    <li ngbNavItem>
+      <a
+        ngbNavLink
+        routerLink="/home"
+        routerLinkActive="active"
+        class="nav-link-custom nav-link rounded px-3 py-2 text-white-50 fw-normal bg-transparent"
+      >
+        Home
+      </a>
+    </li>
+
+    <!-- Separator -->
+    <li class="text-white-50 user-select-none px-1" aria-hidden="true">|</li>
+
+    <li ngbNavItem>
+      <a
+        ngbNavLink
+        routerLink="/sightings-map"
+        routerLinkActive="active"
+        class="nav-link-custom nav-link rounded px-3 py-2 text-white-50 fw-normal bg-transparent"
+      >
+        Sightings Map
+      </a>
+    </li>
+
+  </ul>
+</nav>

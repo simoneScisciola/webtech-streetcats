@@ -1,6 +1,6 @@
 <header class="bg-dark text-white p-1">
   <div class="container-fluid">
-    <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3 py-3">
+    <div class="d-flex flex-wrap justify-content-center justify-content-md-between gap-3 py-3">
       
       <!-- Logo + App name -->
       <a class="d-flex align-items-center justify-content-center text-white text-decoration-none" routerLink="/home">
@@ -12,8 +12,11 @@
         <span class="fs-5 fw-semibold">Webtech's StreetCats</span>
       </a>
 
+      <!-- Navbar ng-bootstrap -->
+      <app-navbar></app-navbar>
+
       <!-- Auth area -->
-      <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3" style="height: 38px;">
+      <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3" style="min-height: 38px;">
 
         @if(auth.isAuthenticated()) {
           <div class="d-flex align-items-center column-gap-3">
