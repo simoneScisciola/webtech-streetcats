@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faRightToBracket, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faRightToBracket, faUser, faLock } from '@fortawesome/free-solid-svg-icons';
 
 import { FormCard } from '#shared/components/form-card/form-card';
 import { FormCardHeader } from '#shared/components/form-card/form-card-header/form-card-header';
@@ -18,34 +18,34 @@ import { FormCardField } from '#shared/components/form-card/form-card-field/form
 })
 export class LoginForm {
 
-  @Output() formSubmitted = new EventEmitter<{ email: string; password: string }>();
+  @Output() formSubmitted = new EventEmitter<{ username: string; password: string }>();
 
   // Field labels
   icons = {
     login: faRightToBracket,
-    email: faEnvelope,
+    user: faUser,
     lock: faLock
   };
 
   // Form
   loginForm = new FormGroup({
-    email: new FormControl('', [
-      Validators.required,
-      Validators.email]),
+    username: new FormControl('', [
+      Validators.required]),
     password: new FormControl('', [
-        Validators.required,
-        hasUpperCase,
-        hasNumber,
-        hasSpecialChar]),
+      Validators.required]),
   });
 
   // Error messages
-  emailErrors = { required: 'Email required.', email: 'Invalid email format.' };
-  passwordErrors = { required: 'Password required.', hasUpperCase: 'Password must contain a uppercase character', hasNumber: 'Password must contain a number', hasSpecialChar: 'Password must contain a special character' };
+  usernameErrors = {
+    required:  'Username required.'
+  };
+  passwordErrors = {
+    required: 'Password required.'
+  };
   
   // Getters
-  get email() {
-    return this.loginForm.controls.email;
+  get username() {
+    return this.loginForm.controls.username;
   }
   get password() {
     return this.loginForm.controls.password;
@@ -57,30 +57,10 @@ export class LoginForm {
   onSubmit(): void {
     if (this.loginForm.valid) {
       // Send fields to upper component
-      this.formSubmitted.emit(this.loginForm.getRawValue() as { email: string; password: string });
+      const { username, password } = this.loginForm.getRawValue();
+      this.formSubmitted.emit({ username: username!, password: password! });
     } else {
       this.loginForm.markAllAsTouched();
     }
   }
 }
-
-// Password must contain a uppercase character
-function hasUpperCase(control: AbstractControl): ValidationErrors | null {
-  const password = control.value as string || '';
-  
-  return /[A-Z]/.test(password) ? null : { hasUpperCase: true };
-};
-
-// Password must contain a number character
-function hasNumber(control: AbstractControl): ValidationErrors | null {
-  const password = control.value as string || '';
-
-  return /\d/.test(password) ? null : { hasNumber: true };
-};
-
-// Password must contain a special character
-function hasSpecialChar(control: AbstractControl): ValidationErrors | null {
-  const password = control.value as string || '';
-
-  return /[!@#$%^&*(),.?":{}|<>]/.test(password) ? null : { hasSpecialChar: true };
-};

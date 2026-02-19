@@ -19,12 +19,12 @@ export const routes: Routes = [
     },
     {
        path: 'log-in',
-       title: "Log in",
+       title: "Log In",
        component: Login
     },
     {
        path: 'sign-up',
-       title: "Sign up",
+       title: "Sign Up",
        component: Signup
     },
     {

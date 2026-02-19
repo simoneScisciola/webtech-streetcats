@@ -1,4 +1,5 @@
-import { Component, output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUserPlus, faUser, faEnvelope, faLock, faShield } from '@fortawesome/free-solid-svg-icons';
@@ -11,73 +12,120 @@ import { FormCardField } from '#shared/components/form-card/form-card-field/form
 
 @Component({
   selector: 'app-signup-form',
-  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardFooter, FormCardField, FontAwesomeModule],
+  imports: [ReactiveFormsModule, RouterLink, FormCard, FormCardHeader, FormCardBody, FormCardFooter, FormCardField, FontAwesomeModule],
   templateUrl: './signup-form.html',
   styleUrl: './signup-form.scss',
 })
 export class SignupForm {
-  formSubmit = output<{ username: string; email: string; password: string }>();
 
-  icons = { signup: faUserPlus, user: faUser, email: faEnvelope, lock: faLock, shield: faShield };
+  @Output() formSubmitted = new EventEmitter<{ username: string; email: string; password: string }>();
 
+  // Field labels
+  icons = {
+    signup: faUserPlus,
+    user: faUser,
+    email: faEnvelope,
+    lock: faLock,
+    shield: faShield
+  };
+
+  // Form
   signupForm = new FormGroup({
     username: new FormControl('', [
-      Validators.required,
-      Validators.minLength(3)]),
+      Validators.required]),
     email: new FormControl('', [
         Validators.required,
-        Validators.email]),
+        Validators.pattern(/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/)]),
     password: new FormControl('', [
       Validators.required,
-      Validators.minLength(8)]),
-    confirmPassword: new FormControl('', 
-      [Validators.required])
+      hasUpperCaseValidator,
+      hasNumberValidator,
+      hasSpecialCharValidator]),
+    confirmPassword: new FormControl('', [
+      Validators.required])
   },
   {
     validators: passwordMatchValidator,
   });
 
+  // Error messages
   usernameErrors = {
-    required:  'Username obbligatorio.',
-    minlength: 'Minimo 3 caratteri.',
+    required:  'Username required.',
   };
   emailErrors = {
-    required: 'Email obbligatoria.',
-    email:    'Formato email non valido.',
+    required: 'Email required.',
+    pattern: 'Invalid email format.'
   };
   passwordErrors = {
-    required:  'Password obbligatoria.',
-    minlength: 'Minimo 8 caratteri.',
+    required: 'Password required.',
+    hasUpperCase: 'Password must contain a uppercase character',
+    hasNumber: 'Password must contain a number',
+    hasSpecialChar: 'Password must contain a special character'
   };
   confirmErrors = {
-    required:         'Conferma la password.',
-    passwordMismatch: 'Le password non coincidono.',
+    required: 'Confirm password.',
+    passwordMismatch: 'Passwords do not match.',
   };
 
+  // Gettes
+  get username() {
+    return this.signupForm.controls.username;
+  }
+  get email() {
+    return this.signupForm.controls.email; 
+  }
+  get password() {
+    return this.signupForm.controls.password;
+  }
+  get confirmPassword() {
+    return this.signupForm.controls.confirmPassword;
+  }
+
+  // Inject passwordMismatch errore in confirmPassword field
+  get confirmControl() {
+    const control = this.confirmPassword;
+    if (this.signupForm.hasError('passwordMismatch') && control.touched) {
+      control.setErrors({ passwordMismatch: true });
+    }
+    return control;
+  }
+
+  /**
+   * Manages form submit
+   */
   onSubmit(): void {
     if (this.signupForm.valid) {
+      // Send fields to upper component
       const { username, email, password } = this.signupForm.getRawValue();
-      this.formSubmit.emit({ username: username!, email: email!, password: password! });
+      this.formSubmitted.emit({ username: username!, email: email!, password: password! });
     } else {
       this.signupForm.markAllAsTouched();
     }
   }
-
-  get username()        { return this.signupForm.controls.username; }
-  get email()           { return this.signupForm.controls.email; }
-  get password()        { return this.signupForm.controls.password; }
-  get confirmPassword() { return this.signupForm.controls.confirmPassword; }
-
-  // Inietta l'errore di gruppo nel campo confirmPassword
-  get confirmControl() {
-    const ctrl = this.confirmPassword;
-    if (this.signupForm.hasError('passwordMismatch') && ctrl.touched) {
-      ctrl.setErrors({ passwordMismatch: true });
-    }
-    return ctrl;
-  }
 }
 
+// Password must contain a uppercase character
+function hasUpperCaseValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.value as string || '';
+  
+  return /[A-Z]/.test(password) ? null : { hasUpperCase: true };
+};
+
+// Password must contain a number character
+function hasNumberValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.value as string || '';
+
+  return /\d/.test(password) ? null : { hasNumber: true };
+};
+
+// Password must contain a special character
+function hasSpecialCharValidator(control: AbstractControl): ValidationErrors | null {
+  const password = control.value as string || '';
+
+  return /[!@#$%^&*(),.?":{}|<>]/.test(password) ? null : { hasSpecialChar: true };
+};
+
+// Password and Confirm password must match
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
   const confirm  = control.get('confirmPassword')?.value;

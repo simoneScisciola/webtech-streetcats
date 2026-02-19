@@ -4,8 +4,8 @@ import createError from "http-errors"; // HTTP errors middleware (https://www.np
 
 import { UserController } from "#controllers/UserController.js";
 
-
 export class AuthController {
+
     /**
      * Checks that the given credentials are valid
      * @param loggingUsername The username to check
@@ -72,9 +72,7 @@ export class AuthController {
             authToken: jwtToken,
             // refreshToken: null, // TODO: implement refresh token
             expiresIn: expiresIn,
-            user: {
-                username: loggedUser.username
-            }
+            user: loggedUser
         };
     }
 }

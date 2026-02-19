@@ -28,7 +28,7 @@ authRouter.post("/auth", async (req: Request, res: Response, next: NextFunction)
 
         // Send the JWT in the HTTP Response JSON body
         res.status(200).json(
-            AuthController.buildJwtResponse(loggingUsername)
+            await AuthController.buildJwtResponse(loggingUsername)
         );
     } catch (err) {
         logger.warn(`Could not log in: ${(err as Error).message}`);
@@ -50,7 +50,7 @@ authRouter.post("/signup", [validateSignupFields], async (req: Request, res: Res
 
         // Send the JWT in the HTTP Response JSON body
         res.status(201).json(
-            AuthController.buildJwtResponse(result.username)
+            await AuthController.buildJwtResponse(result.username)
         );
     } catch (err) {
         logger.warn(`Could not sign up: ${(err as Error).message}`);

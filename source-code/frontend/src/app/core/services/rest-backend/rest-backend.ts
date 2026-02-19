@@ -5,12 +5,12 @@ import { Observable } from 'rxjs';
 import { Config } from '#core/services/config/config';
 
 /**
- * Handles HTTP requests toward server.
+ * Handles HTTP requests toward Rest Server.
  */
 @Injectable({
   providedIn: 'root',
 })
-export class HttpRequester {
+export class RestBackend {
   private readonly http = inject(HttpClient);
   private readonly config = inject(Config);
 
@@ -38,7 +38,7 @@ export class HttpRequester {
         'Content-Type': 'application/json',
         ...headers,
       }),
-      body: body ? JSON.stringify(body) : null, // Body is available only in POST/PUT/DELETE
+      body: body ? JSON.stringify(body) : null, // Body is available only in POST/PUT/PATCH
     };
 
     return this.http.request<T>(method, url, httpOptions);

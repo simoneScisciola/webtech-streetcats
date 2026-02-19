@@ -1,18 +1,17 @@
 <app-form-card>
 
   <app-form-card-header
-    title="Crea un account"
-    subtitle="Unisciti alla community degli avvistatori."
+    title="Sign Up"
+    subtitle="Join our community!"
     [icon]="icons.signup">
   </app-form-card-header>
 
   <app-form-card-body>
-  
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
       <app-form-card-field
         id="username"
         label="Username"
-        placeholder="il_tuo_username"
+        placeholder="your_username"
         [control]="username"
         [icon]="icons.user"
         [errors]="usernameErrors">
@@ -22,7 +21,7 @@
         id="email"
         label="Email"
         type="email"
-        placeholder="nome@esempio.com"
+        placeholder="name@example.com"
         [control]="email"
         [icon]="icons.email"
         [errors]="emailErrors">
@@ -32,7 +31,7 @@
         id="password"
         label="Password"
         type="password"
-        placeholder="••••••••"
+        placeholder="••••••••••"
         [control]="password"
         [icon]="icons.lock"
         [errors]="passwordErrors">
@@ -40,25 +39,23 @@
 
       <app-form-card-field
         id="confirmPassword"
-        label="Conferma Password"
+        label="Confirm Password"
         type="password"
-        placeholder="••••••••"
+        placeholder="••••••••••"
         [control]="confirmControl"
         [icon]="icons.shield"
         [errors]="confirmErrors">
       </app-form-card-field>
 
-      <button type="submit" class="btn btn-primary w-100">
+      <button type="submit" class="btn btn-primary w-100 fw-medium">
         <fa-icon [icon]="icons.signup" class="me-2"></fa-icon>
-        Registrati
+        Sign Up
       </button>
-
     </form>
-
   </app-form-card-body>
 
   <app-form-card-footer class="small">
-    Hai già un account? <a href="#" class="text-primary text-decoration-none fw-semibold">Accedi</a>
+    Already have an account? <a routerLink="/log-in" class="text-primary text-decoration-none fw-semibold">Log In</a>
   </app-form-card-footer>
 
 </app-form-card>

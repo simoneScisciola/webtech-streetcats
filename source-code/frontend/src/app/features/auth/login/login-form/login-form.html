@@ -1,22 +1,20 @@
 <app-form-card>
 
   <app-form-card-header
-    title="Log in"
+    title="Log In"
     subtitle="Welcome back! Enter your credentials."
     [icon]="icons.login">
   </app-form-card-header>
 
   <app-form-card-body>
-
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <app-form-card-field
-        id="email"
-        label="Email"
-        type="email"
-        placeholder="name@example.com"
-        [control]="email"
-        [icon]="icons.email"
-        [errors]="emailErrors">
+        id="username"
+        label="Username"
+        placeholder="your_username"
+        [control]="username"
+        [icon]="icons.user"
+        [errors]="usernameErrors">
       </app-form-card-field>
 
       <app-form-card-field
@@ -37,16 +35,15 @@
         <a href="#" class="small text-primary text-decoration-none">Forgot password?</a>
       </div>
 
-      <button type="submit" class="btn btn-primary w-100">
+      <button type="submit" class="btn btn-primary w-100 fw-medium">
         <fa-icon [icon]="icons.login" class="me-2"></fa-icon>
-        Log in
+        Log In
       </button>
     </form>
-
   </app-form-card-body>
 
   <app-form-card-footer class="small">
-    No account? <a routerLink="/sign-up" class="text-primary text-decoration-none fw-semibold">Sign up</a>
+    No account? <a routerLink="/sign-up" class="text-primary text-decoration-none fw-semibold">Sign Up</a>
   </app-form-card-footer>
 
 </app-form-card>
