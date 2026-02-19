@@ -6,7 +6,7 @@
     type="button"
     [attr.aria-label]="'Menu utente di ' + auth.username()"
   >
-    <span class="fs-5">Hello, <span class="fw-semibold">{{ auth.username() }}</span></span>
+    <span>Hello, <span class="fw-semibold">{{ auth.username() }}</span></span>
     <img [src]="auth.avatarUrl()" alt="User Icon" class="rounded-circle" height="32"/>
   </button>
 
