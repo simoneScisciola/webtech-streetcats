@@ -1,7 +1,12 @@
 export interface AuthState {
-  username: string | null,
-  authToken: string | null,
-  isAuthenticated: boolean
+  authToken: string | null;
+  isAuthenticated: boolean;
+  user: {
+    username: string | null;
+    avatarUrl?: string | null;
+    email?: string | null;
+    // Other fields
+  } | null;
 }
 
 export interface LoginPayload {

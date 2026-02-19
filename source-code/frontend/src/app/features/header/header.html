@@ -12,16 +12,23 @@
         <span class="fs-5 fw-semibold">Webtech's StreetCats</span>
       </a>
 
-      <!-- Signup Button -->
-      <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3">
-        <button class="btn btn-outline-light" routerLink="/sign-up">
-            Sign Up
-        </button>
-  
-        <!-- Login Button -->
-        <button class="btn btn-primary fw-medium" routerLink="/log-in">
-            Log In
-        </button>
+      <!-- Auth area -->
+      <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3" style="height: 38px;">
+
+        @if(auth.isAuthenticated()) {
+          <div class="d-flex align-items-center column-gap-3">
+            <div>
+              Hello, <span class="fw-semibold">{{ auth.username() }}</span>
+            </div>
+            <img [src]="auth.avatarUrl()" alt="User Icon" class="rounded-circle" height="32"/>
+          </div>
+        } @else {
+          <!-- Signup Button -->
+          <button class="btn btn-outline-light" (click)="signup()">Sign Up</button>
+    
+          <!-- Login Button -->
+          <button class="btn btn-primary fw-medium" (click)="login()">Log In</button>
+        }
       </div>
     </div>
   </div>

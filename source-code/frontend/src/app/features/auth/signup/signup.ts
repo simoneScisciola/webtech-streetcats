@@ -12,16 +12,27 @@ import { SignupForm } from './signup-form/signup-form';
   styleUrl: './signup.scss',
 })
 export class Signup {
+
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
 
-  onSignup(payload: SignupPayload): void {
+  /**
+   * Sends sign up request
+   * @param payload submitted data
+   */
+  onSignup(payload: SignupPayload) {
     this.auth.signup(payload).subscribe({
       next: (res) => {
         console.log("Response:", res);
-        this.router.navigate(['/map']);
+
+        // Update Auth state
+        this.auth.updateAuthResponse(res);
+
+        // Redirect
+        this.router.navigate(['/home']);
       },
       error: (err) => console.error('Sign Up fallito', err),
     });
   }
+
 }
