@@ -2,20 +2,18 @@
 
   <!-- Map + Toggle button -->
   <div class="position-relative flex-grow-1">
-    <app-leaflet-map [isPanelOpen]="isPanelOpen()"></app-leaflet-map>
+    <app-leaflet-map [isPanelOpen]="isPanelOpen()" />
     <app-toggle-button 
       [isPanelOpen]="isPanelOpen()"
-      (toggleButtonClick)="togglePanel()">
-    </app-toggle-button>
+      (toggleButtonClick)="togglePanel()" />
   </div>
 
   <!-- Side Panel -->
   <div class="panel-wrapper flex-shrink-0 overflow-hidden" [class.is-open]="isPanelOpen()" [style.--panel-width]="sidePanelWidth">
-    <app-side-panel 
+    <app-sightings-side-panel 
       [isPanelOpen]="isPanelOpen()"
       (closePanel)="togglePanel()"
-      [width]="sidePanelWidth">
-    </app-side-panel>
+      [width]="sidePanelWidth" />
   </div>
 
 </div>

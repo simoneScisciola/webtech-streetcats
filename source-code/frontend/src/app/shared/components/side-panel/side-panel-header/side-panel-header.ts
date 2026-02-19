@@ -1,6 +1,6 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBinoculars } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-side-panel-header',
@@ -10,10 +10,9 @@ import { faBinoculars } from '@fortawesome/free-solid-svg-icons';
 })
 export class SidePanelHeader {
 
+  @Input({ required: true }) title = '';
+  @Input() icon: IconDefinition | null = null;
   @Output() closeButtonClick = new EventEmitter<void>();
-
-  // Font Awesome icons
-  faBinoculars = faBinoculars;
 
   onClose() {
     this.closeButtonClick.emit();

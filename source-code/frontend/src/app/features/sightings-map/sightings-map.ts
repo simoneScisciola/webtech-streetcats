@@ -1,12 +1,12 @@
 import { Component, signal } from '@angular/core';
 
 import { LeafletMap } from './leaflet-map/leaflet-map';
-import { SidePanel } from './side-panel/side-panel';
+import { SightingsSidePanel } from './sightings-side-panel/sightings-side-panel';
 import { ToggleButton } from './toggle-button/toggle-button';
 
 @Component({
   selector: 'app-sightings-map',
-  imports: [LeafletMap, ToggleButton, SidePanel],
+  imports: [LeafletMap, ToggleButton, SightingsSidePanel],
   templateUrl: './sightings-map.html',
   styleUrl: './sightings-map.scss',
 })
