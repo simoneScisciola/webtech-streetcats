@@ -1,5 +1,6 @@
 import Jwt from "jsonwebtoken"; // JWT middleware (https://www.npmjs.com/package/jsonwebtoken)
 import bcrypt from "bcrypt"; // bcrypt hashing algorithm (https://www.npmjs.com/package/bcrypt)
+import createError from "http-errors"; // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
 import { UserController } from "#controllers/UserController.js";
 
@@ -50,5 +51,30 @@ export class AuthController {
      */
     static isTokenValid(token: string){
         return Jwt.verify(token, process.env.JWT_SECRET_TOKEN);
+    }
+
+    /**
+     * Build the JWT Response object.
+     * @param loggedUsername Username of the logged user
+     * @param expiresIn JWT Token expiration time. Default to 24 hours in seconds.
+     */
+    static async buildJwtResponse(loggedUsername: string, expiresIn: number = 24*60*60) {
+
+        const loggedUser = await UserController.findById(loggedUsername);
+        if (loggedUser === null) {
+            throw new createError.InternalServerError("Could not retrieve user info.");
+        }
+
+        const jwtToken = AuthController.issueToken(loggedUser.username, loggedUser.rolename, expiresIn);
+
+        // Send the JWT in the HTTP Response JSON body
+        return {
+            authToken: jwtToken,
+            // refreshToken: null, // TODO: implement refresh token
+            expiresIn: expiresIn,
+            user: {
+                username: loggedUser.username
+            }
+        };
     }
 }
