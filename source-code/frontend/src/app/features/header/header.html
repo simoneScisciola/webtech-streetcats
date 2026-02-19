@@ -1,7 +1,7 @@
-<header class="bg-dark text-white p-1">
-  <div class="container-fluid">
-    <div class="d-flex flex-wrap justify-content-center justify-content-md-between gap-3 py-3">
-      
+<header class="bg-dark text-white">
+  <div class="container-fluid p-3">
+    <div class="d-flex flex-column flex-lg-row align-items-center justify-content-lg-between gap-3">
+
       <!-- Logo + App name -->
       <a class="d-flex align-items-center justify-content-center text-white text-decoration-none" routerLink="/home">
         <img
@@ -16,23 +16,12 @@
       <app-navbar></app-navbar>
 
       <!-- Auth area -->
-      <div class="d-flex flex-wrap justify-content-center justify-content-sm-between gap-3" style="min-height: 38px;">
+      @if(auth.isAuthenticated()) {
+        <app-profile-dropdown />
+      } @else {
+        <app-auth-area />
+      }
 
-        @if(auth.isAuthenticated()) {
-          <div class="d-flex align-items-center column-gap-3">
-            <div>
-              Hello, <span class="fw-semibold">{{ auth.username() }}</span>
-            </div>
-            <img [src]="auth.avatarUrl()" alt="User Icon" class="rounded-circle" height="32"/>
-          </div>
-        } @else {
-          <!-- Signup Button -->
-          <button class="btn btn-outline-light" (click)="signup()">Sign Up</button>
-    
-          <!-- Login Button -->
-          <button class="btn btn-primary fw-medium" (click)="login()">Log In</button>
-        }
-      </div>
     </div>
   </div>
 </header>

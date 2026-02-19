@@ -1,31 +1,19 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 import { Auth } from '#core/services/auth/auth';
 import { Navbar } from '#features/navbar/navbar';
+import { ProfileDropdown } from './profile-dropdown/profile-dropdown';
+import { AuthArea } from './auth-area/auth-area';
 
 @Component({
   selector: 'app-header',
-  imports: [Navbar],
+  imports: [Navbar, RouterLink, ProfileDropdown, AuthArea],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
 export class Header {
 
   readonly auth = inject(Auth);
-  private readonly router = inject(Router);
-
-  login() {
-    this.router.navigate(["/log-in"]);
-  }
-
-  signup() {
-    this.router.navigate(["/sign-up"]);
-  }
-
-  logout() {
-    this.auth.logout();
-    this.router.navigate(["/home"]);
-  }
 
 }

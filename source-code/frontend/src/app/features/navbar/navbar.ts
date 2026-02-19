@@ -1,18 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import {
-	NgbNavContent,
-	NgbNav,
-	NgbNavItem,
-	NgbNavItemRole,
-	NgbNavLinkButton,
-	NgbNavLinkBase,
-	NgbNavOutlet,
-} from '@ng-bootstrap/ng-bootstrap';
+import { NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLinkBase } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, NgbNavContent, NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLinkButton, NgbNavLinkBase, NgbNavOutlet],
+  imports: [RouterLink, RouterLinkActive, NgbNav, NgbNavItem, NgbNavItemRole, NgbNavLinkBase],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
