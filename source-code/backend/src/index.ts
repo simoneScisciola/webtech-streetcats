@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
+import express from "express"; // Express framework (https://expressjs.com/)
 import cors from "cors"; // Cors middleware (https://expressjs.com/en/resources/middleware/cors.html)
 
 import "#config/env.js"
@@ -23,7 +23,14 @@ const PORT = 3000;
 setupMorgan(app);
 
 // Register the cors middleware
-app.use(cors());
+const FRONTEND_ADDRESS = process.env.FRONTEND_ADDRESS;
+const FRONTEND_PORT = process.env.FRONTEND_PORT;
+
+app.use(cors({
+    origin: `http://${FRONTEND_ADDRESS}:${FRONTEND_PORT}`,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Parse the JSON payload of incoming requests
 app.use(express.json());
