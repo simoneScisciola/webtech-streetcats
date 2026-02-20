@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Config } from '#core/services/config/config';
@@ -11,6 +11,7 @@ import { Config } from '#core/services/config/config';
   providedIn: 'root',
 })
 export class RestBackend {
+
   private readonly http = inject(HttpClient);
   private readonly config = inject(Config);
 
@@ -28,14 +29,31 @@ export class RestBackend {
     endpoint: string,
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = 'GET',
     body: any = null,
-    params: any = null,
+    params: Record<string, any> | null = null,
     headers: Record<string, string> = {}
   ): Observable<T> {
-    
-    const url = `${this.baseUrl}${endpoint}`;
-    
-    if (params) {
 
+    const url = `${this.baseUrl}${endpoint}`;
+
+    // Parse params
+    let httpParams = new HttpParams();
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value === null || value === undefined) {
+          return;
+        }
+
+        if (Array.isArray(value)) {
+          // Support array params (a=[1, 2, 3...] becomes ?a=1&a=2&a=3...)
+          value.forEach(v => {
+            httpParams = httpParams.append(key, String(v));
+          });
+        } else {
+          // Single param
+          httpParams = httpParams.append(key, String(value));
+        }
+      });
     }
 
     const httpOptions = {
@@ -43,9 +61,11 @@ export class RestBackend {
         'Content-Type': 'application/json',
         ...headers,
       }),
-      body: body ? JSON.stringify(body) : null, // Body is available only in POST/PUT/PATCH
+      params: httpParams,
+      body: body ?? null, // Body is available only in POST/PUT/PATCH
     };
 
     return this.http.request<T>(method, url, httpOptions);
   }
+
 }

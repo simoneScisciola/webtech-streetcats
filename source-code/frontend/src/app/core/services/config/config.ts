@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class Config {
+
   private config: Record<string, string> = {};
 
   async load(): Promise<void> {
@@ -23,4 +24,5 @@ export class Config {
   get(key: string): string {
     return this.config?.[key];
   }
+
 }

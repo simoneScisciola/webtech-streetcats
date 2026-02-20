@@ -68,4 +68,5 @@ export class Sighting {
       'DELETE'
     );
   }
+
 }
