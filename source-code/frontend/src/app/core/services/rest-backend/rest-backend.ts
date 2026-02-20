@@ -28,10 +28,15 @@ export class RestBackend {
     endpoint: string,
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = 'GET',
     body: any = null,
+    params: any = null,
     headers: Record<string, string> = {}
   ): Observable<T> {
     
     const url = `${this.baseUrl}${endpoint}`;
+    
+    if (params) {
+
+    }
 
     const httpOptions = {
       headers: new HttpHeaders({

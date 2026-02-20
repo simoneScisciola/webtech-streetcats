@@ -12,28 +12,60 @@ export class Sighting {
 
   private readonly restBackend = inject(RestBackend);
 
-  // Create sighting function
+  /**
+   * Create of a sighting
+   * POST /sightings
+   */
   create(payload: SightingPayload): Observable<SightingResponse> {
-    return this.restBackend.request("/sightings", "POST", payload);
+    return this.restBackend.request(
+      `/sightings`,
+      'POST',
+      payload
+    );
   }
 
-  // Get one sighting function
+  /**
+   * Get one sighting by id
+   * GET /sightings/:id
+   */
   getOne(id: number): Observable<SightingResponse> {
-    return this.restBackend.request(`/sightings/${id}`, "GET");
+    return this.restBackend.request(
+      `/sightings/${id}`,
+      'GET'
+    );
   }
 
-  // Get all sightings function
+  /**
+   * Get all sightings
+   * GET /sightings
+   */
   getAll(): Observable<PaginatedResponse<SightingResponse>> {
-    return this.restBackend.request("/sightings", "GET");
+    return this.restBackend.request(
+      `/sightings`,
+      'GET'
+    );
   }
 
-  // Update sighting function
-  update(payload: Partial<SightingPayload>): Observable<SightingResponse> {
-    return this.restBackend.request("/sightings", "PATCH", payload);
+  /**
+   * Partial update of a sighting
+   * PATCH /sightings/:id
+   */
+  update(id: number, payload: Partial<SightingPayload>): Observable<SightingResponse> {
+    return this.restBackend.request(
+      `/sightings/${id}`,
+      'PATCH',
+      payload
+    );
   }
 
-  // Delete sighting function
-  delete(id: number): Observable<SightingResponse> {
-    return this.restBackend.request(`/sightings/${id}`, "DELETE");
+  /**
+   * Delete of a sighting
+   * DELETE /sightings/:id
+   */
+  delete(id: number): Observable<void> {
+    return this.restBackend.request(
+      `/sightings/${id}`,
+      'DELETE'
+    );
   }
 }

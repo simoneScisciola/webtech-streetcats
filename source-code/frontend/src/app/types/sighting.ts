@@ -1,10 +1,11 @@
 export interface SightingPayload {
+  photoUrl: string;
   title: string;
   description?: string;
-  photoUrl: string;
-  address?: string;
   latitude: number;
   longitude: number;
+  address?: string;
+  username: string;
 }
 
 export interface SightingResponse {
@@ -12,9 +13,9 @@ export interface SightingResponse {
   photoUrl: string;
   title: string;
   description: string | null;
-  address: string | null;
   latitude: string;
   longitude: string;
+  address: string | null;
   username: string;
   createdAt: string;
   updatedAt: string;
