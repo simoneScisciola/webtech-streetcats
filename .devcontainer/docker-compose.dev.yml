@@ -33,6 +33,8 @@ services:
       SONAR_HOST_URL: ${SONAR_HOST_URL} # URL of the SonarQube server
       BACKEND_ADDRESS: ${BACKEND_ADDRESS:-localhost} # The address from the user browser
       BACKEND_PORT: ${DEV_BACKEND_PORT:-55511} # The port from the user browser
+      FRONTEND_ADDRESS: ${FRONTEND_ADDRESS:-localhost} # The address from the user browser
+      FRONTEND_PORT: ${DEV_FRONTEND_PORT:-55512} # The port from the user browser
 
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project

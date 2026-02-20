@@ -1,0 +1,27 @@
+<header class="bg-dark text-white">
+  <div class="container-fluid p-3" style="font-size: 1.15rem;">
+    <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-between gap-3">
+
+      <!-- Logo + App name -->
+      <a class="d-flex align-items-center justify-content-center text-white text-decoration-none" routerLink="/home">
+        <img
+          src="assets/webtech-streetcats.png"
+          alt="Webtech's StreetCats logo"
+          height="32"
+          class="me-3"/>
+        <span class="fs-4 fw-semibold">Webtech's StreetCats</span>
+      </a>
+
+      <!-- Navbar ng-bootstrap -->
+      <app-navbar></app-navbar>
+
+      <!-- Auth area -->
+      @if(auth.isAuthenticated()) {
+        <app-profile-dropdown />
+      } @else {
+        <app-auth-area />
+      }
+
+    </div>
+  </div>
+</header>

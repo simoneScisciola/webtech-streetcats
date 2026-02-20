@@ -21,6 +21,8 @@ services:
       DB_NAME: ${DB_NAME:-backend} # default: backend
       DB_USER: ${DB_USER:-tecweb-admin} # default: tecweb-admin
       DB_PASSWORD: ${DB_PASSWORD:-admin} # default: admin
+      FRONTEND_ADDRESS: ${FRONTEND_ADDRESS:-localhost} # The address from the user browser
+      FRONTEND_PORT: ${PROD_FRONTEND_PORT:-55502} # The port from the user browser
     networks:
       - backend-network
 

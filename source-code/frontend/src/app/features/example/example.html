@@ -1,0 +1,20 @@
+<div>
+    <!-- Example content -->
+    <h1 class="animate__animated animate__rubberBand">FRATM</h1>
+    <fa-icon [icon]="faUser"></fa-icon>
+    <fa-icon [icon]="faApplePay"></fa-icon>
+    <button type="button" class="btn btn-primary">Primary</button>
+    <button type="button" class="btn btn-secondary">Secondary</button>
+    <button type="button" class="btn btn-success">Success</button>
+    <button type="button" class="btn btn-danger">Danger</button>
+    <button type="button" class="btn btn-warning">Warning</button>
+    <button type="button" class="btn btn-info">Info</button>
+    <button type="button" class="btn btn-light">Light</button>
+    <button type="button" class="btn btn-dark">Dark</button>
+    <button type="button" class="btn btn-link">Link</button>
+    <!-- Example content -->
+
+    <!-- dentro il side panel o una modale -->
+    <app-add-sighting-form (formSubmit)="onAddSighting($event)"></app-add-sighting-form>
+
+</div>

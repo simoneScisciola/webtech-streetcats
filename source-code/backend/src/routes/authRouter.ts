@@ -23,27 +23,16 @@ authRouter.post("/auth", async (req: Request, res: Response, next: NextFunction)
         let success = await AuthController.checkCredentials(loggingUsername, loggingPassword);
 
         if (!success) {
-            next(new createError.Unauthorized("Invalid credentials.")); // Raise error
+            return next(new createError.Unauthorized("Invalid credentials.")); // Raise error
         }
 
-        try {
-            const loggingUserRole = await UserController.getRole(loggingUsername);
-            const expiresIn = 24*60*60; // 24 hours in seconds
-            const jwtToken = AuthController.issueToken(loggingUsername, loggingUserRole.rolename, expiresIn);
-
-            // Send the JWT in the HTTP Response JSON body
-            res.status(200).json({
-                authToken: jwtToken,
-                // refreshToken: null, // TODO: implement refresh token
-                expiresIn: expiresIn
-            });
-        } catch (err) {
-            logger.warn(`Could not retrieve role for user ${loggingUsername}: ${(err as Error).message}`);
-            return next(new createError.InternalServerError("Could not retrieve user role."));
-        }
-
+        // Send the JWT in the HTTP Response JSON body
+        res.status(200).json(
+            await AuthController.buildJwtResponse(loggingUsername)
+        );
     } catch (err) {
-        next(err);
+        logger.warn(`Could not log in: ${(err as Error).message}`);
+        next(err); // Raise error
     }
 });
 
@@ -58,9 +47,13 @@ authRouter.post("/signup", [validateSignupFields], async (req: Request, res: Res
         logger.debug(`Received signup data: ${JSON.stringify(sentSignup)}`);
     
         const result = await UserController.create(sentSignup.username, sentSignup);
-        res.status(201).json(result); // Sends the registered User
+
+        // Send the JWT in the HTTP Response JSON body
+        res.status(201).json(
+            await AuthController.buildJwtResponse(result.username)
+        );
     } catch (err) {
-        logger.warn(`Could not save user: ${(err as Error).message}`);
+        logger.warn(`Could not sign up: ${(err as Error).message}`);
         next(err); // Raise error
     }
 });

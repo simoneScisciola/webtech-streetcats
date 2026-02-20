@@ -5,6 +5,13 @@
   "compilerOptions": {
     "strict": true,
     "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "#core/*": ["app/core/*"],
+      "#shared/*": ["app/shared/*"],
+      "#features/*": ["app/features/*"],
+      "#types/*": ["app/types/*"]
+    },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,

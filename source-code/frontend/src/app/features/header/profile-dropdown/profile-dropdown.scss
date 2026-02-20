@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.no-caret {
+  &::after {
+    display: none !important;
+  }
+}
+
+:host ::ng-deep .dropdown-menu {
+  margin-top: 0.75rem !important;
+}

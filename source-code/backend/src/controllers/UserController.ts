@@ -83,7 +83,6 @@ export class UserController {
         const existingUser = await this.findById(sentUsername);
         if (existingUser === null) {
             throw new createError.NotFound("User not found. Use /signup to create a new user.");
-
         } 
 
         // Check foreign key existence

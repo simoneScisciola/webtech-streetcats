@@ -1,0 +1,39 @@
+<app-side-panel [width]="width" >
+
+    <app-side-panel-header
+      title="Sightings"
+      [icon]="icons.title"
+      (closeButtonClick)="onClosePanel()">
+    </app-side-panel-header>
+
+    <app-side-panel-body>
+      <app-sighting-card
+        title="Sighting #1"
+        lastSeen="2 ore fa"
+        description="Avvistamento di esempio nella zona centrale."
+        accentColor="#C4513F">
+      </app-sighting-card>
+
+      <app-sighting-card
+        title="Sighting #2"
+        lastSeen="5 ore fa"
+        description="Altro avvistamento nella periferia nord."
+        accentColor="#E5772D">
+      </app-sighting-card>
+
+      <app-sighting-card
+        title="Sighting #3"
+        lastSeen="1 giorno fa"
+        description="Avvistamento confermato nella zona sud."
+        accentColor="#2F714D">
+      </app-sighting-card>
+    </app-side-panel-body>
+
+    <app-side-panel-footer>
+      <button class="btn btn-primary w-100">
+        <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>
+        Add Sighting
+      </button>
+    </app-side-panel-footer>
+
+</app-side-panel>

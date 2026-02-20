@@ -7,7 +7,9 @@ const requiredEnv = [
     'JWT_SECRET_TOKEN',
     'DB_NAME',
     'DB_USER',
-    'DB_PASSWORD'
+    'DB_PASSWORD',
+    'FRONTEND_ADDRESS',
+    'FRONTEND_PORT'
 ];
 
 // Required environment variables check

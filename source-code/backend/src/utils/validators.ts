@@ -82,7 +82,7 @@ function isEmpty(value: string) {
     - B is at least one character and can't contain space or @
     - C is at least one character and can't contain space or @ */
 function isEmail(value: string) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    return /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(value);
 }
 
 function hasUpperCase(value: string) {

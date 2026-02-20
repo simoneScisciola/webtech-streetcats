@@ -16,6 +16,9 @@ PROD_BACKEND_PORT=
 ### Sets the JWT Token Secret
 JWT_SECRET_TOKEN=
 
+### Sets the frontend address
+FRONTEND_ADDRESS=
+
 
 ## Database
 

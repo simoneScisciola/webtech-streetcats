@@ -1,0 +1,31 @@
+<div class="d-flex align-items-center column-gap-3" ngbDropdown display="dynamic" placement="bottom-end">
+  <!-- Trigger -->
+  <button
+    class="btn d-flex align-items-center column-gap-3 text-white bg-transparent border-0 p-0 rounded no-caret"
+    ngbDropdownToggle
+    type="button"
+    [attr.aria-label]="'Menu utente di ' + auth.username()"
+  >
+    <span>Hello, <span class="fw-semibold">{{ auth.username() }}</span></span>
+    <img [src]="auth.avatarUrl()" alt="User Icon" class="rounded-circle" height="32"/>
+  </button>
+
+  <!-- Dropdown menu -->
+  <div ngbDropdownMenu class="shadow-sm">
+
+    <button ngbDropdownItem routerLink="/profile">
+      Profile
+    </button>
+
+    <button ngbDropdownItem routerLink="/my-sightings">
+      My Sightings
+    </button>
+
+    <div class="dropdown-divider"></div>
+
+    <button ngbDropdownItem class="text-danger" (click)="onLogout()">
+      <fa-icon [icon]="icons.logout" class="me-2"></fa-icon>Logout
+    </button>
+
+  </div>
+</div>
