@@ -1,0 +1,97 @@
+<div class="mb-3">
+
+  <!-- Input label -->
+  <span class="form-label fw-semibold d-block">{{ label }}</span>
+
+  <div class="input-group align-items-start">
+
+    <!-- Drop zone wrapper -->
+    <div
+      class="form-control p-0 overflow-hidden h-auto"
+      [class.is-invalid]="control.invalid && control.touched"
+      [class.is-valid]="control.valid && control.touched">
+
+      <!-- Clickable / Droppable area -->
+      <label
+        class="upload-zone position-relative overflow-hidden d-block mb-0"
+        [class.is-dragging]="isDragging()"
+        [class.has-preview]="preview()"
+        [class.opacity-50]="control.disabled"
+        [style.cursor]="control.disabled ? 'not-allowed' : 'pointer'"
+        [attr.aria-label]="label + ': click or drag an image to upload'"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave()"
+        (drop)="onDrop($event)">
+
+        <!-- Input field -->
+        <input
+          #fileInput
+          [id]="id"
+          type="file"
+          accept="image/jpeg, image/png, image/webp"
+          class="d-none"
+          [disabled]="control.disabled"
+          (change)="onFileInputChange($event)">
+
+        @if (preview(); as src) {
+
+          <img
+            [src]="src"
+            alt="Preview"
+            class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover">
+
+          <button
+            type="button"
+            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 z-1"
+            (click)="onRemove($event, fileInput)">
+            <fa-icon [icon]="icons.remove" />
+          </button>
+
+        } @else {
+
+          <div class="d-flex flex-column align-items-center justify-content-center h-100 py-3 px-3 text-center">
+            <fa-icon
+              [icon]="icons.upload"
+              class="fs-3 mb-1"
+              [class.text-success]="isDragging()"
+              [class.text-muted]="!isDragging()" />
+
+            @if (isDragging()) {
+              <p class="small fw-semibold text-success mb-0">Release to upload</p>
+            } @else {
+              <p class="small fw-semibold text-muted mb-0">Click or drag a photo here</p>
+              <p class="small text-muted mb-0">JPG, PNG, WEBP — max 5 MB</p>
+            }
+          </div>
+
+        }
+
+      </label>
+
+      <!-- "Selected file" name -->
+      @if (fileName()) {
+        <div class="px-3 py-2 border-top bg-body-tertiary">
+          <span class="small text-muted">
+            <fa-icon [icon]="icons.file" class="me-1" />{{ fileName() }}
+          </span>
+        </div>
+      }
+
+    </div>
+  </div>
+
+  <!-- Error message -->
+  <!-- Internal validation error (type / size) -->
+  @if (error()) {
+    <div class="invalid-feedback d-block">{{ error() }}</div>
+  }
+  <!-- FormControl's errors (e.g. required) -->
+  @if (control.invalid && control.touched && !error()) {
+    @for (err of errors | keyvalue; track err.key) {
+      @if (control.hasError(err.key)) {
+        <div class="invalid-feedback d-block">{{ err.value }}</div>
+      }
+    }
+  }
+
+</div>

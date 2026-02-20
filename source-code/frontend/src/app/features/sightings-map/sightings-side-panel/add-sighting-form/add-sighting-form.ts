@@ -1,7 +1,7 @@
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBinoculars, faImage, faTag, faAlignLeft, faLocationDot, faLocationCrosshairs, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faBinoculars, faTag, faAlignLeft, faLocationDot, faLocationCrosshairs, faPlus, faImage } from '@fortawesome/free-solid-svg-icons';
 
 import { Auth } from '#core/services/auth/auth';
 import { FormCard } from '#shared/components/form-card/form-card';
@@ -9,10 +9,11 @@ import { FormCardHeader } from '#shared/components/form-card/form-card-header/fo
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
 import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
 import { SightingPayload } from '#types/sighting';
+import { FormCardDragAndDropImage } from '#shared/components/form-card/form-card-drag-and-drop-image/form-card-drag-and-drop-image';
 
 @Component({
   selector: 'app-add-sighting-form',
-  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardField, FontAwesomeModule],
+  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardField, FontAwesomeModule, FormCardDragAndDropImage],
   templateUrl: './add-sighting-form.html',
   styleUrl: './add-sighting-form.scss',
 })
@@ -26,8 +27,8 @@ export class AddSightingForm {
   // Field labels
   icons = {
     binoculars: faBinoculars,
-    image: faImage,
     title: faTag,
+    photo: faImage,
     description: faAlignLeft,
     latitude: faLocationCrosshairs,
     longitude: faLocationCrosshairs,
@@ -40,7 +41,7 @@ export class AddSightingForm {
     title: new FormControl('', [
       Validators.required]),
     description: new FormControl(''),
-    photoUrl: new FormControl('', [
+    photo: new FormControl<File | null>(null, [
       Validators.required]),
     address: new FormControl(''),
     latitude: new FormControl<number | null>(null, [
@@ -59,13 +60,13 @@ export class AddSightingForm {
   titleErrors = {
     required: 'Title required.',
   };
-  photoUrlErrors = {
-    required: 'Photo URL required.',
+  photoErrors = {
+    required: 'Photo required.',
   };
   latitudeErrors = {
     required: 'Latitude required.',
-    min: 'Latitude must be greater than -90.',
-    max: 'Latitude must be less than 90.',
+    min: 'Latitude must be greater then -90.',
+    max: 'Latitude must be less then 90.',
   };
   longitudeErrors = {
     required: 'Longitude required.',
@@ -80,8 +81,8 @@ export class AddSightingForm {
   get description() {
     return this.sightingForm.controls.description;
   }
-  get photoUrl() {
-    return this.sightingForm.controls.photoUrl;
+  get photo() {
+    return this.sightingForm.controls.photo;
   }
   get address() {
     return this.sightingForm.controls.address;
@@ -105,8 +106,8 @@ export class AddSightingForm {
       }
 
       // Send fields to upper component
-      const { photoUrl, title, description, latitude, longitude, address } = this.sightingForm.getRawValue();
-      this.formSubmitted.emit({ photoUrl: photoUrl!, title: title!, description: description ?? undefined, latitude: latitude!, longitude: longitude!, address: address ?? undefined, username: username });
+      const { photo, title, description, latitude, longitude, address } = this.sightingForm.getRawValue();
+      this.formSubmitted.emit({ photo: photo!, title: title!, description: description ?? undefined, latitude: latitude!, longitude: longitude!, address: address ?? undefined, username: username });
     } else {
       this.sightingForm.markAllAsTouched();
     }

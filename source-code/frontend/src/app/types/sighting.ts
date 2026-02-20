@@ -1,5 +1,5 @@
 export interface SightingPayload {
-  photoUrl: string;
+  photo: File;
   title: string;
   description?: string;
   latitude: number;
@@ -10,7 +10,7 @@ export interface SightingPayload {
 
 export interface SightingResponse {
   id: number;
-  photoUrl: string;
+  photo: File;
   title: string;
   description: string | null;
   latitude: string;

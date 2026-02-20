@@ -1,0 +1,16 @@
+.upload-zone {
+  min-height: 120px;
+  border: 2px dashed #adb5bd;
+  background-color: #EEF0F3;
+  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+
+  &.is-dragging {
+    border-color: #5cb85c;
+    background-color: var(--bs-success-bg-subtle);
+  }
+
+  &.has-preview {
+    min-height: 220px;
+    background-color: transparent;
+  }
+}

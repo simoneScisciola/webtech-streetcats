@@ -17,7 +17,7 @@
         [errors]="titleErrors">
       </app-form-card-field>
 
-      <!-- Custom textarea -->
+      <!-- Custom description Textarea -->
       <div class="mb-3">
         <label for="description" class="form-label fw-semibold">Description</label>
         <div class="input-group align-items-start">
@@ -37,14 +37,14 @@
         <!-- Description error goes here -->
       </div>
 
-      <app-form-card-field
-        id="photoUrl"
-        label="Photo URL"
-        placeholder="https://example.com/photo.jpg"
-        [control]="photoUrl"
-        [icon]="icons.image"
-        [errors]="photoUrlErrors">
-      </app-form-card-field>
+      <!-- Photo drag and drop -->
+      <app-form-card-drag-and-drop-image
+        id="photo"
+        label="Photo"
+        [control]="photo"
+        [icon]="icons.photo"
+        [errors]="photoErrors">
+      </app-form-card-drag-and-drop-image>
 
       <app-form-card-field
         id="address"
