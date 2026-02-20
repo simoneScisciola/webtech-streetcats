@@ -74,10 +74,23 @@
         [errors]="longitudeErrors">
       </app-form-card-field>
 
-      <button type="submit" class="btn btn-primary w-100 fw-medium mt-3">
-        <fa-icon [icon]="icons.add" class="me-2"></fa-icon>
-        Add Sighting
-      </button>
+      <div class="row g-2 mt-3">
+        <div class="col">
+          <button
+            type="button"
+            class="btn btn-outline-secondary w-100 fw-medium"
+            (click)="onCancelClick()">
+            Cancel
+          </button>
+        </div>
+        <div class="col">
+          <button
+            type="submit"
+            class="btn btn-primary w-100 fw-medium">
+              <fa-icon [icon]="icons.add" class="me-2"></fa-icon>Add
+          </button>
+        </div>
+      </div>
     </form>
   </app-form-card-body>
 

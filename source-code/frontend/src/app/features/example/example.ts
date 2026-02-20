@@ -3,7 +3,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faApplePay } from '@fortawesome/free-brands-svg-icons'
 
-import { AddSightingForm } from '#features/sightings-map/add-sighting/add-sighting-form/add-sighting-form';
+import { AddSightingForm } from '#features/sightings-map/sightings-side-panel/add-sighting-form/add-sighting-form';
 
 @Component({
   selector: 'app-example',

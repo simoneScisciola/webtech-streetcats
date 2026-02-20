@@ -18,6 +18,7 @@ import { SightingPayload } from '#types/sighting';
 export class AddSightingForm {
 
   @Output() formSubmitted = new EventEmitter<SightingPayload>();
+  @Output() cancelButtonClick = new EventEmitter<void>();
 
   // Field labels
   icons = {
@@ -90,7 +91,7 @@ export class AddSightingForm {
   }
 
   /**
-   * Manages form submit
+   * Manages form submit.
    */
   onSubmit(): void {
     if (this.sightingForm.valid) {
@@ -101,4 +102,12 @@ export class AddSightingForm {
       this.sightingForm.markAllAsTouched();
     }
   }
+
+  /**
+   * Manages cancel button click event propagation.
+   */
+  onCancelClick(): void {
+    this.cancelButtonClick.emit();
+  }
+
 }

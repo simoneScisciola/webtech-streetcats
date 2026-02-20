@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddSighting } from './add-sighting';
+import { AddSightingForm } from './add-sighting-form';
 
-describe('AddSighting', () => {
-  let component: AddSighting;
-  let fixture: ComponentFixture<AddSighting>;
+describe('AddSightingForm', () => {
+  let component: AddSightingForm;
+  let fixture: ComponentFixture<AddSightingForm>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddSighting]
+      imports: [AddSightingForm]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddSighting);
+    fixture = TestBed.createComponent(AddSightingForm);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

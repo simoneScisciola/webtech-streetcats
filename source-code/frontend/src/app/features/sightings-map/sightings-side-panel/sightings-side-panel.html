@@ -1,12 +1,22 @@
-<app-side-panel [width]="width" >
+<app-side-panel [width]="width">
 
-    <app-side-panel-header
-      title="Sightings"
-      [icon]="icons.title"
-      (closeButtonClick)="onClosePanel()">
-    </app-side-panel-header>
+  <app-side-panel-header
+    title="Sightings"
+    [icon]="icons.title"
+    (closeButtonClick)="onClosePanel()">
+  </app-side-panel-header>
 
-    <app-side-panel-body>
+  <app-side-panel-body>
+    @if (isAddingNewSighting) {
+
+      <!-- Form visible when adding a new sighting -->
+      <app-add-sighting-form
+        (cancelButtonClick)="onCancelAddSighting()">
+      </app-add-sighting-form>
+
+    } @else {
+
+      <!-- All sightings -->
       <app-sighting-card
         title="Sighting #1"
         lastSeen="2 ore fa"
@@ -27,13 +37,18 @@
         description="Avvistamento confermato nella zona sud."
         accentColor="#2F714D">
       </app-sighting-card>
-    </app-side-panel-body>
 
+    }
+  </app-side-panel-body>
+
+  <!-- Footer is only shown when not adding a new sighting -->
+  @if (!isAddingNewSighting) {
     <app-side-panel-footer>
-      <button class="btn btn-primary w-100">
+      <button class="btn btn-primary w-100 fw-medium" (click)="onAddSighting()">
         <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>
         Add Sighting
       </button>
     </app-side-panel-footer>
+  }
 
 </app-side-panel>
