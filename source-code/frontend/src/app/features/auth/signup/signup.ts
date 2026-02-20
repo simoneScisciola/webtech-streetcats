@@ -31,7 +31,7 @@ export class Signup {
         // Redirect
         this.router.navigate(['/home']);
       },
-      error: (err) => console.error('Sign Up fallito', err),
+      error: (err) => console.error('Sign Up failed.', err),
     });
   }
 

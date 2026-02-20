@@ -3,11 +3,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faApplePay } from '@fortawesome/free-brands-svg-icons'
 
-import { SightingForm } from '#features/sighting-form/sighting-form';
+import { AddSightingForm } from '#features/sightings-map/add-sighting/add-sighting-form/add-sighting-form';
 
 @Component({
   selector: 'app-example',
-  imports: [FontAwesomeModule, SightingForm],
+  imports: [FontAwesomeModule, AddSightingForm],
   templateUrl: './example.html',
   styleUrl: './example.scss',
 })

@@ -1,26 +1,39 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { SightingFormValue } from '#features/sighting-form/sighting-form';
-
-export interface SightingModel extends SightingFormValue {
-  id: string;
-  createdAt: string;
-}
+import { RestBackend } from '#core/services/rest-backend/rest-backend'
+import { SightingPayload, SightingResponse } from '#types/sighting';
+import { PaginatedResponse } from '#shared/types/pagination';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Sightings {
-  private http = inject(HttpClient);
-  private base = '/api/sightings';
 
-  create(payload: SightingFormValue): Observable<SightingModel> {
-    return this.http.post<SightingModel>(this.base, payload);
+  private readonly restBackend = inject(RestBackend);
+
+  // Create sighting function
+  create(payload: SightingPayload): Observable<SightingResponse> {
+    return this.restBackend.request("/sightings", "POST", payload);
   }
 
-  getAll(): Observable<SightingModel[]> {
-    return this.http.get<SightingModel[]>(this.base);
+  // Get one sighting function
+  getOne(id: number): Observable<SightingResponse> {
+    return this.restBackend.request(`/sightings/${id}`, "GET");
+  }
+
+  // Get all sightings function
+  getAll(): Observable<PaginatedResponse<SightingResponse>> {
+    return this.restBackend.request("/sightings", "GET");
+  }
+
+  // Update sighting function
+  update(payload: Partial<SightingPayload>): Observable<SightingResponse> {
+    return this.restBackend.request("/sightings", "PATCH", payload);
+  }
+
+  // Delete sighting function
+  delete(id: number): Observable<SightingResponse> {
+    return this.restBackend.request(`/sightings/${id}`, "DELETE");
   }
 }

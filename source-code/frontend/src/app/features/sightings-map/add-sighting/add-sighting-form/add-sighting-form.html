@@ -1,0 +1,84 @@
+<app-form-card>
+
+  <app-form-card-header
+    title="New Sighting"
+    subtitle="Add a new sighting in the map."
+    [icon]="icons.binoculars">
+  </app-form-card-header>
+
+  <app-form-card-body>
+    <form [formGroup]="sightingForm" (ngSubmit)="onSubmit()" novalidate>
+      <app-form-card-field
+        id="title"
+        label="Title"
+        placeholder="Sighting title"
+        [control]="title"
+        [icon]="icons.title"
+        [errors]="titleErrors">
+      </app-form-card-field>
+
+      <!-- Custom textarea -->
+      <div class="mb-3">
+        <label for="description" class="form-label fw-semibold">Description</label>
+        <div class="input-group align-items-start">
+          <span class="input-group-text text-muted pt-2">
+            <fa-icon [icon]="icons.description"></fa-icon>
+          </span>
+          <textarea
+            id="description"
+            formControlName="description"
+            class="form-control"
+            [class.is-invalid]="description.invalid && description.touched"
+            [class.is-valid]="description.valid && description.touched"
+            rows="3"
+            placeholder="(Optional) Describe your sighting...">
+          </textarea>
+        </div>
+        <!-- Description error goes here -->
+      </div>
+
+      <app-form-card-field
+        id="photoUrl"
+        label="Photo URL"
+        placeholder="https://example.com/photo.jpg"
+        [control]="photoUrl"
+        [icon]="icons.image"
+        [errors]="photoUrlErrors">
+      </app-form-card-field>
+
+      <app-form-card-field
+        id="address"
+        label="Address"
+        placeholder="(Optional) e.g. Vesuvio, Campania, Italy"
+        [control]="address"
+        [icon]="icons.location">
+      </app-form-card-field>
+
+      <app-form-card-field
+        id="latitude"
+        label="Latitude"
+        type="number"
+        placeholder="e.g. 41.89025436"
+        [control]="latitude"
+        [icon]="icons.latitude"
+        [errors]="latitudeErrors">
+      </app-form-card-field>
+
+      <app-form-card-field
+        id="longitude"
+        label="Longitude"
+        type="number"
+        placeholder="e.g. 12.49218654"
+        [control]="longitude"
+        [icon]="icons.longitude"
+        [errors]="longitudeErrors">
+      </app-form-card-field>
+
+      <button type="submit" class="btn btn-primary w-100 fw-medium mt-3">
+        <fa-icon [icon]="icons.add" class="me-2"></fa-icon>
+        Add Sighting
+      </button>
+    </form>
+  </app-form-card-body>
+
+</app-form-card>

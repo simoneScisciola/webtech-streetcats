@@ -9,6 +9,7 @@ import { FormCardHeader } from '#shared/components/form-card/form-card-header/fo
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
 import { FormCardFooter } from '#shared/components/form-card/form-card-footer/form-card-footer';
 import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
+import { SignupPayload } from '#types/auth';
 
 @Component({
   selector: 'app-signup-form',
@@ -18,7 +19,7 @@ import { FormCardField } from '#shared/components/form-card/form-card-field/form
 })
 export class SignupForm {
 
-  @Output() formSubmitted = new EventEmitter<{ username: string; email: string; password: string }>();
+  @Output() formSubmitted = new EventEmitter<SignupPayload>();
 
   // Field labels
   icons = {

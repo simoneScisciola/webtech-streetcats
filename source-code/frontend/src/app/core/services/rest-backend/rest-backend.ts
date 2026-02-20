@@ -26,7 +26,7 @@ export class RestBackend {
    */
   request<T>(
     endpoint: string,
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' = 'GET',
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' = 'GET',
     body: any = null,
     headers: Record<string, string> = {}
   ): Observable<T> {

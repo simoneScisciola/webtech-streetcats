@@ -31,7 +31,7 @@ export class Login {
         // Redirect
         this.router.navigate(['/home']);
       },
-      error: (err) => console.error('Login failed', err),
+      error: (err) => console.error('Login failed.', err),
     });
   }
 
