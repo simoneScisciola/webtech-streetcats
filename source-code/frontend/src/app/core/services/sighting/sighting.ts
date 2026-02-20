@@ -8,7 +8,7 @@ import { PaginatedResponse } from '#shared/types/pagination';
 @Injectable({
   providedIn: 'root',
 })
-export class Sightings {
+export class Sighting {
 
   private readonly restBackend = inject(RestBackend);
 
