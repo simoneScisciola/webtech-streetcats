@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faImage, faTag, faAlignLeft, faLocationDot, faLocationCrosshairs, faPlus } from '@fortawesome/free-solid-svg-icons';
 
+import { Auth } from '#core/services/auth/auth';
 import { FormCard } from '#shared/components/form-card/form-card';
 import { FormCardHeader } from '#shared/components/form-card/form-card-header/form-card-header';
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
@@ -19,6 +20,8 @@ export class AddSightingForm {
 
   @Output() formSubmitted = new EventEmitter<SightingPayload>();
   @Output() cancelButtonClick = new EventEmitter<void>();
+
+  private readonly auth = inject(Auth);
 
   // Field labels
   icons = {
@@ -95,9 +98,15 @@ export class AddSightingForm {
    */
   onSubmit(): void {
     if (this.sightingForm.valid) {
+      const username = this.auth.username();
+      if (!username) {
+        console.error('User not authenticated.');
+        return;
+      }
+
       // Send fields to upper component
       const { photoUrl, title, description, latitude, longitude, address } = this.sightingForm.getRawValue();
-      this.formSubmitted.emit({ photoUrl: photoUrl!, title: title!, description: description ?? undefined, latitude: latitude!, longitude: longitude!, address: address ?? undefined });
+      this.formSubmitted.emit({ photoUrl: photoUrl!, title: title!, description: description ?? undefined, latitude: latitude!, longitude: longitude!, address: address ?? undefined, username: username });
     } else {
       this.sightingForm.markAllAsTouched();
     }
