@@ -8,7 +8,6 @@ import { SidePanelBody } from '#shared/components/side-panel/side-panel-body/sid
 import { SidePanelFooter } from '#shared/components/side-panel/side-panel-footer/side-panel-footer';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
-import { SightingPayload } from '#types/sighting';
 import { Sighting } from '#core/services/sighting/sighting';
 
 @Component({

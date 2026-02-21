@@ -90,10 +90,10 @@ export class FormCardDragAndDropImage {
   }
 
   /**
- * Handles both file input change and drag-and-drop events for photo upload. This method delegates file extraction and validation to the ImageUpload service.
- * @param event
- * @returns A Promise that resolves when the event has been fully processed and the UI/form state updated.
- */
+   * Handles both file input change and drag-and-drop events for photo upload. This method delegates file extraction and validation to the ImageUpload service.
+   * @param event
+   * @returns A Promise that resolves when the event has been fully processed and the UI/form state updated.
+   */
   private async processEvent(event: Event | DragEvent): Promise<void> {
 
     const result = await this.imageUpload.processEvent(event);
