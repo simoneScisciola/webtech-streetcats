@@ -68,4 +68,28 @@ export class RestBackend {
     return this.http.request<T>(method, url, httpOptions);
   }
 
+  /**
+   * Send a FormData (multipart/form-data) to the backend.
+   * The browser automatically adds "Content-Type:" and the correct boundary, which Multer needs to parse the file.
+   * @param endpoint relative path (e.g. '/resources/')
+   * @param method 'POST' | 'PUT' | 'DELETE'
+   * @param formData FormData build by caller
+   * @param headers optional extra headers
+   * @returns Response Observable
+   */
+  uploadForm<T>(
+    endpoint: string,
+    method: 'POST' | 'PUT' | 'PATCH',
+    formData: FormData,
+    headers: Record<string, string> = {}
+  ): Observable<T> {
+
+    const url = `${this.baseUrl}${endpoint}`;
+
+    return this.http.request<T>(method, url, {
+      headers: new HttpHeaders(headers),
+      body: formData
+    });
+  }
+
 }

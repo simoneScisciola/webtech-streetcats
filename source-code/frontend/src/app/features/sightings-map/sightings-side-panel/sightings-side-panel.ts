@@ -37,7 +37,7 @@ export class SightingsSidePanel {
     this.closePanel.emit();
   }
 
-  onAddSighting(): void {
+  onAddSightingClick(): void {
     this.isAddingNewSighting = true;
   }
 
@@ -49,7 +49,7 @@ export class SightingsSidePanel {
    * Sends login request
    * @param payload submitted credetials
    */
-  onAddSightingSubmit(payload: SightingPayload) {
+  onAddSightingSubmit(payload: FormData) {
     this.sighting.create(payload).subscribe({
       next: (res) => {
         console.log("Response:", res);

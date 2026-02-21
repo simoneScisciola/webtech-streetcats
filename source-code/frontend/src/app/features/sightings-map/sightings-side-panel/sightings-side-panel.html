@@ -11,6 +11,7 @@
 
       <!-- Form visible when adding a new sighting -->
       <app-add-sighting-form
+        (formSubmitted)="onAddSightingSubmit($event)"
         (cancelButtonClick)="onCancelAddSighting()">
       </app-add-sighting-form>
 
@@ -44,7 +45,7 @@
   <!-- Footer is only shown when not adding a new sighting -->
   @if (!isAddingNewSighting) {
     <app-side-panel-footer>
-      <button class="btn btn-primary w-100 fw-medium" (click)="onAddSighting()">
+      <button class="btn btn-primary w-100 fw-medium" (click)="onAddSightingClick()">
         <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>Add Sighting
       </button>
     </app-side-panel-footer>

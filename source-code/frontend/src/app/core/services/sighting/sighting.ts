@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
-import { SightingPayload, SightingResponse } from '#types/sighting';
+import { SightingResponse } from '#types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
 
 @Injectable({
@@ -16,8 +16,8 @@ export class Sighting {
    * Create of a sighting
    * POST /sightings
    */
-  create(payload: SightingPayload): Observable<SightingResponse> {
-    return this.restBackend.request(
+  create(payload: FormData): Observable<SightingResponse> {
+    return this.restBackend.uploadForm(
       `/sightings`,
       'POST',
       payload
@@ -50,8 +50,8 @@ export class Sighting {
    * Partial update of a sighting
    * PATCH /sightings/:id
    */
-  update(id: number, payload: Partial<SightingPayload>): Observable<SightingResponse> {
-    return this.restBackend.request(
+  update(id: number, payload: FormData): Observable<SightingResponse> {
+    return this.restBackend.uploadForm(
       `/sightings/${id}`,
       'PATCH',
       payload

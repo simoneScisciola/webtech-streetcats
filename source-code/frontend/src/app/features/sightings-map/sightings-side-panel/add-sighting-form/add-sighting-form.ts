@@ -8,7 +8,6 @@ import { FormCard } from '#shared/components/form-card/form-card';
 import { FormCardHeader } from '#shared/components/form-card/form-card-header/form-card-header';
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
 import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
-import { SightingPayload } from '#types/sighting';
 import { FormCardDragAndDropImage } from '#shared/components/form-card/form-card-drag-and-drop-image/form-card-drag-and-drop-image';
 
 @Component({
@@ -19,7 +18,7 @@ import { FormCardDragAndDropImage } from '#shared/components/form-card/form-card
 })
 export class AddSightingForm {
 
-  @Output() formSubmitted = new EventEmitter<SightingPayload>();
+  @Output() formSubmitted = new EventEmitter<FormData>();
   @Output() cancelButtonClick = new EventEmitter<void>();
 
   private readonly auth = inject(Auth);
@@ -107,7 +106,17 @@ export class AddSightingForm {
 
       // Send fields to upper component
       const { photo, title, description, latitude, longitude, address } = this.sightingForm.getRawValue();
-      this.formSubmitted.emit({ photo: photo!, title: title!, description: description ?? undefined, latitude: latitude!, longitude: longitude!, address: address ?? undefined, username: username });
+
+      const payload = new FormData();
+      payload.append('photo', photo!);
+      payload.append('title', title!);
+      if (description) payload.append('description', description);
+      payload.append('latitude', String(latitude!));
+      payload.append('longitude', String(longitude!));
+      if (address) payload.append('address', address);
+      payload.append('username', username);
+
+      this.formSubmitted.emit(payload);
     } else {
       this.sightingForm.markAllAsTouched();
     }
