@@ -20,7 +20,7 @@ export class Login {
    * Sends login request
    * @param payload submitted credetials
    */
-  onLogin(payload: LoginPayload) {
+  onLoginSubmit(payload: LoginPayload) {
     this.auth.login(payload).subscribe({
       next: (res) => {
         console.log("Response:", res);

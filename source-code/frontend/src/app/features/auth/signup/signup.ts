@@ -20,7 +20,7 @@ export class Signup {
    * Sends sign up request
    * @param payload submitted data
    */
-  onSignup(payload: SignupPayload) {
+  onSignupSubmit(payload: SignupPayload) {
     this.auth.signup(payload).subscribe({
       next: (res) => {
         console.log("Response:", res);
