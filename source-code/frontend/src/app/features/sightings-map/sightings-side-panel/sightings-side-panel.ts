@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -24,7 +24,7 @@ export class SightingsSidePanel {
 
   private readonly sighting = inject(Sighting);
 
-  isAddingNewSighting = false;
+  isAddingNewSighting = signal(false);
 
   // Side Panel icons
   icons = {
@@ -37,11 +37,11 @@ export class SightingsSidePanel {
   }
 
   onAddSightingClick(): void {
-    this.isAddingNewSighting = true;
+    this.isAddingNewSighting.set(true);
   }
 
   onCancelAddSighting(): void {
-    this.isAddingNewSighting = false;
+    this.isAddingNewSighting.set(false);
   }
 
   /**
@@ -52,6 +52,10 @@ export class SightingsSidePanel {
     this.sighting.create(payload).subscribe({
       next: (res) => {
         console.log("Response:", res);
+
+        // Update sightings panel state
+        this.isAddingNewSighting.set(false);
+        this.closePanel.emit();
       },
       error: (err) => console.error('Add sighting failed.', err),
     });

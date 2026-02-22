@@ -7,7 +7,7 @@
   </app-side-panel-header>
 
   <app-side-panel-body>
-    @if (isAddingNewSighting) {
+    @if (isAddingNewSighting()) {
 
       <!-- Form visible when adding a new sighting -->
       <app-add-sighting-form
@@ -43,7 +43,7 @@
   </app-side-panel-body>
 
   <!-- Footer is only shown when not adding a new sighting -->
-  @if (!isAddingNewSighting) {
+  @if (!isAddingNewSighting()) {
     <app-side-panel-footer>
       <button class="btn btn-primary w-100 fw-medium" (click)="onAddSightingClick()">
         <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>Add Sighting
