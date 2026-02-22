@@ -11,6 +11,8 @@ const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 })
 export class ImageUpload {
 
+  // Methods
+
   /**
    * Gets file from Event (input change) or DragEvent (drop), validates the first file found and builds the preview as Data URL.
    * @param event

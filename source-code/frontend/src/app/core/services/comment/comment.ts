@@ -10,7 +10,11 @@ import { PaginatedResponse } from '#shared/types/pagination';
 })
 export class Comments {
 
+  // Dependency Injection
+
   private readonly restBackend = inject(RestBackend);
+
+  // CRUD Methods
 
   /**
    * Create a new comment

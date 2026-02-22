@@ -9,8 +9,12 @@ import { AuthState, LoginPayload, SignupPayload, AuthResponse } from '#types/aut
   providedIn: 'root',
 })
 export class Auth {
+
+  // Dependency Injection
   
   private readonly restBackend = inject(RestBackend);
+
+  // State
 
   // Signal
   authState: WritableSignal<AuthState> = signal<AuthState>({
@@ -45,6 +49,8 @@ export class Auth {
       }
     });
   }
+
+  // Methods
 
   // Login function
   login(payload: LoginPayload): Observable<AuthResponse> {

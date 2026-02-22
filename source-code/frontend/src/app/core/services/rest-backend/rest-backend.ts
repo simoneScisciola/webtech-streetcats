@@ -12,10 +12,16 @@ import { Config } from '#core/services/config/config';
 })
 export class RestBackend {
 
+  // Dependency Injection
+
   private readonly http = inject(HttpClient);
   private readonly config = inject(Config);
 
+  // State
+
   readonly baseUrl = `http://${this.config.get('BACKEND_ADDRESS')}:${this.config.get('BACKEND_PORT')}`;
+
+  // Methods
 
   /**
    * Generic HTTP request function.

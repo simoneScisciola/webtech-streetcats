@@ -1,6 +1,6 @@
 export interface SightingResponse {
   id: number;
-  photoUrl: string; // Public URL, e.g. "https://host/uploads/sightings/xyz.jpg"
+  photoUrl: string; // Resource URL, e.g. "/uploads/sightings/xyz.jpg"
   title: string;
   description: string | null;
   latitude: string;

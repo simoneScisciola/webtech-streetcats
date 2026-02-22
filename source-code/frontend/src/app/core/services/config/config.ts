@@ -5,7 +5,11 @@ import { Injectable } from '@angular/core';
 })
 export class Config {
 
+  // State
+
   private config: Record<string, string> = {};
+
+  // Methods
 
   async load(): Promise<void> {
 
