@@ -34,6 +34,7 @@ export function requireAuthJWT(req: AuthRequest, res: Response, next: NextFuncti
         req.role = payload.role;
 
     } catch (err) {
+        logger.warn(`JWT authentication failed: ${err}`);
         throw new createError.Unauthorized("Invalid or expired token.");
     }
 
@@ -70,6 +71,7 @@ export function optionalAuthJWT(req: AuthRequest, res: Response, next: NextFunct
         req.role = payload.role;
 
     } catch (err) {
+        logger.warn(`JWT authentication failed: ${err}`);
         req.user = undefined;
         req.role = undefined;
     }

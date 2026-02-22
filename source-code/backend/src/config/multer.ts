@@ -36,7 +36,7 @@ export const uploadSightingPhoto = multer({
             // Unique identifier
             const unique = crypto.randomBytes(4).toString('hex');
 
-            cb(null, `${yyyy}${mm}${dd}-sighting-${unique}${fileExtension}`);
+            cb(null, `${yyyy}-${mm}-${dd}-sighting-${unique}${fileExtension}`);
         },
 
     }),
