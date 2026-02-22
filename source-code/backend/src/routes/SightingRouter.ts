@@ -8,6 +8,7 @@ import { validateId, validateSightingFields } from "#middleware/validateRequestF
 import { optionalAuthJWT, requireAuthJWT } from "#middleware/authenticate.js";
 import { allowedRoles } from "#middleware/authorize.js";
 import { canModifySighting } from "#middleware/canModify.js";
+import { parseSightingPhotoUpload } from "#middleware/parseUpload.js";
 
 
 export const sightingRouter = express.Router();
@@ -15,7 +16,7 @@ export const sightingRouter = express.Router();
 /**
  * Manages new creation of a sighting
  */
-sightingRouter.post("/sightings", [requireAuthJWT, allowedRoles("USER", "ADMIN"), validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.post("/sightings", [requireAuthJWT, allowedRoles("USER", "ADMIN"), parseSightingPhotoUpload, validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;
@@ -64,7 +65,7 @@ sightingRouter.get("/sightings/:id", [optionalAuthJWT, validateId], async (req: 
 /**
  * Manages full update of a sighting
  */
-sightingRouter.put("/sightings/:id", [requireAuthJWT, allowedRoles("ADMIN"), validateId, validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.put("/sightings/:id", [requireAuthJWT, allowedRoles("ADMIN"), validateId, parseSightingPhotoUpload, validateSightingFields(false)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;
@@ -82,7 +83,7 @@ sightingRouter.put("/sightings/:id", [requireAuthJWT, allowedRoles("ADMIN"), val
 /**
  * Manages partial update of a sighting
  */
-sightingRouter.patch("/sightings/:id", [requireAuthJWT, allowedRoles("USER", "ADMIN"), canModifySighting, validateId, validateSightingFields(true)], async (req: Request, res: Response, next: NextFunction) => {
+sightingRouter.patch("/sightings/:id", [requireAuthJWT, allowedRoles("USER", "ADMIN"), canModifySighting, validateId, parseSightingPhotoUpload, validateSightingFields(true)], async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Retrieve sighting specified in the request
         const sentSighting = res.locals.sighting as SightingDto;

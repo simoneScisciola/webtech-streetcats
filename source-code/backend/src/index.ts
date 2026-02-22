@@ -1,7 +1,9 @@
 import express from "express"; // Express framework (https://expressjs.com/)
 import cors from "cors"; // Cors middleware (https://expressjs.com/en/resources/middleware/cors.html)
+import fs from 'node:fs'; // Node utility to manage file system
 
 import "#config/env.js"
+import { UPLOAD_SIGHTING_PHOTO_DIR } from "#config/multer.js";
 import { logger } from "#logging/logger.js";
 import { setupMorgan } from "#logging/httpLogger.js";
 
@@ -21,6 +23,9 @@ const PORT = 3000;
 
 // Register the morgan logging middleware, use the 'dev' format
 setupMorgan(app);
+
+// Build directory for users' sightings photo uploads, if not exists
+fs.mkdirSync(UPLOAD_SIGHTING_PHOTO_DIR, { recursive: true });
 
 // Register the cors middleware
 const FRONTEND_ADDRESS = process.env.FRONTEND_ADDRESS;
