@@ -36,6 +36,15 @@ export class Sighting {
   }
 
   /**
+   * Get the full URL of a sighting photo from its relative URL
+   * @param photoUrl relative URL of the photo (e.g. /uploads/sightings/20240601-sighting-abc123.jpg)
+   * @returns full URL of the photo
+   */
+  getRequestPhotoUrl(photoUrl: string): string {
+    return `${this.restBackend.baseUrl}${photoUrl}`;
+  }
+
+  /**
    * Get all sightings
    * GET /sightings
    */

@@ -2,8 +2,7 @@ import { Request, Response, NextFunction } from "express"; // Express framework 
 import multer from "multer"; // Multer middleware (https://expressjs.com/en/resources/middleware/multer.html)
 import createError from "http-errors"; // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
-import { uploadSightingPhoto } from '#config/multer.js'
-import { resolveSightingPhotoUrl } from '#utils/resolveUploadsUrl.js';
+import { uploadSightingPhoto } from '#config/multer.js';
 
 
 /**
@@ -33,8 +32,8 @@ export function parseSightingPhotoUpload(req: Request, res: Response, next: Next
         // File present and correctly parsed
         if (req.file) {
 
-            // Save file URL
-            res.locals.photoUrl = resolveSightingPhotoUrl(req, req.file.filename);
+            // Save file relative URL
+            res.locals.photoUrl = `/uploads/sightings/${req.file.filename}`;
         }
 
         next();

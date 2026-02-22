@@ -15,7 +15,7 @@ export class RestBackend {
   private readonly http = inject(HttpClient);
   private readonly config = inject(Config);
 
-  private readonly baseUrl = `http://${this.config.get('BACKEND_ADDRESS')}:${this.config.get('BACKEND_PORT')}`;
+  readonly baseUrl = `http://${this.config.get('BACKEND_ADDRESS')}:${this.config.get('BACKEND_PORT')}`;
 
   /**
    * Generic HTTP request function.

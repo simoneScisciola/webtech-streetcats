@@ -1,5 +1,7 @@
 import express, { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
 import createError from "http-errors"; // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
+import path from "node:path"; // Node utility to manage paths cross-platform
+import fs from 'node:fs'; // Node utility to manage file system
 
 import { logger } from "#logging/logger.js";
 import { SightingController } from "#controllers/SightingController.js";
@@ -57,6 +59,25 @@ sightingRouter.get("/sightings/:id", [optionalAuthJWT, validateId], async (req: 
         } 
 
         res.status(200).json(result);
+    } catch (err) {
+        next(err);
+    }
+});
+
+/**
+ * Manages retrieve of a specified sighting photo
+ */
+sightingRouter.get("/uploads/sightings/:filename", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Retrieve path of the requested file
+        const filename = path.basename(req.params['filename']);
+        const filepath = path.join(process.cwd(), 'uploads', 'sightings', filename);
+
+        if (!fs.existsSync(filepath)) {
+            throw new createError.NotFound('Photo not found.');
+        }
+
+        res.sendFile(filepath);
     } catch (err) {
         next(err);
     }

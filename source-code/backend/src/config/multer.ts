@@ -52,4 +52,5 @@ export const uploadSightingPhoto = multer({
             cb(new Error('Only JPEG, PNG and WEBP images are allowed.'));
         }
     },
+
 }).single('photo');
