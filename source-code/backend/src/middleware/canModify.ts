@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
-import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
+import createError from "http-errors"; // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
 import { AuthRequest } from "#types/authRequest.js";
 import { SightingController } from "#controllers/SightingController.js";

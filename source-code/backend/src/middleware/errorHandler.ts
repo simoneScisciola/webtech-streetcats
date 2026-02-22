@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from "express" // Express framework (https://expressjs.com/)
-import { HttpError } from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
+import { Request, Response, NextFunction, ErrorRequestHandler } from "express"; // Express framework (https://expressjs.com/)
+import { HttpError } from "http-errors"; // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
 import { logger } from "#logging/logger.js";
 

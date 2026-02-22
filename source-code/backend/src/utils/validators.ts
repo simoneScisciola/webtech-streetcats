@@ -3,7 +3,7 @@
  */
 
 export function isUndefined(value: any): boolean {
-    return typeof value === 'undefined';
+    return value === undefined;
 }
 
 // === Attributes validator functions ===
@@ -66,7 +66,7 @@ function isString(value: any) {
 }
 
 function isNumber(value: any) {
-    return !isNaN(value) && typeof value === 'number';
+    return !Number.isNaN(value) && typeof value === 'number';
 }
 
 function isNull(value: any) {

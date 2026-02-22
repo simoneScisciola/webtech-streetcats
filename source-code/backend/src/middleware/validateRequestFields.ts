@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express" // Express framework (https://expressjs.com/)
-import createError from "http-errors" // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
+import { Request, Response, NextFunction } from "express"; // Express framework (https://expressjs.com/)
+import createError from "http-errors"; // HTTP errors middleware (https://www.npmjs.com/package/http-errors)
 
 import { isAddressValid, isContentValid, isDescriptionValid, isEmailValid, isIdValid, isLatitudeValid, isLongitudeValid, isPasswordValid, isPhotoUrlValid, isRolenameValid, isTitleValid, isUndefined, isUsernameValid } from "#utils/validators.js";
 import { UserRoleDto } from "#types/dto/UserRoleDto.js"
@@ -18,7 +18,7 @@ export function validateId(req: Request, res: Response, next: NextFunction) {
         throw new createError.BadRequest("ID must be provided.");
     }
 
-    const parsedSentId = parseInt(sentId);
+    const parsedSentId = Number.parseInt(sentId);
 
     // Validate request fields
     if (!isIdValid(parsedSentId)) {
@@ -189,13 +189,13 @@ export function validateSightingFields(enablePartialDto: boolean = false) {
             throw new createError.BadRequest("Description is not valid.");
         }
         if (!isUndefined(sentSighting.latitude)) {
-            sentSighting.latitude = parseFloat(req.body.latitude); // Convert to float
+            sentSighting.latitude = Number.parseFloat(req.body.latitude); // Convert to float
             if (!isLatitudeValid(sentSighting.latitude)) {
                 throw new createError.BadRequest("Latitude is not valid.");
             }
         }
         if (!isUndefined(sentSighting.longitude)) {
-            sentSighting.longitude = parseFloat(req.body.longitude); // Convert to float
+            sentSighting.longitude = Number.parseFloat(req.body.longitude); // Convert to float
             if (!isLongitudeValid(sentSighting.longitude)) {
                 throw new createError.BadRequest("Longitude is not valid.");
             }
