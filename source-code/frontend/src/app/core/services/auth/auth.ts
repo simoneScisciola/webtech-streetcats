@@ -16,7 +16,7 @@ export class Auth {
 
   // State
 
-  // Signal
+  // Signals
   authState: WritableSignal<AuthState> = signal<AuthState>({
     authToken: this.getAuthToken(), // Get token from localStorage, if there
     isAuthenticated: this.verifyToken(this.getAuthToken()), // Verify token not expired

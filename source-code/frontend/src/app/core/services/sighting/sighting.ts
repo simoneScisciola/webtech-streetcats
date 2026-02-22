@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, inject, signal } from '@angular/core';
+import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
 import { catchError, EMPTY, Observable, Subscription, switchMap, tap, timer } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
@@ -19,11 +19,24 @@ export class Sighting implements OnDestroy {
   
   // State
 
+  // Signals
   private pollSubscription?: Subscription;
-  private readonly sightings = signal<SightingResponse[]>([]);
-  private readonly isLoading = signal(false);
-  private readonly error = signal<string | null>(null);
-  private readonly lastUpdated = signal<Date | null>(null);
+  readonly sightings = signal<SightingResponse[]>([]);
+  readonly isLoading = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly lastUpdated = signal<Date | null>(null);
+
+  // Computed signals
+  readonly lastUpdatedFormatted = computed(() => {
+    const date = this.lastUpdated();
+
+    if (!date) return null;
+
+    return date.toLocaleTimeString('it-IT', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  });
 
   // Methods
 
@@ -44,7 +57,7 @@ export class Sighting implements OnDestroy {
           this.getAll().pipe(
             catchError((err) => { // Handle errors from getAll(). We use catchError() since we must return a Observable in order to continue polling even after an error
               console.error('Get sightings failed.', err);
-              this.error.set('Errore nel recupero dei sightings.');
+              this.error.set('Sightings refresh failed.');
               this.isLoading.set(false);
               return EMPTY;
             })

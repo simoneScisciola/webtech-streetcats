@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faPaw, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { SidePanel } from '#shared/components/side-panel/side-panel';
 import { SidePanelHeader } from '#shared/components/side-panel/side-panel-header/side-panel-header';
@@ -22,7 +22,7 @@ export class SightingsSidePanel {
   @Input() width = '400px';
   @Output() closePanel = new EventEmitter<void>();
 
-  private readonly sighting = inject(Sighting);
+  readonly sighting = inject(Sighting);
 
   isAddingNewSighting = signal(false);
 
@@ -30,6 +30,8 @@ export class SightingsSidePanel {
   icons = {
     title: faPaw,
     addSighting: faPlus,
+    refresh: faRotateRight,
+    loading: faSpinner,
   };
 
   onClosePanel(): void {
@@ -44,6 +46,10 @@ export class SightingsSidePanel {
     this.isAddingNewSighting.set(false);
   }
 
+  onRefresh(): void {
+    this.sighting.refresh();
+  }
+
   /**
    * Sends login request
    * @param payload submitted credetials
@@ -56,6 +62,7 @@ export class SightingsSidePanel {
         // Update sightings panel state
         this.isAddingNewSighting.set(false);
         this.closePanel.emit();
+        this.sighting.refresh();
       },
       error: (err) => console.error('Add sighting failed.', err),
     });

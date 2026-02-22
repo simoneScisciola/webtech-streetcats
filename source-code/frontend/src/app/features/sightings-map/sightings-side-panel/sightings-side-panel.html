@@ -17,27 +17,46 @@
 
     } @else {
 
-      <!-- All sightings -->
-      <app-sighting-card
-        title="Sighting #1"
-        lastSeen="2 ore fa"
-        description="Avvistamento di esempio nella zona centrale."
-        accentColor="#C4513F">
-      </app-sighting-card>
+      <!-- Refresh bar -->
+      <div class="d-flex align-items-center justify-content-between px-3 pb-2 mb-3 border-bottom">
+        <span class="text-muted small">
+          @if (this.sighting.lastUpdatedFormatted()) {
+            Last update at {{ this.sighting.lastUpdatedFormatted() }}
+          } @else {
+            Loading...
+          }
+        </span>
+        <button
+          class="btn btn-sm btn-outline-dark"
+          [disabled]="this.sighting.isLoading()"
+          (click)="onRefresh()"
+          style="--bs-btn-padding-y: .15rem; --bs-btn-padding-x: .30rem;">
+          <fa-icon 
+            [icon]="this.sighting.isLoading() ? icons.loading : icons.refresh"
+            [animation]="this.sighting.isLoading() ? 'spin' : undefined"
+            [size]="'sm'">
+          </fa-icon>
+        </button>
+      </div>
 
-      <app-sighting-card
-        title="Sighting #2"
-        lastSeen="5 ore fa"
-        description="Altro avvistamento nella periferia nord."
-        accentColor="#E5772D">
-      </app-sighting-card>
+      <!-- Error state -->
+      @if (this.sighting.error()) {
+        <div class="alert alert-danger m-3">{{ this.sighting.error() }}</div>
+      }
 
-      <app-sighting-card
-        title="Sighting #3"
-        lastSeen="1 giorno fa"
-        description="Avvistamento confermato nella zona sud."
-        accentColor="#2F714D">
-      </app-sighting-card>
+      <!-- Sightings list -->
+      @for (sighting of this.sighting.sightings(); track sighting.id) {
+        <app-sighting-card
+          [title]="sighting.title"
+          [lastSeen]="sighting.createdAt"
+          [description]="sighting.description ?? ''"
+          [accentColor]="'#E5772D'">
+        </app-sighting-card>
+      } @empty {
+        @if (!this.sighting.isLoading()) {
+          <p class="text-muted text-center p-4">No sightings found.</p>
+        }
+      }
 
     }
   </app-side-panel-body>
