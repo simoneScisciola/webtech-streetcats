@@ -1,16 +1,87 @@
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, OnDestroy, inject, signal } from '@angular/core';
+import { catchError, EMPTY, Observable, Subscription, switchMap, tap, timer } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
 import { SightingResponse } from '#types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
 
+// Config constants
+const POLL_INTERVAL_MS = 60_000; // 60 seconds
+
 @Injectable({
   providedIn: 'root',
 })
-export class Sighting {
+export class Sighting implements OnDestroy {
+
+  // Dependency Injection
 
   private readonly restBackend = inject(RestBackend);
+  
+  // State
+
+  private pollSubscription?: Subscription;
+  private readonly sightings = signal<SightingResponse[]>([]);
+  private readonly isLoading = signal(false);
+  private readonly error = signal<string | null>(null);
+  private readonly lastUpdated = signal<Date | null>(null);
+
+  // Methods
+
+  /**
+   * Starts polling the backend automatically.
+   */
+  startPolling(): void {
+    // If polling is already running 
+    if (this.pollSubscription)
+      return;
+
+    // If no polling is set
+    this.pollSubscription = timer(0, POLL_INTERVAL_MS) // Start timer immediately, then emit every POLL_INTERVAL_MS 
+      .pipe( // Apply, in sequence, multiple RxJS operators to Observable
+        // On every Observer emit:
+        tap(() => this.isLoading.set(true)), // Set loading state
+        switchMap(() => // Calls getAll() and switches to the new Observable, cancelling any previous one if still active
+          this.getAll().pipe(
+            catchError((err) => { // Handle errors from getAll(). We use catchError() since we must return a Observable in order to continue polling even after an error
+              console.error('Get sightings failed.', err);
+              this.error.set('Errore nel recupero dei sightings.');
+              this.isLoading.set(false);
+              return EMPTY;
+            })
+          )
+        ),
+      ).subscribe((response) => { // Manages getAll() response
+        this.sightings.set(response.data);
+        this.isLoading.set(false);
+        this.error.set(null);
+        this.lastUpdated.set(new Date());
+      });
+  }
+
+  /**
+   * Stop started polling
+   */
+  stopPolling(): void {
+    this.pollSubscription?.unsubscribe();
+    this.pollSubscription = undefined;
+  }
+
+  /**
+   * Manually reset the polling interval (e.g. after a manual refresh)
+   */
+  refresh(): void {
+    this.stopPolling();
+    this.startPolling();
+  }
+
+  /**
+   * Stop polling on component destroy
+   */
+  ngOnDestroy(): void {
+    this.stopPolling();
+  }
+
+  // CRUD Methods
 
   /**
    * Create of a sighting
@@ -48,9 +119,9 @@ export class Sighting {
    * Get all sightings
    * GET /sightings
    */
-  getAll(): Observable<PaginatedResponse<SightingResponse>> {
+  getAll(page = 0, size = 20): Observable<PaginatedResponse<SightingResponse>> {
     return this.restBackend.request(
-      `/sightings`,
+      `/sightings?page=${page}&size=${size}`,
       'GET'
     );
   }

@@ -25,9 +25,6 @@ export class Signup {
       next: (res) => {
         console.log("Response:", res);
 
-        // Update Auth state
-        this.auth.updateAuthResponse(res);
-
         // Redirect
         this.router.navigate(['/home']);
       },

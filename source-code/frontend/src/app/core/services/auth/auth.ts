@@ -1,5 +1,5 @@
 import { Injectable, inject, WritableSignal, computed, effect, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { jwtDecode } from "jwt-decode";
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
@@ -54,12 +54,24 @@ export class Auth {
 
   // Login function
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.restBackend.request("/auth", "POST", payload);
+    return this.restBackend.request<AuthResponse>("/auth", "POST", payload)
+      .pipe(
+        // On every Observer emit:
+        tap((response) => {
+          this.updateAuthResponse(response); // Update Auth state
+        }),
+      );
   }
 
   // Signup function
   signup(payload: SignupPayload): Observable<AuthResponse> {
-    return this.restBackend.request("/signup", "POST", payload);
+    return this.restBackend.request<AuthResponse>("/signup", "POST", payload)
+      .pipe(
+        // On every Observer emit:
+        tap((response) => {
+          this.updateAuthResponse(response); // Update Auth state
+        }),
+      );
   }
 
   // Logout function

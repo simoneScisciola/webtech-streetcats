@@ -24,10 +24,7 @@ export class Login {
     this.auth.login(payload).subscribe({
       next: (res) => {
         console.log("Response:", res);
-
-        // Update Auth state
-        this.auth.updateAuthResponse(res);
-
+  
         // Redirect
         this.router.navigate(['/home']);
       },
