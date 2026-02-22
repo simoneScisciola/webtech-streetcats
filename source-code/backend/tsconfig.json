@@ -4,9 +4,16 @@
     "sourceMap": true,
     "outDir": "./dist", /* Specify an output folder for all emitted files. */
     "rootDir": "./src", /* Specify the root folder within your source files. */
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "#*": ["src/*"]
+      "#config/*": ["config/*"],
+      "#controllers/*": ["controllers/*"],
+      "#logging/*": ["logging/*"],
+      "#middleware/*": ["middleware/*"],
+      "#models/*": ["models/*"],
+      "#routes/*": ["routes/*"],
+      "#types/*": ["types/*"],
+      "#utils/*": ["utils/*"]
     }
   },
   "include": ["src/**/*.ts"],
