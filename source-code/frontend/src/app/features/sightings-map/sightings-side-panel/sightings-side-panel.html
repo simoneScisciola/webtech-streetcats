@@ -7,12 +7,17 @@
   </app-side-panel-header>
 
   <app-side-panel-body>
+
     @if (isAddingNewSighting()) {
 
       <!-- Form visible when adding a new sighting -->
       <app-add-sighting-form
+        [isPickingCoordinates]="isPickingCoordinates"
+        [prefilledCoordinates]="prefilledCoordinates"
         (formSubmitted)="onAddSightingSubmit($event)"
-        (cancelButtonClick)="onCancelAddSighting()">
+        (cancelButtonClick)="onCancelAddSighting()"
+        (startPickingCoordinates)="onStartPickingCoordinates()"
+        (stopPickingCoordinates)="onStopPickingCoordinates()">
       </app-add-sighting-form>
 
     } @else {
@@ -32,7 +37,7 @@
           [disabled]="this.sighting.isLoading()"
           (click)="onRefresh()"
           style="--bs-btn-padding-y: .15rem; --bs-btn-padding-x: .30rem;">
-          <fa-icon 
+          <fa-icon
             [icon]="this.sighting.isLoading() ? icons.loading : icons.refresh"
             [animation]="this.sighting.isLoading() ? 'spin' : undefined"
             [size]="'sm'">
@@ -55,10 +60,12 @@
       }
 
     }
+
   </app-side-panel-body>
 
   <!-- Footer is only shown when not adding a new sighting -->
   @if (!isAddingNewSighting()) {
+
     <app-side-panel-footer>
       <button
         title="Add new sighting"
@@ -67,6 +74,7 @@
         <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>Add Sighting
       </button>
     </app-side-panel-footer>
+
   }
 
 </app-side-panel>
