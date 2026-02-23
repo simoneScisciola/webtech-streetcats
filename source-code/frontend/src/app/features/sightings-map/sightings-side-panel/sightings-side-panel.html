@@ -39,11 +39,6 @@
         </button>
       </div>
 
-      <!-- Error state -->
-      @if (this.sighting.error()) {
-        <div class="alert alert-danger m-3">{{ this.sighting.error() }}</div>
-      }
-
       <!-- Sightings list -->
       @for (sighting of this.sighting.sightings(); track sighting.id) {
         <app-sighting-card

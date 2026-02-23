@@ -23,7 +23,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   private resizeTimeout?: any;
 
   // Map of sighting IDs -> Leaflet markers for efficient updates
-  private markerMap = new Map<number, L.Marker>();
+  private readonly markerMap = new Map<number, L.Marker>();
   
   constructor() {
     // Sync markers whenever `sightings` signal changes

@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
 import { catchError, EMPTY, Observable, Subscription, switchMap, tap, timer } from 'rxjs';
+import { toast } from 'ngx-sonner';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
 import { SightingResponse } from '#types/sighting';
@@ -23,7 +24,6 @@ export class Sighting implements OnDestroy {
   private pollSubscription?: Subscription;
   readonly sightings = signal<SightingResponse[]>([]);
   readonly isLoading = signal(false);
-  readonly error = signal<string | null>(null);
   readonly lastUpdated = signal<Date | null>(null);
 
   // Computed signals
@@ -56,9 +56,9 @@ export class Sighting implements OnDestroy {
         switchMap(() => // Calls getAll() and switches to the new Observable, cancelling any previous one if still active
           this.getAll().pipe(
             catchError((err) => { // Handle errors from getAll(). We use catchError() since we must return a Observable in order to continue polling even after an error
-              console.error('Get sightings failed.', err);
-              this.error.set('Sightings refresh failed.');
+              console.error('Sightings sync failed.', err);
               this.isLoading.set(false);
+              toast.error('Sightings sync failed.');
               return EMPTY;
             })
           )
@@ -66,8 +66,8 @@ export class Sighting implements OnDestroy {
       ).subscribe((response) => { // Manages getAll() response
         this.sightings.set(response.data);
         this.isLoading.set(false);
-        this.error.set(null);
         this.lastUpdated.set(new Date());
+        toast.success('Sightings synced successfully.');
       });
   }
 
