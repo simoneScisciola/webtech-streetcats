@@ -51,28 +51,63 @@
         label="Address"
         placeholder="(Optional) e.g. Vesuvio, Campania, Italy"
         [control]="address"
-        [icon]="icons.location">
+        [icon]="icons.address">
       </app-form-card-field>
 
-      <app-form-card-field
-        id="latitude"
-        label="Latitude"
-        type="number"
-        placeholder="e.g. 41.89025436"
-        [control]="latitude"
-        [icon]="icons.latitude"
-        [errors]="latitudeErrors">
-      </app-form-card-field>
+      <!-- Geographic coordinates section -->
+      <div class="border border-2 rounded p-3 mb-3" style="border-color: var(--bs-gray-300) !important;">
 
-      <app-form-card-field
-        id="longitude"
-        label="Longitude"
-        type="number"
-        placeholder="e.g. 12.49218654"
-        [control]="longitude"
-        [icon]="icons.longitude"
-        [errors]="longitudeErrors">
-      </app-form-card-field>
+        <p class="fw-bolder mt-1">Geographic Coordinates</p>
+
+        @if (isPickingCoordinates) {
+          
+          <!-- Picking coordinates banner -->
+          <div class="alert alert-info d-flex align-items-center justify-content-between p-2 mb-3">
+            <span class="small">
+              <fa-icon [icon]="icons.pick" class="me-2"></fa-icon>Click on the map to pick a location...
+            </span>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary ms-2"
+              (click)="onCancelPickFromMapClick()">
+              Cancel
+            </button>
+          </div>
+
+        } @else {
+
+          <!-- Pick-from-map coordinates button -->
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary w-100 mb-3"
+            (click)="onPickFromMapClick()">
+            <fa-icon [icon]="icons.pick" class="me-2"></fa-icon>Pick from map
+          </button>
+
+        }
+
+        <!-- Coordinate fields -->
+        <app-form-card-field
+          id="latitude"
+          label="Latitude"
+          type="number"
+          placeholder="e.g. 41.89025436"
+          [control]="latitude"
+          [icon]="icons.latitude"
+          [errors]="latitudeErrors">
+        </app-form-card-field>
+
+        <app-form-card-field
+          id="longitude"
+          label="Longitude"
+          type="number"
+          placeholder="e.g. 12.49218654"
+          [control]="longitude"
+          [icon]="icons.longitude"
+          [errors]="longitudeErrors">
+        </app-form-card-field>
+
+      </div>
 
       <div class="row g-2 mt-3">
         <div class="col">
@@ -87,7 +122,7 @@
           <button
             type="submit"
             class="btn btn-primary w-100 fw-medium">
-              <fa-icon [icon]="icons.add" class="me-2"></fa-icon>Add
+            <fa-icon [icon]="icons.add" class="me-2"></fa-icon>Add
           </button>
         </div>
       </div>
