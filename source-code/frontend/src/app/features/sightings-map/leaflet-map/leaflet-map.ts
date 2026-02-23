@@ -1,8 +1,10 @@
-import { Component, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject, effect } from '@angular/core';
+import { Component, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject, effect, Output, EventEmitter, ApplicationRef, EnvironmentInjector, ComponentRef, createComponent } from '@angular/core';
 import * as L from 'leaflet';
 
 import { Sighting } from '#core/services/sighting/sighting';
+import { GeoCoords } from '#shared/types/coordinates';
 import { SightingResponse } from '#types/sighting';
+import { MapPopup } from './map-popup/map-popup';
 
 @Component({
   selector: 'app-leaflet-map',
@@ -14,17 +16,37 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
   @Input() isPanelOpen = false;
 
+  /** When true, the map click emits `coordinatesPicked` instead of being ignored. */
+  @Input() isPickingCoordinates = false;
+
+  /** Emitted when the user clicks the map while `isPickingCoordinates` is true. */
+  @Output() coordinatesPicked = new EventEmitter<GeoCoords>();
+
+  /** Emitted when the user selects "Add sighting" from the right-click context menu. */
+  @Output() addSightingRequested = new EventEmitter<GeoCoords>();
+
   private readonly sighting = inject(Sighting);
-  
-  // Leaflet map instance
+  private readonly appRef = inject(ApplicationRef);
+  private readonly envInjector = inject(EnvironmentInjector);
+
+  /** Leaflet map instance */
   private map?: L.Map;
 
-  // Leaflet needs some time before resize notification
+  /** Timeout before Leaflet resize notification */
   private resizeTimeout?: any;
 
-  // Map of sighting IDs -> Leaflet markers for efficient updates
+  /** Map of sighting IDs -> Leaflet markers for efficient updates */
   private readonly markerMap = new Map<number, L.Marker>();
-  
+
+  /** Tracks whether the initial sync has already been performed. */
+  private isFirstSync = true;
+
+  /**
+   * Reference to the currently open MapPopup Angular component.
+   * Kept so it can be destroyed on `ngOnDestroy` if the popup is still open.
+   */
+  private popupComponentRef?: ComponentRef<MapPopup>;
+
   constructor() {
     // Sync markers whenever `sightings` signal changes
     effect(() => {
@@ -37,7 +59,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
   /**
    * Initialize Leaflet map.
-   * Executed right after DOM building completion
+   * Executed right after DOM building completion.
    */
   ngAfterViewInit(): void {
     this.initMap();
@@ -45,47 +67,49 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   /**
-   * 
-   * Executed everytime a `@Input` value is changed
+   * Executed every time an `@Input` value changes.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    // If `isPanelOpen` is changed and map is initalized
+    // If `isPanelOpen` changed and the map is initialised, resize
     if (changes['isPanelOpen'] && this.map) {
       console.log('isPanelOpen changed:', this.isPanelOpen);
-      
+
       // Reset timeout
       if (this.resizeTimeout) {
         clearTimeout(this.resizeTimeout);
       }
-      
-      // Resize map after sidebar animation
+
+      // Resize map after sidebar CSS transition ends
       this.resizeTimeout = setTimeout(() => {
-        console.log("Map resize.")
         this.map?.invalidateSize();
       }, 350); // Time in ms
+    }
+
+    // If `isPickingCoordinates` changed and the map is initialised, choose cursor style
+    if (changes['isPickingCoordinates'] && this.map) {
+      this.map.getContainer().style.cursor = this.isPickingCoordinates ? 'crosshair' : ''; // Toggle crosshair cursor to visually signal picking mode
     }
   }
 
   /**
-   * Executed when component is destroyed
+   * Executed when the component is destroyed.
    */
   ngOnDestroy(): void {
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout);
     }
+    this.destroyComponent(this.popupComponentRef);
     this.map?.remove();
   }
 
   /**
-   * Initialize Leaflet map
+   * Initialises Leaflet map.
    */
   private initMap(): void {
 
-    // Initialize map and center it on Rome
-    this.map = L.map('map', {
-      center: [41.9028, 12.4964],
-      zoom: 13
-    });
+    // Initialise map and fit to Europe/Italy bounds
+    this.map = L.map('map');
+    this.map.fitBounds([[30, -29], [55, 55]]);
 
     // Add OpenStreetMap tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -93,12 +117,80 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
 
+    // Click listener: used in coordinate-picking mode
+    this.map.on('click', (e: L.LeafletMouseEvent) => {
+
+      if (this.isPickingCoordinates)
+        // Emit the clicked coordinates to the parent
+        this.coordinatesPicked.emit({
+          latitude: e.latlng.lat,
+          longitude: e.latlng.lng
+        });
+
+    });
+
+    // Right-click listener: open a context-menu popup with a dynamic Angular component
+    this.map.on('contextmenu', (e: L.LeafletMouseEvent) => {
+
+      // Destroy any previously open popup component before creating a new one.
+      this.destroyComponent(this.popupComponentRef);
+
+      // Instantiate the `MapPopup` Angular component
+      this.popupComponentRef = createComponent(MapPopup, {
+        environmentInjector: this.envInjector,
+      });
+
+      // Capture this popup reference in a local const. The local const is what the `remove` closure will reference, ensuring it always destroys exactly this instance even if a later right-click has already replaced `this.popupComponentRef`.
+      const componentRef = this.popupComponentRef;
+
+      // Subscribe to the component's output
+      componentRef.instance.addSightingClick.subscribe(() => {
+        this.map?.closePopup();
+        this.addSightingRequested.emit({ latitude: e.latlng.lat, longitude: e.latlng.lng });
+      });
+
+      // Attach to ApplicationRef so Angular runs change detection on it
+      this.appRef.attachView(componentRef.hostView);
+
+      // Run initial change detection immediately after attaching the view.
+      // This forces Angular to render the template before Leaflet takes the nativeElement and inserts it into the DOM popup.
+      componentRef.changeDetectorRef.detectChanges();
+
+      // Create the Leaflet popup and bind the Angular component's DOM element as its content
+      const popup = L.popup({ closeButton: true })
+        .setLatLng(e.latlng)
+        .setContent(componentRef.location.nativeElement);
+
+      // Destroy the component when its specific popup is removed.
+      // Clear `this.popupComponentRef` only if it still points to this instance, since a later right-click may have already replaced it.
+      popup.on('remove', () => {
+        this.destroyComponent(componentRef);
+        if (this.popupComponentRef === componentRef) {
+          this.popupComponentRef = undefined;
+        }
+      });
+
+      popup.openOn(this.map!);
+
+    });
+
+  }
+
+  /**
+   * Detaches and destroys a dynamic component in order to prevent memory leaks.
+   * Safe to call when `componentRef` is undefined.
+   */
+  private destroyComponent(componentRef?: ComponentRef<any>): void {
+    if (componentRef) {
+      this.appRef.detachView(componentRef.hostView);
+      componentRef.destroy();
+    }
   }
 
   /**
    * Sync markers on map by deleting markers that are no longer in the sightings list and adding new ones.
-   * @param sightings 
-   * @returns 
+   * On the first sync with data, fits the viewport to show all markers.
+   * @param sightings Current list of sightings from the service.
    */
   private syncMarkers(sightings: SightingResponse[]): void {
 
@@ -109,7 +201,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     // Convert incoming sightings to a set of IDs for easy lookup
     const incomingIds = new Set(sightings.map(s => s.id));
 
-    // Delete markers that are no longer in the sightings list
+    // Remove markers that are no longer in the sightings list
     for (const [id, marker] of this.markerMap.entries()) {
       if (!incomingIds.has(id)) {
         marker.remove();
@@ -117,7 +209,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       }
     }
 
-    // Add new markers
+    // Add markers not yet on map
     for (const sighting of sightings) {
       if (!this.markerMap.has(sighting.id)) {
         const marker = L.marker([Number.parseFloat(sighting.latitude), Number.parseFloat(sighting.longitude)])
@@ -126,6 +218,15 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
         this.markerMap.set(sighting.id, marker);
       }
+    }
+
+    // On the first sync that contains markers, fit the viewport to include all of them
+    if (this.isFirstSync && sightings.length > 0) {
+      const bounds = L.latLngBounds(
+        sightings.map(s => [Number.parseFloat(s.latitude), Number.parseFloat(s.longitude)] as L.LatLngTuple)
+      );
+      this.map.fitBounds(bounds, { padding: [50, 50] });
+      this.isFirstSync = false;
     }
 
   }
