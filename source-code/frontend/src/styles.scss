@@ -7,6 +7,18 @@ body {
   background-color: var(--bs-light);
 }
 
+// Sonner toast styles
+[data-sonner-toast] {
+
+  [data-icon] {
+    margin-right: 0.75rem;
+  }
+
+  [data-content] {
+    width: 100%;
+  }
+}
+
 /* Animate.css */
 @import "animate.css/animate.min.css";
 

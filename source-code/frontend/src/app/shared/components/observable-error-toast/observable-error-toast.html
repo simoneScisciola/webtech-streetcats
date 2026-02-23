@@ -1,26 +1,24 @@
-<div class="d-inline-flex align-items-center">
-  <div class="d-flex flex-column" role="alert" aria-atomic="true">
+<div class="d-flex flex-column" role="alert" aria-atomic="true">
 
-    <!-- Error message -->
-    <p class="fs-6 mb-2">{{ message }}</p>
+  <!-- Error message -->
+  <p class="mb-2" style="font-size: 1.032rem;">{{ message }}</p>
 
-    <div class="d-flex justify-content-end gap-2">
+  <div class="d-flex justify-content-end gap-2">
 
-      <!--
-        Retry button: shown only when onRetry is provided.
-        The callback is invoked directly — no output indirection needed.
-      -->
-      @if (onRetry) {
-        <button
-          class="btn btn-primary"
-          style="padding: .25rem .5rem; font-size: 0.9rem"
-          (click)="onRetry()"
-        >
-          Retry
-        </button>
-      }
-
-    </div>
+    <!--
+      Retry button: shown only when onRetry is provided.
+      The callback is invoked directly — no output indirection needed.
+    -->
+    @if (onRetry) {
+      <button
+        class="btn btn-primary"
+        style="padding: .25rem .5rem; font-size: 0.9rem"
+        (click)="onRetry()"
+      >
+        Retry
+      </button>
+    }
 
   </div>
+
 </div>

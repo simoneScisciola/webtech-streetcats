@@ -18,7 +18,7 @@ authRouter.post("/auth", async (req: Request, res: Response, next: NextFunction)
         // Retrieve user specified in the request
         const loggingUsername: string = req.body.username;
         const loggingPassword: string = req.body.password;
-    
+
         // Check if the credentials are correct
         let success = await AuthController.checkCredentials(loggingUsername, loggingPassword);
 

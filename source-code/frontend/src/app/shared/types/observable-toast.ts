@@ -20,7 +20,7 @@ export interface ObservableToastOptions<T = unknown> {
   /** Whether the error toast can be dismissed by the user. */
   dismissible?: boolean;
 
-  /** How long (ms) the error toast stays visible. Pass `Infinity` to keep it open. */
+  /** How long (ms) the error toast stays visible. Pass `Number.POSITIVE_INFINITY` to keep it open. */
   duration?: number;
 
   /** Called with the emitted value when the observable succeeds. */
