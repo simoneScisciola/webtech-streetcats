@@ -2,17 +2,19 @@ import { Component, Input, Output, EventEmitter, inject, signal } from '@angular
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
+import { Sighting } from '#core/services/sighting/sighting';
+import { ObservableToast } from '#core/services/observable-toast/observable-toast';
 import { SidePanel } from '#shared/components/side-panel/side-panel';
 import { SidePanelHeader } from '#shared/components/side-panel/side-panel-header/side-panel-header';
 import { SidePanelBody } from '#shared/components/side-panel/side-panel-body/side-panel-body';
 import { SidePanelFooter } from '#shared/components/side-panel/side-panel-footer/side-panel-footer';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
-import { Sighting } from '#core/services/sighting/sighting';
 
 @Component({
   selector: 'app-sightings-side-panel',
   imports: [FontAwesomeModule, SidePanel, SidePanelHeader, SidePanelBody, SightingCard, SidePanelFooter, AddSightingForm],
+  providers: [ObservableToast],
   templateUrl: './sightings-side-panel.html',
   styleUrl: './sightings-side-panel.scss',
 })
@@ -23,6 +25,7 @@ export class SightingsSidePanel {
   @Output() closePanel = new EventEmitter<void>();
 
   readonly sighting = inject(Sighting);
+  protected readonly toast = inject(ObservableToast);
 
   isAddingNewSighting = signal(false);
 
@@ -55,17 +58,24 @@ export class SightingsSidePanel {
    * @param payload submitted credetials
    */
   onAddSightingSubmit(payload: FormData) {
-    this.sighting.create(payload).subscribe({
-      next: (res) => {
-        console.log("Response:", res);
+    this.toast.trigger(
+      this.sighting.create(payload),
+      {
+        loading: "Adding sighting...",
+        success: "Sighting added successfully.",
+        error: "Failed to add sighting. Please, try again.",
+        onSuccess: (res) => {
+          console.log("Response:", res);
 
-        // Update sightings panel state
-        this.isAddingNewSighting.set(false);
-        this.closePanel.emit();
-        this.sighting.refresh();
-      },
-      error: (err) => console.error('Add sighting failed.', err),
-    });
+          // Update sightings panel state
+          this.isAddingNewSighting.set(false);
+          this.closePanel.emit();
+          this.sighting.refresh();
+        },
+        onError: (err) => console.error('Add sighting failed.', err),
+        onRetry: () => this.sighting.create(payload)
+      }
+    )
   }
 
 }

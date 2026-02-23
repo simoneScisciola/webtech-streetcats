@@ -32,7 +32,7 @@ export class Login {
         error: "Login failed. Please, try again.",
         onSuccess: (res) => {
           console.log("Response:", res);
-    
+
           // Redirect
           this.router.navigate(['/home']);
         },
@@ -40,7 +40,6 @@ export class Login {
         onRetry: () => this.auth.login(payload)
       }
     )
-
   }
 
 }
