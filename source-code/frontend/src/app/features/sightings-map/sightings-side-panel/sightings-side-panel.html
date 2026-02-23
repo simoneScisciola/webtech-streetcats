@@ -21,13 +21,14 @@
       <div class="d-flex align-items-center justify-content-between px-3 pb-2 mb-3 border-bottom">
         <span class="text-muted small">
           @if (this.sighting.lastUpdatedFormatted()) {
-            Last update at {{ this.sighting.lastUpdatedFormatted() }}
+            Last sync at {{ this.sighting.lastUpdatedFormatted() }}
           } @else {
-            Loading...
+            Not synced yet
           }
         </span>
         <button
           class="btn btn-sm btn-outline-dark"
+          title="Refresh sightings"
           [disabled]="this.sighting.isLoading()"
           (click)="onRefresh()"
           style="--bs-btn-padding-y: .15rem; --bs-btn-padding-x: .30rem;">
@@ -59,7 +60,10 @@
   <!-- Footer is only shown when not adding a new sighting -->
   @if (!isAddingNewSighting()) {
     <app-side-panel-footer>
-      <button class="btn btn-primary w-100 fw-medium" (click)="onAddSightingClick()">
+      <button
+        title="Add new sighting"
+        class="btn btn-primary w-100 fw-medium"
+        (click)="onAddSightingClick()">
         <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>Add Sighting
       </button>
     </app-side-panel-footer>
