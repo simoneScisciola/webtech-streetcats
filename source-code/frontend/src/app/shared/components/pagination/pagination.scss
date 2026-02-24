@@ -1,0 +1,18 @@
+@use "../../styles/variables";
+
+.pagination {
+  --bs-pagination-color:                #{variables.$streetcats-orange};
+  --bs-pagination-hover-color:          #{variables.$streetcats-orange};
+  --bs-pagination-focus-color:          #{variables.$streetcats-orange};
+  --bs-pagination-focus-box-shadow:     0 0 0 0.2rem #{rgba(variables.$streetcats-orange, 0.25)};
+  --bs-pagination-hover-bg:             #{rgba(variables.$streetcats-orange, 0.08)};
+  --bs-pagination-hover-border-color:   #{variables.$streetcats-orange};
+  --bs-pagination-active-color:         #fff;
+  --bs-pagination-active-bg:            #{variables.$streetcats-orange};
+  --bs-pagination-active-border-color:  #{variables.$streetcats-orange};
+
+  .page-link {
+    padding: 0.30rem 0.62rem;
+    font-size: 0.93rem;
+  }
+}

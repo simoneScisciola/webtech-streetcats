@@ -37,7 +37,6 @@ export class Pagination {
     start = Math.max(0, end - windowSize + 1);
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  
   }
 
   /** Navigate to a page, ignoring out-of-range clicks */
