@@ -6,6 +6,7 @@ import { RestBackend } from '#core/services/rest-backend/rest-backend'
 import { SightingResponse, SightingItem } from '#types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
 import { formatDate, formatTime } from '#shared/utils/date';
+import { Sort } from '#shared/types/query-params';
 
 /** Polling interval in milliseconds */
 const POLL_INTERVAL_MS = 60_000; // 60 seconds
@@ -43,6 +44,9 @@ export class Sighting implements OnDestroy {
 
   /** Total number of items across all pages */
   readonly totalItems = signal(0);
+
+  /** Current selected sort */
+  readonly currentSort = signal<Sort>({ field: 'createdAt', direction: 'desc' });
 
   // -- Computed signals ------------------------------------------------------
 
@@ -82,7 +86,7 @@ export class Sighting implements OnDestroy {
         // Call getAll() and switch to the new Observable, cancelling any previous one if still active.
         // We read currentPage() here so that each tick fetches the page the user is currently on.
         switchMap(() =>
-          this.getAll(this.currentPage(), this.pageSize()).pipe(
+          this.getAll(this.currentSort(), this.currentPage(), this.pageSize()).pipe(
             catchError((err) => {
               console.error('Sightings sync failed.', err);
               this.isLoading.set(false);
@@ -184,9 +188,9 @@ export class Sighting implements OnDestroy {
    * Get a paginated list of sightings
    * GET /sightings?page=:page&size=:size
    */
-  getAll(page = 0, size = 20): Observable<PaginatedResponse<SightingResponse>> {
+  getAll(sort: Sort, page = 0, size = 20): Observable<PaginatedResponse<SightingResponse>> {
     return this.restBackend.request(
-      `/sightings?page=${page}&size=${size}`,
+      `/sightings?page=${page}&size=${size}&sort=${sort.field},${sort.direction}`,
       'GET'
     );
   }
