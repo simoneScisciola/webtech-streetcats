@@ -13,7 +13,7 @@
       <!-- Form visible when adding a new sighting -->
       <app-add-sighting-form
         [isPickingCoordinates]="isPickingCoordinates"
-        [prefilledCoordinates]="prefilledCoordinates"
+        [prefilledCoordinates]="prefilledCoordinates()"
         (formSubmitted)="onAddSightingSubmit($event)"
         (cancelButtonClick)="onCancelAddSighting()"
         (startPickingCoordinates)="onStartPickingCoordinates()"

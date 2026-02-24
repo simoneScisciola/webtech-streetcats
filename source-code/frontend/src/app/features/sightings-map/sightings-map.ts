@@ -23,14 +23,12 @@ export class SightingsMap implements OnInit, OnDestroy {
   /** Keeps track of the user in "pick coordinate from map" mode, whether by the map picker or the context-menu popup. */
   isPickingCoordinates = signal(false);
 
-  /** Pre-filled coordinates sent to the add-sighting form. */
-  prefilledCoordinates = signal<GeoCoords | null>(null);
-
   /**
-   * Coordinates currently shown as a temporary marker on the map.
-   * Persists until the form is cancelled or submitted successfully.
+   * Pre-filled coordinates sent to the add-sighting form.
+   * Also shown as a temporary marker on the map.
+   * Two-way bound with SightingsSidePanel: the child writes null back when the form is cancelled.
    */
-  previewCoordinates = signal<GeoCoords | null>(null);
+  prefilledCoordinates = signal<GeoCoords | null>(null);
 
   private readonly sightingService = inject(Sighting);
 
@@ -57,7 +55,6 @@ export class SightingsMap implements OnInit, OnDestroy {
    */
   onClosePanel(): void {
     this.isPanelOpen.set(false);
-    this.previewCoordinates.set(null);
   }
 
   /**
@@ -69,12 +66,11 @@ export class SightingsMap implements OnInit, OnDestroy {
   }
 
   /**
-   * Called when the user cancels coordinate picking or closes the form.
-   * Deactivates pick mode and removes the preview marker.
+   * Called when the user cancels coordinate picking.
+   * Note: prefilledCoordinates is nulled by the child via the model.
    */
   onStopPickingCoordinates(): void {
     this.isPickingCoordinates.set(false);
-    this.previewCoordinates.set(null);
   }
 
   /**
@@ -86,15 +82,9 @@ export class SightingsMap implements OnInit, OnDestroy {
     this.isPickingCoordinates.set(false);
     this.prefilledCoordinates.set(coords);
 
-    // Show the preview marker
-    this.previewCoordinates.set(coords);
-
     // Open panel if not already open
     if (!this.isPanelOpen())
       this.isPanelOpen.set(true);
-
-    // Clear prefilled coords after one render so they don't persist on the next form open
-    setTimeout(() => this.prefilledCoordinates.set(null), 0);
   }
 
 }

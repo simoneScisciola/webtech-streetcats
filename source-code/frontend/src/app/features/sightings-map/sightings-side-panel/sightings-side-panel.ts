@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, effect, model } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -19,7 +19,7 @@ import { AddSightingForm } from './add-sighting-form/add-sighting-form';
   templateUrl: './sightings-side-panel.html',
   styleUrl: './sightings-side-panel.scss',
 })
-export class SightingsSidePanel implements OnChanges {
+export class SightingsSidePanel {
 
   /** Tracks side panel open state */
   @Input() isPanelOpen = false;
@@ -30,8 +30,11 @@ export class SightingsSidePanel implements OnChanges {
   /** Forwarded to the add sighting form to show a "waiting for map click" banner. */
   @Input() isPickingCoordinates = false;
 
-  /** Coordinates received from the map; forwarded directly to the form. */
-  @Input() prefilledCoordinates: GeoCoords | null = null;
+  /**
+   * Two-way bound coordinates received from the map; forwarded directly to the form.
+   * The child can write null back to the parent (e.g. on cancel) via the model.
+   */
+  prefilledCoordinates = model<GeoCoords | null>(null);
 
   /** Emitted when the side panel has been closed */
   @Output() closePanel = new EventEmitter<void>();
@@ -56,17 +59,18 @@ export class SightingsSidePanel implements OnChanges {
     loading: faSpinner,
   };
 
-  /**
-   * Executed every time an `@Input` value changes.
-   */
-  ngOnChanges(changes: SimpleChanges): void {
-    // When coordinates are provided from the map, open the add-sighting form automatically
-    if (changes['prefilledCoordinates']?.currentValue) {
-      this.isAddingNewSighting.set(true);
-    }
+  constructor() {
+    // Open the add-sighting form automatically when coordinates arrive
+    effect(() => {
+      if (this.prefilledCoordinates() !== null) {
+        this.isAddingNewSighting.set(true);
+      }
+    });
   }
 
   onClosePanel(): void {
+    this.isAddingNewSighting.set(false);
+    this.prefilledCoordinates.set(null);
     this.closePanel.emit();
   }
 
@@ -76,6 +80,7 @@ export class SightingsSidePanel implements OnChanges {
 
   onCancelAddSighting(): void {
     this.isAddingNewSighting.set(false);
+    this.prefilledCoordinates.set(null);
     this.stopPickingCoordinates.emit(); // Ensure pick mode is exited if the user cancels the form entirely
   }
 
@@ -109,6 +114,7 @@ export class SightingsSidePanel implements OnChanges {
 
           // Update sightings panel state
           this.isAddingNewSighting.set(false);
+          this.prefilledCoordinates.set(null)
           this.closePanel.emit();
           this.sighting.refresh();
         },
