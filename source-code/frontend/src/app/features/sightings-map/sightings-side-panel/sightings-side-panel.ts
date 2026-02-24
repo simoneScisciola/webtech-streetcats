@@ -5,10 +5,12 @@ import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid
 import { Sighting } from '#core/services/sighting/sighting';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
 import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
+import { GeoCoords } from '#shared/types/coordinates';
 import { SidePanel } from '#shared/components/side-panel/side-panel';
 import { SidePanelHeader } from '#shared/components/side-panel/side-panel-header/side-panel-header';
 import { SidePanelBody } from '#shared/components/side-panel/side-panel-body/side-panel-body';
 import { SidePanelFooter } from '#shared/components/side-panel/side-panel-footer/side-panel-footer';
+import { truncateText } from '#shared/utils/text';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
 
@@ -32,6 +34,9 @@ export class SightingsSidePanel {
 
   /** Tracks if add sighting form should be shown */
   isAddingNewSighting = signal(false);
+
+  // Text formatting util
+  protected readonly truncateText = truncateText;
 
   protected readonly sighting = inject(Sighting);
   private readonly sightingsMapState = inject(SightingsMapState);
@@ -70,6 +75,10 @@ export class SightingsSidePanel {
 
   onCancelAddSighting(): void {
     this.closeAddSightingForm();
+  }
+
+  onSightingCardClick(coords: GeoCoords): void {
+    this.sightingsMapState.focusOnCoordinates(coords);
   }
 
   /**

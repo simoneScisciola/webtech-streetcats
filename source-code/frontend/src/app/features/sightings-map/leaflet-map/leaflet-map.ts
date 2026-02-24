@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 import { Sighting } from '#core/services/sighting/sighting';
 import { GeoCoords } from '#shared/types/coordinates';
 import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
-import { SightingResponse } from '#types/sighting';
+import { SightingItem } from '#types/sighting';
 import { MapPopup } from './map-popup/map-popup';
 
 @Component({
@@ -45,12 +45,36 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   /** Temporary marker showing the coordinates selected in the form. */
   private previewMarker?: L.Marker;
 
-  /** Custom icon for the temporary preview marker. */
+  /** Currently focused marker. */
+  private focusedMarker?: L.Marker;
+
+  /** Custom icon for the preview marker. */
   private readonly previewIcon = L.icon({
-    iconUrl: 'assets/leaflet/temporary-marker-icon.png',
-    iconRetinaUrl: 'assets/leaflet/temporary-marker-icon-2x.png',
-    iconSize: [25, 41],     // Default Leaflet marker size
-    iconAnchor: [12, 41],   // Tip of the pin is at the bottom-centre
+    iconUrl: 'assets/leaflet/preview-marker-icon.png',
+    iconRetinaUrl: 'assets/leaflet/preview-marker-icon-2x.png',
+    shadowUrl: 'assets/leaflet/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+  });
+
+  /** Default Leaflet marker icon. */
+  private readonly defaultIcon = L.icon({
+    iconUrl: 'assets/leaflet/marker-icon.png',
+    iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
+    shadowUrl: 'assets/leaflet/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+  });
+
+  /** Icon used when a marker is focused. */
+  private readonly focusedIcon = L.icon({
+    iconUrl: 'assets/leaflet/focus-marker-icon.png',
+    iconRetinaUrl: 'assets/leaflet/focus-marker-icon-2x.png',
+    shadowUrl: 'assets/leaflet/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 
@@ -81,6 +105,18 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       const isPicking = this.sightingsMapState.isPickingCoordinates();
       if (this.map) {
         this.map.getContainer().style.cursor = isPicking ? 'crosshair' : ''; // Toggle crosshair cursor to visually signal picking mode
+      }
+    });
+
+    // Move to the marker and open its popup when a sighting card is clicked
+    effect(() => {
+      const coords = this.sightingsMapState.focusCoordinates();
+
+      if (coords && this.map) {
+        this.focusMarker(coords);
+  
+        // Consume the signal so future clicks on the same coords still trigger the effect
+        this.sightingsMapState.clearFocusCoordinates();
       }
     });
   }
@@ -196,6 +232,24 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
     });
 
+  }
+
+  /**
+   * Moves the map to the marker closest to `coords` and opens its popup.
+   * @param coords Target coordinates from the state.
+   */
+  private focusMarker(coords: GeoCoords): void {
+    // Find the marker whose position matches the requested coordinates
+    const target = [...this.markerMap.values()].find(marker => {
+      const position = marker.getLatLng();
+      return position.lat === coords.latitude && position.lng === coords.longitude;
+    });
+
+    // If a marker is found, smoothly animate the map to the marker, then open its popup once the animation ends
+    if (target) {
+      this.map!.flyTo(target.getLatLng(), 14, { duration: 0.8 }); // Use `flyTo` for a smooth animated transition.
+      this.map!.once('moveend', () => target.openPopup());
+    }
   }
 
    /**

@@ -1,6 +1,19 @@
-<div class="card mb-3 border-4" [style.border-color]="accentColor">
+<div class="card mb-3 border-4 position-relative" [style.border-color]="accentColor">
 
-  <div class="card-body">
+  <!-- Full-card button overlay for map focus -->
+  <button
+    type="button"
+    title="View on map"
+    class="position-absolute top-0 start-0 w-100 h-100 border-0 bg-transparent"
+    style="z-index: 0"
+    (click)="onCardClick()">
+  </button>
+
+  <!-- Sighting Card content -->
+  <!-- pointer-events: none lets clicks pass through to the overlay button -->
+  <div 
+    class="card-body position-relative"
+    style="z-index: 1; pointer-events: none">
     <h6 class="card-title">
       <fa-icon [icon]="faMapMarkerAlt" class="me-2" [style.color]="accentColor"></fa-icon>{{ title }}
     </h6>
@@ -8,10 +21,17 @@
       <fa-icon [icon]="faClock" class="me-2"></fa-icon>{{ lastSeen }}
     </p>
     <p class="card-text">
-      {{description}}
+      {{ description }}
     </p>
-    <button class="btn btn-sm btn-outline-primary">
-      <fa-icon [icon]="faEye" class="me-2"></fa-icon>View
+
+    <!-- pointer-events: auto restores interactivity only for this button -->
+    <button
+      type="button"
+      title="View details"
+      class="btn btn-sm btn-outline-primary"
+      style="pointer-events: auto"
+      (click)="onDetailsClick()">
+      <fa-icon [icon]="faEye" class="me-2"></fa-icon>Details
     </button>
   </div>
 

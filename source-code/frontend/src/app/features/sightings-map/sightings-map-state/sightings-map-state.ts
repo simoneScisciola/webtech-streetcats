@@ -17,14 +17,21 @@ export class SightingsMapState {
    */
   private readonly _previewCoordinates = signal<GeoCoords | null>(null);
 
-  /** 
-   * Keeps track of the user in "pick coordinate from map" mode. 
+  /**
+   * Coordinates the map should move to when a sighting card is clicked.
+   * Null when no focus is requested.
+   */
+  private readonly _focusCoordinates = signal<GeoCoords | null>(null);
+
+  /**
+   * Keeps track of the user in "pick coordinate from map" mode.
    * When true, the map click saves point coordinates instead of being ignored.
-  */
+   */
   private readonly _isPickingCoordinates = signal(false);
-  
+
   // Readonly derived state
   readonly previewCoordinates = this._previewCoordinates.asReadonly();
+  readonly focusCoordinates   = this._focusCoordinates.asReadonly();
   readonly isPickingCoordinates = this._isPickingCoordinates.asReadonly();
 
 
@@ -46,7 +53,7 @@ export class SightingsMapState {
   }
 
   /**
-   * Sets the preview coordinates in the state.
+   * Sets the preview coordinates.
    * @param coords The coordinates to set as preview, or null to clear the preview.
    * @param source The source of the coordinates
    */
@@ -59,6 +66,22 @@ export class SightingsMapState {
    */
   clearPreviewCoordinates() {
     this._previewCoordinates.set(null);
+  }
+
+  /**
+   * Sets the focusOn coordinates.
+   * Typically called when the user clicks a sighting card, it requests the map to move to the given coordinates.
+   * @param coords Target coordinates to focus on.
+   */
+  focusOnCoordinates(coords: GeoCoords) {
+    this._focusCoordinates.set(coords);
+  }
+
+  /**
+   * Clears the focus coordinates.
+   */
+  clearFocusCoordinates() {
+    this._focusCoordinates.set(null);
   }
 
 }
