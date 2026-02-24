@@ -11,12 +11,13 @@ import { SidePanelHeader } from '#shared/components/side-panel/side-panel-header
 import { SidePanelBody } from '#shared/components/side-panel/side-panel-body/side-panel-body';
 import { SidePanelFooter } from '#shared/components/side-panel/side-panel-footer/side-panel-footer';
 import { truncateText } from '#shared/utils/text';
+import { Pagination } from '#shared/components/pagination/pagination';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
 
 @Component({
   selector: 'app-sightings-side-panel',
-  imports: [FontAwesomeModule, SidePanel, SidePanelHeader, SidePanelBody, SightingCard, SidePanelFooter, AddSightingForm],
+  imports: [FontAwesomeModule, SidePanel, SidePanelHeader, SidePanelBody, SightingCard, SidePanelFooter, AddSightingForm, Pagination],
   providers: [ObservableToast],
   templateUrl: './sightings-side-panel.html',
   styleUrl: './sightings-side-panel.scss',
@@ -83,6 +84,7 @@ export class SightingsSidePanel {
 
   /**
    * Sends add-sighting request.
+   * After a successful creation, navigates back to page 0.
    * @param payload FormData submitted by the form.
    */
   onAddSightingSubmit(payload: FormData) {
@@ -97,7 +99,8 @@ export class SightingsSidePanel {
 
           this.closeAddSightingForm();
           this.closePanel.emit();
-          this.sighting.refresh();
+
+          this.sighting.goToPage(0);
         },
         onError: (err) => console.error('Add sighting failed.', err),
         onRetry: () => this.sighting.create(payload)
@@ -105,7 +108,9 @@ export class SightingsSidePanel {
     )
   }
 
-  // Update sightings panel state
+  // -- Private helpers -------------------------------------------------------
+
+  /** Resets add-sighting UI state and map picking mode */
   private closeAddSightingForm() {
     this.isAddingNewSighting.set(false);
     this.sightingsMapState.clearPreviewCoordinates();

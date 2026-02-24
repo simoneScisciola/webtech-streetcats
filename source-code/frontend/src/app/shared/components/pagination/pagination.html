@@ -1,0 +1,76 @@
+<!-- Render pagination only when there is more than one page -->
+@if (totalPages > 1) {
+
+  <nav aria-label="Sightings pagination" class="d-flex justify-content-center mt-3">
+    <ul class="pagination pagination-sm mb-0">
+
+      <!-- First page button -->
+      <li class="page-item" [class.disabled]="currentPage === 0">
+        <button
+          class="page-link"
+          aria-label="First page"
+          (click)="goTo(0)">
+          &laquo;&laquo;
+        </button>
+      </li>
+
+      <!-- Previous button -->
+      <li class="page-item" [class.disabled]="currentPage === 0">
+        <button
+          class="page-link"
+          aria-label="Previous page"
+          (click)="goTo(currentPage - 1)">
+          &laquo;
+        </button>
+      </li>
+
+      <!-- Ellipsis when the window doesn't start at page 0 -->
+      @if (visiblePages[0] > 0) {
+        <li class="page-item disabled">
+          <span class="page-link">…</span>
+        </li>
+      }
+
+      <!-- Page number buttons -->
+      @for (page of visiblePages; track page) {
+        <li class="page-item" [class.active]="page === currentPage">
+          <button
+            class="page-link"
+            [attr.aria-current]="page === currentPage ? 'page' : null"
+            (click)="goTo(page)">
+            {{ page + 1 }}
+          </button>
+        </li>
+      }
+
+      <!-- Ellipsis when the window doesn't reach the last page -->
+      @if (visiblePages[visiblePages.length - 1] < totalPages - 1) {
+        <li class="page-item disabled">
+          <span class="page-link">…</span>
+        </li>
+      }
+
+      <!-- Next button -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+        <button
+          class="page-link"
+          aria-label="Next page"
+          (click)="goTo(currentPage + 1)">
+          &raquo;
+        </button>
+      </li>
+
+      <!-- Last page button -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+        <button
+          class="page-link"
+          aria-label="Last page"
+          (click)="goTo(totalPages - 1)">
+          &raquo;&raquo;
+        </button>
+      </li>
+
+    </ul>
+  </nav>
+
+}

@@ -56,6 +56,13 @@
         }
       }
 
+      <!-- Pagination control -->
+      <app-pagination
+        [currentPage]="sighting.currentPage()"
+        [totalPages]="sighting.totalPages()"
+        (pageChange)="sighting.goToPage($event)">
+      </app-pagination>
+
     }
 
   </app-side-panel-body>

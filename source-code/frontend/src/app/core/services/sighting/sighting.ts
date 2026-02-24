@@ -22,27 +22,40 @@ export class Sighting implements OnDestroy {
   // -- State and Signals -----------------------------------------------------
 
   private pollSubscription?: Subscription;
+
+  /** List of sightings for the current page */
   readonly sightings = signal<SightingItem[]>([]);
+
+  /** Loading state for the current page */
   readonly isLoading = signal(false);
+
+  /** Timestamp of the last successful sync with the backend */
   readonly lastUpdated = signal<Date | null>(null);
+
+  /** Currently displayed page (0-based index) */
+  readonly currentPage = signal(0);
+
+  /** Number of items per page */
+  readonly pageSize = signal(20);
+
+  /** Total number of pages returned by the backend */
+  readonly totalPages = signal(0);
+
+  /** Total number of items across all pages */
+  readonly totalItems = signal(0);
 
   // -- Computed signals ------------------------------------------------------
 
   readonly lastUpdatedFormatted = computed(() => this.formatTime(this.lastUpdated()));
 
-  
-  // Date formatting
-  private readonly formatDate = formatDate;
   // -- Utils -----------------------------------------------------------------
 
-  // Time formatting
+  private readonly formatDate = formatDate;
   private readonly formatTime = formatTime;
 
   // -- Lifecycle -------------------------------------------------------------
 
-  /**
-   * Stop polling on component destroy
-   */
+  /** Stop polling on service destroy */
   ngOnDestroy(): void {
     this.stopPolling();
   }
@@ -51,52 +64,77 @@ export class Sighting implements OnDestroy {
 
   /**
    * Starts polling the backend automatically.
+   * Each tick fetches the page the user is currently viewing.
    */
   startPolling(): void {
-    // If polling is already running 
+    
+    // Do not create a second subscription if already polling
     if (this.pollSubscription)
       return;
 
-    // If no polling is set
-    this.pollSubscription = timer(0, POLL_INTERVAL_MS) // Start timer immediately, then emit every POLL_INTERVAL_MS 
-      .pipe( // Apply, in sequence, multiple RxJS operators to Observable
-        // On every Observer emit:
-        tap(() => this.isLoading.set(true)), // Set loading state
-        switchMap(() => // Calls getAll() and switches to the new Observable, cancelling any previous one if still active
-          this.getAll().pipe(
-            catchError((err) => { // Handle errors from getAll(). We use catchError() since we must return a Observable in order to continue polling even after an error
+    // Start an RxJS timer that ticks immediately and then every POLL_INTERVAL_MS
+    this.pollSubscription = timer(0, POLL_INTERVAL_MS)
+      .pipe(
+
+        // Set loading state
+        tap(() => this.isLoading.set(true)),
+
+        // Call getAll() and switch to the new Observable, cancelling any previous one if still active.
+        // We read currentPage() here so that each tick fetches the page the user is currently on.
+        switchMap(() =>
+          this.getAll(this.currentPage(), this.pageSize()).pipe(
+            catchError((err) => {
               console.error('Sightings sync failed.', err);
               this.isLoading.set(false);
               toast.error('Sightings sync failed.');
-              return EMPTY;
+              return EMPTY; // Return EMPTY so the outer timer keeps ticking despite the error
             })
           )
         ),
-      ).subscribe((response) => { // Manages getAll() response
-        this.sightings.set(response.data.map(raw => this.toSightingItem(raw))); // Map raw API response to UI-ready SightingItem
+      )
+      .subscribe((response) => {
+
+        // Map raw API items to UI-ready objects
+        this.sightings.set(response.data.map(raw => this.toSightingItem(raw)));
+
+        // Persist pagination metadata for the pagination component
+        this.totalPages.set(response.totalPages);
+        this.totalItems.set(response.totalItems);
+
         this.isLoading.set(false);
         this.lastUpdated.set(new Date());
         toast.success('Sightings synced successfully.');
       });
   }
 
-  /**
-   * Stop started polling
-   */
+  /** Unsubscribes from the polling timer */
   stopPolling(): void {
     this.pollSubscription?.unsubscribe();
     this.pollSubscription = undefined;
   }
 
   /**
-   * Manually reset the polling interval (e.g. after a manual refresh)
+   * Resets the polling interval.
+   * Useful after a manual refresh to avoid an immediate subsequent request.
    */
   refresh(): void {
     this.stopPolling();
     this.startPolling();
   }
 
-  /** Maps a raw API response to a UI-ready SightingItem. */
+  /**
+   * Navigates to a specific page and resets the polling interval.
+   * The next (and all subsequent) poll ticks will fetch this page.
+   * @param page 0-based page index
+   */
+  goToPage(page: number): void {
+    this.currentPage.set(page);
+    this.refresh();
+  }
+
+  // -- Mapping ---------------------------------------------------------------
+
+  /** Maps a raw API response item to a UI-ready SightingItem */
   toSightingItem(raw: SightingResponse): SightingItem {
     return {
       ...raw,
