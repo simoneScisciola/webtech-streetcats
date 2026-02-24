@@ -26,6 +26,12 @@ export class SightingsMap implements OnInit, OnDestroy {
   /** Pre-filled coordinates sent to the add-sighting form. */
   prefilledCoordinates = signal<GeoCoords | null>(null);
 
+  /**
+   * Coordinates currently shown as a temporary marker on the map.
+   * Persists until the form is cancelled or submitted successfully.
+   */
+  previewCoordinates = signal<GeoCoords | null>(null);
+
   private readonly sightingService = inject(Sighting);
 
   ngOnInit(): void {
@@ -37,11 +43,21 @@ export class SightingsMap implements OnInit, OnDestroy {
   }
 
   /**
+   * Called when the toggle button is clicked.
    * Shows or hides side panel.
    */
   togglePanel() {
     console.log("Toggle Side Panel");
     this.isPanelOpen.update(value => !value);
+  }
+
+  /**
+   * Called when the side panel is closed.
+   * Hides the panel and removes the preview marker.
+   */
+  onClosePanel(): void {
+    this.isPanelOpen.set(false);
+    this.previewCoordinates.set(null);
   }
 
   /**
@@ -53,10 +69,12 @@ export class SightingsMap implements OnInit, OnDestroy {
   }
 
   /**
-   * Called when the user cancels coordinate picking.
+   * Called when the user cancels coordinate picking or closes the form.
+   * Deactivates pick mode and removes the preview marker.
    */
   onStopPickingCoordinates(): void {
     this.isPickingCoordinates.set(false);
+    this.previewCoordinates.set(null);
   }
 
   /**
@@ -68,11 +86,14 @@ export class SightingsMap implements OnInit, OnDestroy {
     this.isPickingCoordinates.set(false);
     this.prefilledCoordinates.set(coords);
 
+    // Show the preview marker
+    this.previewCoordinates.set(coords);
+
     // Open panel if not already open
     if (!this.isPanelOpen())
       this.isPanelOpen.set(true);
 
-    // Clear after one render so old coords don't persist on the next form open
+    // Clear prefilled coords after one render so they don't persist on the next form open
     setTimeout(() => this.prefilledCoordinates.set(null), 0);
   }
 

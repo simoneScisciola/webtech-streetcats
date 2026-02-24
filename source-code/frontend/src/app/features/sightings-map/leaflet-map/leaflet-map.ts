@@ -19,6 +19,12 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   /** When true, the map click emits `coordinatesPicked` instead of being ignored. */
   @Input() isPickingCoordinates = false;
 
+  /**
+   * When non-null, a temporary marker is shown at these coordinates.
+   * Set to null to remove the marker.
+   */
+  @Input() previewCoordinates: GeoCoords | null = null;
+
   /** Emitted when the user clicks the map while `isPickingCoordinates` is true. */
   @Output() coordinatesPicked = new EventEmitter<GeoCoords>();
 
@@ -46,6 +52,18 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    * Kept so it can be destroyed on `ngOnDestroy` if the popup is still open.
    */
   private popupComponentRef?: ComponentRef<MapPopup>;
+
+  /** Temporary marker showing the coordinates selected in the form. */
+  private previewMarker?: L.Marker;
+
+  /** Custom icon for the temporary preview marker. */
+  private readonly previewIcon = L.icon({
+    iconUrl: 'assets/leaflet/temporary-marker-icon.png',
+    iconRetinaUrl: 'assets/leaflet/temporary-marker-icon-2x.png',
+    iconSize: [25, 41],     // Default Leaflet marker size
+    iconAnchor: [12, 41],   // Tip of the pin is at the bottom-centre
+    popupAnchor: [1, -34],
+  });
 
   constructor() {
     // Sync markers whenever `sightings` signal changes
@@ -88,6 +106,11 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     // If `isPickingCoordinates` changed and the map is initialised, choose cursor style
     if (changes['isPickingCoordinates'] && this.map) {
       this.map.getContainer().style.cursor = this.isPickingCoordinates ? 'crosshair' : ''; // Toggle crosshair cursor to visually signal picking mode
+    }
+
+    // If `previewCoordinates` changed, update the temporary marker
+    if (changes['previewCoordinates'] && this.map) {
+      this.syncPreviewMarker(this.previewCoordinates);
     }
   }
 
@@ -173,6 +196,26 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       popup.openOn(this.map!);
 
     });
+
+  }
+
+  /**
+   * Adds, moves, or removes the temporary preview marker.
+   * @param coords Coordinates to preview, or null to remove the marker.
+   */
+  private syncPreviewMarker(coords: GeoCoords | null): void {
+
+    // Always remove the existing marker first
+    this.previewMarker?.remove();
+    this.previewMarker = undefined;
+
+    if (coords !== null) {
+      // Place the custom icon marker at the selected coordinates
+      this.previewMarker = L.marker(
+        [coords.latitude, coords.longitude],
+        { icon: this.previewIcon }
+      ).addTo(this.map!);
+    }
 
   }
 

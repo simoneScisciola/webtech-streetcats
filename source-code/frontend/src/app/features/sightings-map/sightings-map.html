@@ -5,6 +5,7 @@
     <app-leaflet-map
       [isPanelOpen]="isPanelOpen()" 
       [isPickingCoordinates]="isPickingCoordinates()"
+      [previewCoordinates]="previewCoordinates()"
       (coordinatesPicked)="onCoordinatesSelected($event)"
       (addSightingRequested)="onCoordinatesSelected($event)" />
 
@@ -20,7 +21,7 @@
       [width]="sidePanelWidth"
       [isPickingCoordinates]="isPickingCoordinates()"
       [prefilledCoordinates]="prefilledCoordinates()"
-      (closePanel)="togglePanel()"
+      (closePanel)="onClosePanel()"
       (startPickingCoordinates)="onStartPickingCoordinates()"
       (stopPickingCoordinates)="onStopPickingCoordinates()" />
   </div>
