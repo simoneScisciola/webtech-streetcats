@@ -12,12 +12,8 @@
 
       <!-- Form visible when adding a new sighting -->
       <app-add-sighting-form
-        [isPickingCoordinates]="isPickingCoordinates"
-        [prefilledCoordinates]="prefilledCoordinates()"
         (formSubmitted)="onAddSightingSubmit($event)"
-        (cancelButtonClick)="onCancelAddSighting()"
-        (startPickingCoordinates)="onStartPickingCoordinates()"
-        (stopPickingCoordinates)="onStopPickingCoordinates()">
+        (cancelButtonClick)="onCancelAddSighting()" >
       </app-add-sighting-form>
 
     } @else {

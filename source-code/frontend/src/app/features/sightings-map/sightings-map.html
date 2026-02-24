@@ -3,11 +3,9 @@
   <!-- Map + Toggle button -->
   <div class="position-relative flex-grow-1">
     <app-leaflet-map
-      [isPanelOpen]="isPanelOpen()" 
-      [isPickingCoordinates]="isPickingCoordinates()"
-      [previewCoordinates]="prefilledCoordinates()"
-      (coordinatesPicked)="onCoordinatesSelected($event)"
-      (addSightingRequested)="onCoordinatesSelected($event)" />
+      [isPanelOpen]="isPanelOpen()"
+      (coordinatesPicked)="onCoordinatesSelected()"
+      (addSightingRequested)="onCoordinatesSelected()" />
 
     <app-toggle-button 
       [isPanelOpen]="isPanelOpen()"
@@ -19,11 +17,7 @@
     <app-sightings-side-panel 
       [isPanelOpen]="isPanelOpen()"
       [width]="sidePanelWidth"
-      [isPickingCoordinates]="isPickingCoordinates()"
-      [(prefilledCoordinates)]="prefilledCoordinates"
-      (closePanel)="onClosePanel()"
-      (startPickingCoordinates)="onStartPickingCoordinates()"
-      (stopPickingCoordinates)="onStopPickingCoordinates()" />
+      (closePanel)="onClosePanel()" />
   </div>
 
 </div>

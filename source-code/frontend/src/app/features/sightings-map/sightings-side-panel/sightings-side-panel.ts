@@ -1,14 +1,14 @@
-import { Component, Input, Output, EventEmitter, inject, signal, effect, model } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, effect } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { Sighting } from '#core/services/sighting/sighting';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
+import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
 import { SidePanel } from '#shared/components/side-panel/side-panel';
 import { SidePanelHeader } from '#shared/components/side-panel/side-panel-header/side-panel-header';
 import { SidePanelBody } from '#shared/components/side-panel/side-panel-body/side-panel-body';
 import { SidePanelFooter } from '#shared/components/side-panel/side-panel-footer/side-panel-footer';
-import { GeoCoords } from '#shared/types/coordinates';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
 
@@ -27,29 +27,15 @@ export class SightingsSidePanel {
   /** Side panel fixed width */
   @Input() width = '400px';
 
-  /** Forwarded to the add sighting form to show a "waiting for map click" banner. */
-  @Input() isPickingCoordinates = false;
-
-  /**
-   * Two-way bound coordinates received from the map; forwarded directly to the form.
-   * The child can write null back to the parent (e.g. on cancel) via the model.
-   */
-  prefilledCoordinates = model<GeoCoords | null>(null);
-
   /** Emitted when the side panel has been closed */
   @Output() closePanel = new EventEmitter<void>();
-
-  /** Bubbled up from AddSightingForm; activates pick mode in the map. */
-  @Output() startPickingCoordinates = new EventEmitter<void>();
-
-  /** Bubbled up from AddSightingForm; deactivates pick mode in the map. */
-  @Output() stopPickingCoordinates = new EventEmitter<void>();
 
   /** Tracks if add sighting form should be shown */
   isAddingNewSighting = signal(false);
 
-  readonly sighting = inject(Sighting);
-  protected readonly toast = inject(ObservableToast);
+  protected readonly sighting = inject(Sighting);
+  private readonly sightingsMapState = inject(SightingsMapState);
+  private readonly toast = inject(ObservableToast);
 
   // Side Panel icons
   icons = {
@@ -60,17 +46,17 @@ export class SightingsSidePanel {
   };
 
   constructor() {
-    // Open the add-sighting form automatically when coordinates arrive
+    // Opens add-sighting form whenever `previewCoordinates` signal changes
     effect(() => {
-      if (this.prefilledCoordinates() !== null) {
+      const coords = this.sightingsMapState.previewCoordinates();
+      if (coords) {
         this.isAddingNewSighting.set(true);
       }
     });
   }
 
   onClosePanel(): void {
-    this.isAddingNewSighting.set(false);
-    this.prefilledCoordinates.set(null);
+    this.closeAddSightingForm();
     this.closePanel.emit();
   }
 
@@ -78,24 +64,12 @@ export class SightingsSidePanel {
     this.isAddingNewSighting.set(true);
   }
 
-  onCancelAddSighting(): void {
-    this.isAddingNewSighting.set(false);
-    this.prefilledCoordinates.set(null);
-    this.stopPickingCoordinates.emit(); // Ensure pick mode is exited if the user cancels the form entirely
-  }
-
   onRefresh(): void {
     this.sighting.refresh();
   }
 
-  /** Bubbles the pick-start event from the form. */
-  onStartPickingCoordinates(): void {
-    this.startPickingCoordinates.emit();
-  }
-
-  /** Bubbles the pick-cancel event from the form. */
-  onStopPickingCoordinates(): void {
-    this.stopPickingCoordinates.emit();
+  onCancelAddSighting(): void {
+    this.closeAddSightingForm();
   }
 
   /**
@@ -112,9 +86,7 @@ export class SightingsSidePanel {
         onSuccess: (res) => {
           console.log("Response:", res);
 
-          // Update sightings panel state
-          this.isAddingNewSighting.set(false);
-          this.prefilledCoordinates.set(null)
+          this.closeAddSightingForm();
           this.closePanel.emit();
           this.sighting.refresh();
         },
@@ -122,6 +94,13 @@ export class SightingsSidePanel {
         onRetry: () => this.sighting.create(payload)
       }
     )
+  }
+
+  // Update sightings panel state
+  private closeAddSightingForm() {
+    this.isAddingNewSighting.set(false);
+    this.sightingsMapState.clearPreviewCoordinates();
+    this.sightingsMapState.stopPicking();
   }
 
 }

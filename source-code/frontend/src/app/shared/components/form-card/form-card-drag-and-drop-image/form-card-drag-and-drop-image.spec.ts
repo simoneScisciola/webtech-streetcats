@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormCardDragAndDropImage } from '#shared/components/form-card/image-drag-and-drop/image-drag-and-drop';
+import { FormCardDragAndDropImage } from './form-card-drag-and-drop-image';
 
 describe('FormCardDragAndDropImage', () => {
   let component: FormCardDragAndDropImage;

@@ -6,9 +6,7 @@ import { ImageProcessResult } from '#types/image-upload';
 const ACCEPTED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ImageUpload {
 
   // Methods

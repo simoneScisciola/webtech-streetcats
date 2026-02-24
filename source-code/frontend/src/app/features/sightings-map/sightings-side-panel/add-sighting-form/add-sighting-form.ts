@@ -1,15 +1,15 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faTag, faAlignLeft, faArrowsUpDown, faArrowsLeftRight, faLocationDot, faLocationCrosshairs, faPlus, faImage } from '@fortawesome/free-solid-svg-icons';
 
 import { Auth } from '#core/services/auth/auth';
+import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
 import { FormCard } from '#shared/components/form-card/form-card';
 import { FormCardHeader } from '#shared/components/form-card/form-card-header/form-card-header';
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
 import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
 import { FormCardDragAndDropImage } from '#shared/components/form-card/form-card-drag-and-drop-image/form-card-drag-and-drop-image';
-import { GeoCoords } from '#shared/types/coordinates';
 
 @Component({
   selector: 'app-add-sighting-form',
@@ -19,39 +19,27 @@ import { GeoCoords } from '#shared/types/coordinates';
 })
 export class AddSightingForm {
 
-  /**
-   * When true, the form shows a "waiting for map click" banner.
-   * It's controlled by the parent once it has activated pick mode on the map.
-   */
-  @Input() isPickingCoordinates = false;
-
-  /**
-   * The setter is called whenever the parent pushes new coordinates.
-   * It automatically fills latitude and longitude form controls.
-   * @param coords New coordinates, or null to clear.
-   */
-  @Input()
-  set prefilledCoordinates(coords: GeoCoords | null) {
-    if (coords) {
-      // Apply picked values directly to the reactive form controls
-      this.latitude.setValue(coords.latitude);
-      this.longitude.setValue(coords.longitude);
-    }
-  }
-
   /** Emitted when the user submites the form */
   @Output() formSubmitted = new EventEmitter<FormData>();
 
   /** Emitted when the user clicks on cancel button */
   @Output() cancelButtonClick = new EventEmitter<void>();
 
-  /** Emitted when the user wants to pick coordinates by clicking the map. */
-  @Output() startPickingCoordinates = new EventEmitter<void>();
-
-  /** Emitted when the user cancels coordinate picking before clicking the map. */
-  @Output() stopPickingCoordinates = new EventEmitter<void>();
-
   private readonly auth = inject(Auth);
+  protected readonly sightingsMapState = inject(SightingsMapState);
+
+  constructor() {
+
+    // Opens add-sighting form whenever `previewCoordinates` signal changes
+    effect(() => {
+      const coords = this.sightingsMapState.previewCoordinates();
+      if (coords) {
+        // Apply picked values to the reactive form controls
+        this.latitude.setValue(coords.latitude);
+        this.longitude.setValue(coords.longitude);
+      }
+    });
+  }
 
   // Field labels
   icons = {
@@ -128,14 +116,14 @@ export class AddSightingForm {
    * Notifies the parent to activate coordinate-picking mode on the map.
    */
   onPickFromMapClick(): void {
-    this.startPickingCoordinates.emit();
+    this.sightingsMapState.startPicking();
   }
 
   /**
    * Notifies the parent to deactivate coordinate-picking mode without picking.
    */
   onCancelPickFromMapClick(): void {
-    this.stopPickingCoordinates.emit();
+    this.sightingsMapState.stopPicking();
   }
 
   /**

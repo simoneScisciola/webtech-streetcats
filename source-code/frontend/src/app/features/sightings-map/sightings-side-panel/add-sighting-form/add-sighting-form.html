@@ -59,7 +59,8 @@
 
         <p class="fw-bolder mt-1">Geographic Coordinates</p>
 
-        @if (isPickingCoordinates) {
+        <!-- When true, the form shows a "waiting for map click" banner. -->
+        @if (this.sightingsMapState.isPickingCoordinates()) {
           
           <!-- Picking coordinates banner -->
           <div class="alert alert-info d-flex align-items-center justify-content-between p-2 mb-3">

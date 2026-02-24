@@ -5,11 +5,12 @@ import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faImage, faXmark, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { KeyValuePipe } from '@angular/common';
 
-import { ImageUpload } from '#core/services/image-upload/image-upload'
+import { ImageUpload } from './image-upload/image-upload';
 
 @Component({
   selector: 'app-form-card-drag-and-drop-image',
   imports: [FontAwesomeModule, KeyValuePipe],
+  providers: [ImageUpload],
   templateUrl: './form-card-drag-and-drop-image.html',
   styleUrl: './form-card-drag-and-drop-image.scss',
 })
@@ -113,6 +114,7 @@ export class FormCardDragAndDropImage {
     }
 
     // Success
+
     // Update UI
     this.error.set(null);
     this.preview.set(result.data.preview);

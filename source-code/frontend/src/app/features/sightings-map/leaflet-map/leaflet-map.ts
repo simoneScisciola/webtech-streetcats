@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 
 import { Sighting } from '#core/services/sighting/sighting';
 import { GeoCoords } from '#shared/types/coordinates';
+import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
 import { SightingResponse } from '#types/sighting';
 import { MapPopup } from './map-popup/map-popup';
 
@@ -14,26 +15,14 @@ import { MapPopup } from './map-popup/map-popup';
 })
 export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
+  /** Triggers map resize based on panel state */
   @Input() isPanelOpen = false;
 
-  /** When true, the map click emits `coordinatesPicked` instead of being ignored. */
-  @Input() isPickingCoordinates = false;
-
-  /**
-   * When non-null, a temporary marker is shown at these coordinates.
-   * Set to null to remove the marker.
-   */
-  @Input() previewCoordinates: GeoCoords | null = null;
-
   /** Emitted when the user clicks the map while `isPickingCoordinates` is true. */
-  @Output() coordinatesPicked = new EventEmitter<GeoCoords>();
+  @Output() coordinatesPicked = new EventEmitter();
 
   /** Emitted when the user selects "Add sighting" from the right-click context menu. */
-  @Output() addSightingRequested = new EventEmitter<GeoCoords>();
-
-  private readonly sighting = inject(Sighting);
-  private readonly appRef = inject(ApplicationRef);
-  private readonly envInjector = inject(EnvironmentInjector);
+  @Output() addSightingRequested = new EventEmitter();
 
   /** Leaflet map instance */
   private map?: L.Map;
@@ -65,12 +54,33 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     popupAnchor: [1, -34],
   });
 
+  private readonly sighting = inject(Sighting);
+  private readonly appRef = inject(ApplicationRef);
+  private readonly envInjector = inject(EnvironmentInjector);
+  private readonly sightingsMapState = inject(SightingsMapState);
+
   constructor() {
     // Sync markers whenever `sightings` signal changes
     effect(() => {
       const sightings = this.sighting.sightings();
       if (this.map) {
         this.syncMarkers(sightings);
+      }
+    });
+
+    // Sync preview marker whenever `previewCoordinates` signal changes
+    effect(() => {
+      const coords = this.sightingsMapState.previewCoordinates();
+      if (this.map) {
+        this.syncPreviewMarker(coords);
+      }
+    });
+
+    // Update cursor style when user enters and leaves "pick coordinates" mode
+    effect(() => {
+      const isPicking = this.sightingsMapState.isPickingCoordinates();
+      if (this.map) {
+        this.map.getContainer().style.cursor = isPicking ? 'crosshair' : ''; // Toggle crosshair cursor to visually signal picking mode
       }
     });
   }
@@ -101,16 +111,6 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       this.resizeTimeout = setTimeout(() => {
         this.map?.invalidateSize();
       }, 350); // Time in ms
-    }
-
-    // If `isPickingCoordinates` changed and the map is initialised, choose cursor style
-    if (changes['isPickingCoordinates'] && this.map) {
-      this.map.getContainer().style.cursor = this.isPickingCoordinates ? 'crosshair' : ''; // Toggle crosshair cursor to visually signal picking mode
-    }
-
-    // If `previewCoordinates` changed, update the temporary marker
-    if (changes['previewCoordinates'] && this.map) {
-      this.syncPreviewMarker(this.previewCoordinates);
     }
   }
 
@@ -143,12 +143,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     // Click listener: used in coordinate-picking mode
     this.map.on('click', (e: L.LeafletMouseEvent) => {
 
-      if (this.isPickingCoordinates)
-        // Emit the clicked coordinates to the parent
-        this.coordinatesPicked.emit({
-          latitude: e.latlng.lat,
-          longitude: e.latlng.lng
-        });
+      if (this.sightingsMapState.isPickingCoordinates()) {
+        this.sightingsMapState.setPreviewCoordinates({ latitude: e.latlng.lat, longitude: e.latlng.lng }, 'map');
+        this.coordinatesPicked.emit();
+      }
 
     });
 
@@ -169,7 +167,8 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       // Subscribe to the component's output
       componentRef.instance.addSightingClick.subscribe(() => {
         this.map?.closePopup();
-        this.addSightingRequested.emit({ latitude: e.latlng.lat, longitude: e.latlng.lng });
+        this.sightingsMapState.setPreviewCoordinates({ latitude: e.latlng.lat, longitude: e.latlng.lng }, 'map');
+        this.addSightingRequested.emit();
       });
 
       // Attach to ApplicationRef so Angular runs change detection on it
@@ -199,8 +198,9 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
   }
 
-  /**
+   /**
    * Adds, moves, or removes the temporary preview marker.
+   * It builds a draggable marker that automatically updates coordinates.
    * @param coords Coordinates to preview, or null to remove the marker.
    */
   private syncPreviewMarker(coords: GeoCoords | null): void {
@@ -213,8 +213,18 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       // Place the custom icon marker at the selected coordinates
       this.previewMarker = L.marker(
         [coords.latitude, coords.longitude],
-        { icon: this.previewIcon }
+        { 
+          icon: this.previewIcon,
+          draggable: true
+        }
       ).addTo(this.map!);
+
+      // When drag ends, updated coordinates
+      this.previewMarker.on('dragend', () => {
+        const position = this.previewMarker!.getLatLng();
+        this.sightingsMapState.setPreviewCoordinates({ latitude: position.lat, longitude: position.lng }, 'map');
+        this.coordinatesPicked.emit();
+      });
     }
 
   }
