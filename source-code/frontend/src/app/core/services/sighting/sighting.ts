@@ -3,8 +3,9 @@ import { catchError, EMPTY, Observable, Subscription, switchMap, tap, timer } fr
 import { toast } from 'ngx-sonner';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
-import { SightingResponse } from '#types/sighting';
+import { SightingResponse, SightingItem } from '#types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
+import { formatDate, formatTime } from '#shared/utils/date';
 
 // Config constants
 const POLL_INTERVAL_MS = 60_000; // 60 seconds
@@ -17,28 +18,34 @@ export class Sighting implements OnDestroy {
   // Dependency Injection
 
   private readonly restBackend = inject(RestBackend);
-  
+
   // State
 
   // Signals
   private pollSubscription?: Subscription;
-  readonly sightings = signal<SightingResponse[]>([]);
+  readonly sightings = signal<SightingItem[]>([]);
   readonly isLoading = signal(false);
   readonly lastUpdated = signal<Date | null>(null);
 
   // Computed signals
-  readonly lastUpdatedFormatted = computed(() => {
-    const date = this.lastUpdated();
+  readonly lastUpdatedFormatted = computed(() => this.formatTime(this.lastUpdated()));
 
-    if (!date) return null;
+  // Utils
+  
+  // Date formatting
+  private readonly formatDate = formatDate;
 
-    return date.toLocaleTimeString('it-IT', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  });
+  // Time formatting
+  private readonly formatTime = formatTime;
 
   // Methods
+
+  /**
+   * Stop polling on component destroy
+   */
+  ngOnDestroy(): void {
+    this.stopPolling();
+  }
 
   /**
    * Starts polling the backend automatically.
@@ -64,7 +71,7 @@ export class Sighting implements OnDestroy {
           )
         ),
       ).subscribe((response) => { // Manages getAll() response
-        this.sightings.set(response.data);
+        this.sightings.set(response.data.map(raw => this.toSightingItem(raw))); // Map raw API response to UI-ready SightingItem
         this.isLoading.set(false);
         this.lastUpdated.set(new Date());
         toast.success('Sightings synced successfully.');
@@ -87,11 +94,17 @@ export class Sighting implements OnDestroy {
     this.startPolling();
   }
 
-  /**
-   * Stop polling on component destroy
-   */
-  ngOnDestroy(): void {
-    this.stopPolling();
+  /** Maps a raw API response to a UI-ready SightingItem. */
+  toSightingItem(raw: SightingResponse): SightingItem {
+    return {
+      ...raw,
+      latitude: Number.parseFloat(raw.latitude),
+      longitude: Number.parseFloat(raw.longitude),
+      createdAt: new Date(raw.createdAt),
+      updatedAt: new Date(raw.updatedAt),
+      formattedCreatedAt: this.formatDate(new Date(raw.createdAt)),
+      formattedUpdatedAt: this.formatTime(new Date(raw.updatedAt)),
+    };
   }
 
   // CRUD Methods

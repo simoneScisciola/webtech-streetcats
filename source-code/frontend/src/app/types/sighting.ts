@@ -10,3 +10,18 @@ export interface SightingResponse {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface SightingItem {
+  id: number;
+  photoUrl: string;
+  title: string;
+  description: string | null;
+  latitude: number;
+  longitude: number;
+  address: string | null;
+  username: string;
+  createdAt: Date;
+  updatedAt: Date;
+  formattedCreatedAt: string | null;
+  formattedUpdatedAt: string | null;
+}

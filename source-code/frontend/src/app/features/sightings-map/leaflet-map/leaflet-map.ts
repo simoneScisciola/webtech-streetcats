@@ -245,7 +245,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    * On the first sync with data, fits the viewport to show all markers.
    * @param sightings Current list of sightings from the service.
    */
-  private syncMarkers(sightings: SightingResponse[]): void {
+  private syncMarkers(sightings: SightingItem[]): void {
 
     // If there's no map
     if (!this.map)
@@ -265,7 +265,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     // Add markers not yet on map
     for (const sighting of sightings) {
       if (!this.markerMap.has(sighting.id)) {
-        const marker = L.marker([Number.parseFloat(sighting.latitude), Number.parseFloat(sighting.longitude)])
+        const marker = L.marker([sighting.latitude, sighting.longitude])
           .addTo(this.map)
           .bindPopup(`<strong>${sighting.title}</strong><br>${sighting.description ?? ''}`);
 
@@ -276,7 +276,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     // On the first sync that contains markers, fit the viewport to include all of them
     if (this.isFirstSync && sightings.length > 0) {
       const bounds = L.latLngBounds(
-        sightings.map(s => [Number.parseFloat(s.latitude), Number.parseFloat(s.longitude)] as L.LatLngTuple)
+        sightings.map(sighting => [sighting.latitude, sighting.longitude] as L.LatLngTuple)
       );
       this.map.fitBounds(bounds, { padding: [50, 50] });
       this.isFirstSync = false;
