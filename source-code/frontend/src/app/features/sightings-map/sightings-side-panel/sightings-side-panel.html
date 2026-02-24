@@ -13,7 +13,7 @@
       <!-- Form visible when adding a new sighting -->
       <app-add-sighting-form
         (formSubmitted)="onAddSightingSubmit($event)"
-        (cancelButtonClick)="onCancelAddSighting()" >
+        (cancelButtonClick)="onCancelAddSighting()">
       </app-add-sighting-form>
 
     } @else {
@@ -58,6 +58,7 @@
 
       <!-- Pagination control -->
       <app-pagination
+        class="mt-auto"
         [currentPage]="sighting.currentPage()"
         [totalPages]="sighting.totalPages()"
         (pageChange)="sighting.goToPage($event)">
