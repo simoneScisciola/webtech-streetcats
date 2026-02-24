@@ -2,7 +2,12 @@
 
   <!-- Map + Toggle button -->
   <div class="position-relative flex-grow-1">
-    <app-leaflet-map [isPanelOpen]="isPanelOpen()" />
+    <app-leaflet-map
+      [isPanelOpen]="isPanelOpen()" 
+      [isPickingCoordinates]="isPickingCoordinates()"
+      (coordinatesPicked)="onCoordinatesSelected($event)"
+      (addSightingRequested)="onCoordinatesSelected($event)" />
+
     <app-toggle-button 
       [isPanelOpen]="isPanelOpen()"
       (toggleButtonClick)="togglePanel()" />
@@ -12,8 +17,12 @@
   <div class="panel-wrapper flex-shrink-0 overflow-hidden" [class.is-open]="isPanelOpen()" [style.--panel-width]="sidePanelWidth">
     <app-sightings-side-panel 
       [isPanelOpen]="isPanelOpen()"
+      [width]="sidePanelWidth"
+      [isPickingCoordinates]="isPickingCoordinates()"
+      [prefilledCoordinates]="prefilledCoordinates()"
       (closePanel)="togglePanel()"
-      [width]="sidePanelWidth" />
+      (startPickingCoordinates)="onStartPickingCoordinates()"
+      (stopPickingCoordinates)="onStopPickingCoordinates()" />
   </div>
 
 </div>
