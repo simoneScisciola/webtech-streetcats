@@ -111,12 +111,9 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     // Move to the marker and open its popup when a sighting card is clicked
     effect(() => {
       const coords = this.sightingsMapState.focusCoordinates();
-
       if (coords && this.map) {
         this.focusMarker(coords);
-  
-        // Consume the signal so future clicks on the same coords still trigger the effect
-        this.sightingsMapState.clearFocusCoordinates();
+        this.sightingsMapState.clearFocusCoordinates(); // Consume the signal so future clicks on the same coords still trigger the effect
       }
     });
   }
@@ -175,6 +172,8 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       maxZoom: 19,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(this.map);
+
+    // === Map Listeners === //
 
     // Click listener: used in coordinate-picking mode
     this.map.on('click', (e: L.LeafletMouseEvent) => {
@@ -235,66 +234,6 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   /**
-   * Moves the map to the marker closest to `coords` and opens its popup.
-   * @param coords Target coordinates from the state.
-   */
-  private focusMarker(coords: GeoCoords): void {
-    // Find the marker whose position matches the requested coordinates
-    const target = [...this.markerMap.values()].find(marker => {
-      const position = marker.getLatLng();
-      return position.lat === coords.latitude && position.lng === coords.longitude;
-    });
-
-    // If a marker is found, smoothly animate the map to the marker, then open its popup once the animation ends
-    if (target) {
-      this.map!.flyTo(target.getLatLng(), 14, { duration: 0.8 }); // Use `flyTo` for a smooth animated transition.
-      this.map!.once('moveend', () => target.openPopup());
-    }
-  }
-
-   /**
-   * Adds, moves, or removes the temporary preview marker.
-   * It builds a draggable marker that automatically updates coordinates.
-   * @param coords Coordinates to preview, or null to remove the marker.
-   */
-  private syncPreviewMarker(coords: GeoCoords | null): void {
-
-    // Always remove the existing marker first
-    this.previewMarker?.remove();
-    this.previewMarker = undefined;
-
-    if (coords !== null) {
-      // Place the custom icon marker at the selected coordinates
-      this.previewMarker = L.marker(
-        [coords.latitude, coords.longitude],
-        { 
-          icon: this.previewIcon,
-          draggable: true
-        }
-      ).addTo(this.map!);
-
-      // When drag ends, updated coordinates
-      this.previewMarker.on('dragend', () => {
-        const position = this.previewMarker!.getLatLng();
-        this.sightingsMapState.setPreviewCoordinates({ latitude: position.lat, longitude: position.lng }, 'map');
-        this.coordinatesPicked.emit();
-      });
-    }
-
-  }
-
-  /**
-   * Detaches and destroys a dynamic component in order to prevent memory leaks.
-   * Safe to call when `componentRef` is undefined.
-   */
-  private destroyComponent(componentRef?: ComponentRef<any>): void {
-    if (componentRef) {
-      this.appRef.detachView(componentRef.hostView);
-      componentRef.destroy();
-    }
-  }
-
-  /**
    * Sync markers on map by deleting markers that are no longer in the sightings list and adding new ones.
    * On the first sync with data, fits the viewport to show all markers.
    * @param sightings Current list of sightings from the service.
@@ -316,15 +255,32 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       }
     }
 
-    // Add markers not yet on map
+    // For each sighting
     for (const sighting of sightings) {
+
+      // If it isn't in the markerMap (so it is not yet on map)
       if (!this.markerMap.has(sighting.id)) {
-        const marker = L.marker([sighting.latitude, sighting.longitude])
+        const marker = L.marker(
+          [sighting.latitude, sighting.longitude],
+          {
+            icon: this.defaultIcon
+          }
+        )
           .addTo(this.map)
           .bindPopup(`<strong>${sighting.title}</strong><br>${sighting.description ?? ''}`);
 
+        // === Marker Listeners === //
+
+        // Change icon to focused when the marker is clicked directly on the map
+        marker.on('popupopen', () => this.setFocusedMarker(marker));
+
+        // Restore default icon when the popup is closed
+        marker.on('popupclose', () => this.clearFocusedMarker(marker));
+
+        // Add marker to map
         this.markerMap.set(sighting.id, marker);
       }
+
     }
 
     // On the first sync that contains markers, fit the viewport to include all of them
@@ -336,6 +292,100 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       this.isFirstSync = false;
     }
 
+  }
+
+  /**
+   * Adds, moves, or removes the temporary preview marker.
+   * It builds a draggable marker that automatically updates coordinates.
+   * @param coords Coordinates to preview, or null to remove the marker.
+   */
+  private syncPreviewMarker(coords: GeoCoords | null): void {
+
+    // Always remove the existing marker first
+    this.previewMarker?.remove();
+    this.previewMarker = undefined;
+
+    if (coords !== null) {
+      // Place the custom icon marker at the selected coordinates
+      this.previewMarker = L.marker(
+        [coords.latitude, coords.longitude],
+        {
+          icon: this.previewIcon,
+          draggable: true
+        }
+      ).addTo(this.map!);
+
+      // === Marker Listeners === //
+
+      // When drag ends, update coordinates
+      this.previewMarker.on('dragend', () => {
+        const position = this.previewMarker!.getLatLng();
+        this.sightingsMapState.setPreviewCoordinates({ latitude: position.lat, longitude: position.lng }, 'map');
+        this.coordinatesPicked.emit();
+      });
+    }
+
+  }
+
+  /**
+   * Moves the map to the marker matching `coords` and sets it as focused marker.
+   * @param coords Target coordinates from the state.
+   */
+  private focusMarker(coords: GeoCoords): void {
+
+    // Find the marker whose position matches the requested coordinates
+    const target = [...this.markerMap.values()].find(marker => {
+      const position = marker.getLatLng();
+      return position.lat === coords.latitude && position.lng === coords.longitude;
+    });
+
+    // If a marker is found, smoothly animate the map to the marker, then open its popup once the animation ends
+    if (target && this.map) {
+      this.map.flyTo(target.getLatLng(), 12, { duration: 0.6 }); // Use `flyTo` for a smooth animated transition.
+
+      // Set new focused marker and open popup
+      this.map.once('moveend', () => {
+        target.openPopup();
+        this.setFocusedMarker(target);
+      });
+    }
+  }
+
+  /**
+   * Restores the default icon on the previously focused marker and applies the focused icon to the new one. Keeps `focusedMarker` up to date.
+   * @param marker The marker to focus.
+   */
+  private setFocusedMarker(marker: L.Marker): void {
+
+    // Restore default icon on previously focused marker
+    if (this.focusedMarker) {
+      this.focusedMarker.setIcon(this.defaultIcon);
+    }
+
+    // Apply focused icon to the new target
+    marker.setIcon(this.focusedIcon);
+
+    // Update the reference to the currently focused marker
+    this.focusedMarker = marker;
+  }
+
+  /**
+   * Clears the focused marker state, restoring its default icon and setting `focusedMarker` to undefined.
+   */
+  private clearFocusedMarker(marker: L.Marker): void {
+    marker.setIcon(this.defaultIcon);
+    this.focusedMarker = undefined;
+  }
+
+  /**
+   * Detaches and destroys a dynamic component in order to prevent memory leaks.
+   * Safe to call when `componentRef` is undefined.
+   */
+  private destroyComponent(componentRef?: ComponentRef<any>): void {
+    if (componentRef) {
+      this.appRef.detachView(componentRef.hostView);
+      componentRef.destroy();
+    }
   }
 
 }
