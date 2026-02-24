@@ -24,6 +24,8 @@ export class SightingsMap implements OnInit, OnDestroy {
   private readonly sightingService = inject(Sighting);
   private readonly sightingsMapState = inject(SightingsMapState);
 
+  // -- Lifecycle -------------------------------------------------------------
+
   ngOnInit(): void {
     this.sightingService.startPolling();
   }
@@ -31,6 +33,8 @@ export class SightingsMap implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.sightingService.stopPolling();
   }
+
+  // -- Methods ---------------------------------------------------------------
 
   /**
    * Called when the toggle button is clicked.

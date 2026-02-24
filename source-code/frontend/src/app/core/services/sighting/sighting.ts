@@ -7,7 +7,7 @@ import { SightingResponse, SightingItem } from '#types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
 import { formatDate, formatTime } from '#shared/utils/date';
 
-// Config constants
+/** Polling interval in milliseconds */
 const POLL_INTERVAL_MS = 60_000; // 60 seconds
 
 @Injectable({
@@ -15,30 +15,30 @@ const POLL_INTERVAL_MS = 60_000; // 60 seconds
 })
 export class Sighting implements OnDestroy {
 
-  // Dependency Injection
+  // -- Dependency Injection --------------------------------------------------
 
   private readonly restBackend = inject(RestBackend);
 
-  // State
+  // -- State and Signals -----------------------------------------------------
 
-  // Signals
   private pollSubscription?: Subscription;
   readonly sightings = signal<SightingItem[]>([]);
   readonly isLoading = signal(false);
   readonly lastUpdated = signal<Date | null>(null);
 
-  // Computed signals
+  // -- Computed signals ------------------------------------------------------
+
   readonly lastUpdatedFormatted = computed(() => this.formatTime(this.lastUpdated()));
 
-  // Utils
   
   // Date formatting
   private readonly formatDate = formatDate;
+  // -- Utils -----------------------------------------------------------------
 
   // Time formatting
   private readonly formatTime = formatTime;
 
-  // Methods
+  // -- Lifecycle -------------------------------------------------------------
 
   /**
    * Stop polling on component destroy
@@ -46,6 +46,8 @@ export class Sighting implements OnDestroy {
   ngOnDestroy(): void {
     this.stopPolling();
   }
+
+  // -- Polling ---------------------------------------------------------------
 
   /**
    * Starts polling the backend automatically.
@@ -107,10 +109,10 @@ export class Sighting implements OnDestroy {
     };
   }
 
-  // CRUD Methods
+  // -- CRUD ------------------------------------------------------------------
 
   /**
-   * Create of a sighting
+   * Create a sighting
    * POST /sightings
    */
   create(payload: FormData): Observable<SightingResponse> {
@@ -133,17 +135,16 @@ export class Sighting implements OnDestroy {
   }
 
   /**
-   * Get the full URL of a sighting photo from its relative URL
-   * @param photoUrl relative URL of the photo (e.g. /uploads/sightings/20240601-sighting-abc123.jpg)
-   * @returns full URL of the photo
+   * Returns the full URL of a sighting photo from its relative path.
+   * @param photoUrl relative URL (e.g. /uploads/sightings/photo.jpg)
    */
   getRequestPhotoUrl(photoUrl: string): string {
     return `${this.restBackend.baseUrl}${photoUrl}`;
   }
 
   /**
-   * Get all sightings
-   * GET /sightings
+   * Get a paginated list of sightings
+   * GET /sightings?page=:page&size=:size
    */
   getAll(page = 0, size = 20): Observable<PaginatedResponse<SightingResponse>> {
     return this.restBackend.request(
@@ -165,7 +166,7 @@ export class Sighting implements OnDestroy {
   }
 
   /**
-   * Delete of a sighting
+   * Delete a sighting
    * DELETE /sightings/:id
    */
   delete(id: number): Observable<void> {

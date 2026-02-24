@@ -9,7 +9,11 @@ import { UserResponse, UserPayload } from '#types/user';
 })
 export class User {
 
+  // -- Dependency Injection --------------------------------------------------
+
   private readonly restBackend = inject(RestBackend);
+
+  // -- CRUD ------------------------------------------------------------------
 
   /**
    * Get one user by username

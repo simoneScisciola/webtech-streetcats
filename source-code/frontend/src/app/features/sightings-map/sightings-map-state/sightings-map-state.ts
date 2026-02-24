@@ -9,7 +9,7 @@ import { GeoCoords } from '#shared/types/coordinates';
 @Injectable()
 export class SightingsMapState {
 
-  // State
+  // -- State and Signals -----------------------------------------------------
 
   /**
    * Coordinates currently shown as a temporary preview marker on the map and used to pre-fill the add-sighting form.
@@ -35,7 +35,7 @@ export class SightingsMapState {
   readonly isPickingCoordinates = this._isPickingCoordinates.asReadonly();
 
 
-  // Methods
+  // -- Methods ---------------------------------------------------------------
 
   /**
    * Called by the form when the user wants to pick coordinates from the map.

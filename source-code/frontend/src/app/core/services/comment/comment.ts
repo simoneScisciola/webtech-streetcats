@@ -10,14 +10,14 @@ import { PaginatedResponse } from '#shared/types/pagination';
 })
 export class Comments {
 
-  // Dependency Injection
+  // -- Dependency Injection --------------------------------------------------
 
   private readonly restBackend = inject(RestBackend);
 
-  // CRUD Methods
+  // -- CRUD ------------------------------------------------------------------
 
   /**
-   * Create a new comment
+   * Create a comment
    * POST /comments
    */
   create(payload: CommentPayload): Observable<CommentResponse> {

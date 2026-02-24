@@ -10,20 +10,20 @@ import { AuthState, LoginPayload, SignupPayload, AuthResponse } from '#types/aut
 })
 export class Auth {
 
-  // Dependency Injection
+  // -- Dependency Injection --------------------------------------------------
   
   private readonly restBackend = inject(RestBackend);
 
-  // State
+  // -- State and Signals -----------------------------------------------------
 
-  // Signals
   authState: WritableSignal<AuthState> = signal<AuthState>({
     authToken: this.getAuthToken(), // Get token from localStorage, if there
     isAuthenticated: this.verifyToken(this.getAuthToken()), // Verify token not expired
     user: this.getUser() // Get user from localStorage, if there
   })
 
-  // Computed signals
+  // -- Computed signals ------------------------------------------------------
+
   authToken = computed(() => this.authState().authToken);
   isAuthenticated = computed(() => this.authState().isAuthenticated);
   user = computed(() => this.authState().user);
@@ -50,7 +50,7 @@ export class Auth {
     });
   }
 
-  // Methods
+  // -- Methods ---------------------------------------------------------------
 
   // Login function
   login(payload: LoginPayload): Observable<AuthResponse> {
@@ -131,4 +131,5 @@ export class Auth {
     const user = localStorage.getItem("user");
     return user ? JSON.parse(user) : null;
   }
+
 }

@@ -15,12 +15,11 @@ import { ObservableToastOptions, ToastStatus } from '#shared/types/observable-to
 @Injectable()
 export class ObservableToast {
 
-  // State
+  // -- State and Signals -----------------------------------------------------
 
-  // Signals
   private readonly status = signal<ToastStatus>('idle');
 
-  // Methods
+  // -- Methods ---------------------------------------------------------------
 
   /**
    * Subscribes to `trackedObservable` and wires its lifecycle to a toast sequence,

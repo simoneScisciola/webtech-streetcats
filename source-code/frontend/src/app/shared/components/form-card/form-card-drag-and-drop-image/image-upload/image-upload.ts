@@ -9,7 +9,7 @@ const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 @Injectable()
 export class ImageUpload {
 
-  // Methods
+  // -- Methods ---------------------------------------------------------------
 
   /**
    * Gets file from Event (input change) or DragEvent (drop), validates the first file found and builds the preview as Data URL.

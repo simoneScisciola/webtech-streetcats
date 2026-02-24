@@ -118,6 +118,8 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
+  // -- Lifecycle -------------------------------------------------------------
+
   /**
    * Initialize Leaflet map.
    * Executed right after DOM building completion.
@@ -157,6 +159,8 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     this.destroyComponent(this.popupComponentRef);
     this.map?.remove();
   }
+
+  // -- Methods ---------------------------------------------------------------
 
   /**
    * Initialises Leaflet map.
