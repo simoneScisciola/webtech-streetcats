@@ -17,14 +17,14 @@ export class Login {
 
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
-  protected readonly toast = inject(ObservableToast);
+  protected readonly observableToast = inject(ObservableToast);
 
   /**
    * Sends login request
    * @param payload submitted credetials
    */
   onLoginSubmit(payload: LoginPayload) {
-    this.toast.trigger(
+    this.observableToast.trigger(
       this.auth.login(payload),
       {
         loading: "Logging in...",

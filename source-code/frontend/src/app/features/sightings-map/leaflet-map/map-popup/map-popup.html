@@ -1,5 +1,6 @@
 <button
   class="btn btn-sm btn-primary"
+  [class.opacity-50]="!auth.isAuthenticated()"
   (click)="onAddSightingClick()">
   <fa-icon [icon]="icons.add" class="me-2"></fa-icon>Add sighting
 </button>

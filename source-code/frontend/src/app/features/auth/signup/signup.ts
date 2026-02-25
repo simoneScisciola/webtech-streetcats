@@ -17,14 +17,14 @@ export class Signup {
 
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
-  protected readonly toast = inject(ObservableToast);
+  protected readonly observableToast = inject(ObservableToast);
 
   /**
    * Sends sign up request
    * @param payload submitted data
    */
   onSignupSubmit(payload: SignupPayload) {
-    this.toast.trigger(
+    this.observableToast.trigger(
       this.auth.signup(payload),
       {
         loading: "Signing up...",

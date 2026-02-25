@@ -73,8 +73,8 @@
 
     <app-side-panel-footer>
       <button
-        title="Add new sighting"
         class="btn btn-primary w-100 fw-medium"
+        [class.opacity-50]="!auth.isAuthenticated()"
         (click)="onAddSightingClick()">
         <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>Add Sighting
       </button>

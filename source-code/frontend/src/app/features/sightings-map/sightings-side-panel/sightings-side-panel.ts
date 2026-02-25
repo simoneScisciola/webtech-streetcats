@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, inject, signal, effect } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'ngx-sonner';
 
 import { Sighting } from '#core/services/sighting/sighting';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
@@ -12,6 +13,7 @@ import { SidePanelBody } from '#shared/components/side-panel/side-panel-body/sid
 import { SidePanelFooter } from '#shared/components/side-panel/side-panel-footer/side-panel-footer';
 import { truncateText } from '#shared/utils/text';
 import { Pagination } from '#shared/components/pagination/pagination';
+import { Auth } from '#core/services/auth/auth';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
 
@@ -41,7 +43,8 @@ export class SightingsSidePanel {
 
   protected readonly sighting = inject(Sighting);
   private readonly sightingsMapState = inject(SightingsMapState);
-  private readonly toast = inject(ObservableToast);
+  protected readonly auth = inject(Auth);
+  private readonly observableToast = inject(ObservableToast);
 
   // Side Panel icons
   icons = {
@@ -67,6 +70,11 @@ export class SightingsSidePanel {
   }
 
   onAddSightingClick(): void {
+    if (!this.auth.isAuthenticated()) {
+      toast.error('You must be logged in to add a sighting.');
+      return;
+    }
+
     this.isAddingNewSighting.set(true);
   }
 
@@ -88,7 +96,7 @@ export class SightingsSidePanel {
    * @param payload FormData submitted by the form.
    */
   onAddSightingSubmit(payload: FormData) {
-    this.toast.trigger(
+    this.observableToast.trigger(
       this.sighting.create(payload),
       {
         loading: "Adding sighting...",
