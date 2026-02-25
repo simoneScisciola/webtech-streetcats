@@ -1,12 +1,12 @@
-<div style="min-width: 160px;">
+<div class="d-flex flex-column align-items-center gap-1" style="min-width: 160px;">
 
-  <strong>{{ title }}</strong><br>
+  <strong class="fs-6">{{ title }}</strong>
 
-  <span style="font-size: 0.85rem; color: #555;">{{ createdAt }}</span><br>
+  <span class="text-muted" style="font-size: 0.9rem;">{{ createdAt }}</span>
 
   <button
     type="button"
-    class="btn btn-primary btn-sm mt-2"
+    class="btn btn-primary btn-sm mt-1 w-100"
     (click)="onDetailsClick()">
     View details
   </button>

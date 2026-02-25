@@ -232,8 +232,9 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     // Remove markers that are no longer in the list
     for (const [id, marker] of this.markersMap.entries()) {
       if (!incomingIds.has(id)) {
-        marker.remove();
-        this.markersMap.delete(id);
+        marker.closePopup(); // Close the markers' popup if it's open
+        marker.remove(); // Delete marker Leaflet map
+        this.markersMap.delete(id); // Delete markersMap entry
       }
     }
 
@@ -249,8 +250,14 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
         // === Marker Listeners === //
 
-        // Open the Angular MarkerPopup component when this marker is clicked
-        marker.on('click', () => this.openMarkerPopup(marker, sighting));
+        // Open the Angular MarkerPopup component when this marker is clicked.
+        marker.on('click', () => {
+          // Guard: if the popup is already open, let Leaflet's own toggle handler (installed by bindPopup) close it.
+          if (marker.isPopupOpen())
+            return;
+
+          this.openMarkerPopup(marker, sighting);
+        });
 
         // Add marker to map
         this.markersMap.set(sighting.id, marker);
@@ -326,6 +333,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       // Open the Angular popup after the fly animation completes
       this.map.once('moveend', () => {
         if (sighting) {
+          // Guard: if the popup is already open, let Leaflet's own toggle handler (installed by bindPopup) close it.
+          if (target.isPopupOpen())
+            return;
+
           this.openMarkerPopup(target, sighting);
         }
       });
@@ -368,7 +379,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    */
   private openMapPopup(latlng: L.LatLng): void {
 
-    // Destroy any previously open context-menu popup before creating a new one
+    // Destroy the Angular component of the previous popup
     this.destroyComponent(this.mapPopupComponentRef);
 
     // Instantiate the `MapPopup` Angular component
@@ -412,9 +423,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    */
   private openMarkerPopup(marker: L.Marker, sighting: SightingItem): void {
 
-    // Destroy the previous marker popup before opening a new one
+    // Destroy the Angular component of the previous popup
     this.destroyComponent(this.markerPopupComponentRef);
 
+    // Instantiate the `MarkerPopup` Angular component
     const { popup, componentRef } = this.createAngularPopup(
       MarkerPopup,
       (compRef) => {
@@ -430,6 +442,9 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
         });
       },
       (compRef) => {
+        // Unbind popup from marker to remove Leaflet's internal click handler that would try to reopen the destroyed popup on the next click, breaking subsequent openings.
+        marker.unbindPopup();
+
         // Clear the tracker only if it still points to this instance and restore the default marker icon
         if (this.markerPopupComponentRef === compRef) {
           this.markerPopupComponentRef = undefined;
@@ -482,7 +497,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     const popup = L.popup({ closeButton: true })
       .setContent(componentRef.location.nativeElement);
 
-    // When Leaflet removes the popup, destroy the Angular component to prevent memory leaks and invoke a optional callback
+    // When Leaflet removes the popup, destroy the Angular component to prevent memory leaks and invoke an optional callback
     popup.on('remove', () => {
       this.destroyComponent(componentRef);
       onRemove?.(componentRef);
