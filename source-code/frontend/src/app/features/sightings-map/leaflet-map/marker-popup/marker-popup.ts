@@ -10,7 +10,6 @@ import { faEye } from '@fortawesome/free-solid-svg-icons';
 })
 export class MarkerPopup {
 
-  @Input({ required: true }) sightingId!: number;
   @Input() title = '';
   @Input() createdAt = '';
 
