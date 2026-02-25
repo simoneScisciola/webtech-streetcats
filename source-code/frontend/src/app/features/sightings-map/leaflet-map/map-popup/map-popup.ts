@@ -1,9 +1,6 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'ngx-sonner';
-
-import { Auth } from '#core/services/auth/auth';
 
 @Component({
   selector: 'app-map-popup',
@@ -13,20 +10,16 @@ import { Auth } from '#core/services/auth/auth';
 })
 export class MapPopup {
 
+  @Input() isAuthenticated = false;
+
   @Output() addSightingClick = new EventEmitter<void>();
 
-  protected readonly auth = inject(Auth);
-
+  // Icons
   readonly icons = {
     add: faPlus
   };
 
   onAddSightingClick(): void {
-    if (!this.auth.isAuthenticated()) {
-      toast.error('You must be logged in to add a sighting.');
-      return;
-    }
-
     this.addSightingClick.emit();
   }
 

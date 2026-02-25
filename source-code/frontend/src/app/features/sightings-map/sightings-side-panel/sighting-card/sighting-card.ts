@@ -14,19 +14,23 @@ export class SightingCard {
   @Input() lastSeen = '';
   @Input() description = '';
   @Input() accentColor: string = '#000000';
-  @Output() cardClick = new EventEmitter<void>();
 
-  // Font Awesome icons
-  faMapMarkerAlt = faMapMarkerAlt;
-  faClock = faClock;
-  faEye = faEye;
+  @Output() cardClick = new EventEmitter<void>();
+  @Output() detailsClick = new EventEmitter<void>();
+
+  // Icons
+  icons = {
+    title: faMapMarkerAlt,
+    date: faClock,
+    details: faEye,
+  };
 
   onCardClick(): void {
     this.cardClick.emit();
   }
 
   onDetailsClick(): void {
-
+    this.detailsClick.emit();
   }
 
 }

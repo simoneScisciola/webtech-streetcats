@@ -16,6 +16,7 @@ import { Pagination } from '#shared/components/pagination/pagination';
 import { Auth } from '#core/services/auth/auth';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sightings-side-panel',
@@ -45,6 +46,7 @@ export class SightingsSidePanel {
   private readonly sightingsMapState = inject(SightingsMapState);
   protected readonly auth = inject(Auth);
   private readonly observableToast = inject(ObservableToast);
+  private readonly router = inject(Router);
 
   // Side Panel icons
   icons = {
@@ -88,6 +90,10 @@ export class SightingsSidePanel {
 
   onSightingCardClick(coords: GeoCoords): void {
     this.sightingsMapState.focusOnCoordinates(coords);
+  }
+
+  onSightingDetailsClick(sightingId: number): void {
+    this.router.navigate(['/sighting', sightingId, 'details']);
   }
 
   /**

@@ -48,7 +48,8 @@
           [lastSeen]="sighting.formattedCreatedAt ?? 'Unknown time'"
           [description]="truncateText(sighting.description, 50) ?? ''"
           [accentColor]="'#E5772D'"
-          (cardClick)="onSightingCardClick({ latitude: sighting.latitude, longitude: sighting.longitude })">
+          (cardClick)="onSightingCardClick({ latitude: sighting.latitude, longitude: sighting.longitude })"
+          (detailsClick)="onSightingDetailsClick(sighting.id)">
         </app-sighting-card>
       } @empty {
         @if (!this.sighting.isLoading()) {

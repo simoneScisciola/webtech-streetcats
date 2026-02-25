@@ -1,7 +1,9 @@
 import { Component, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject, effect, Output, EventEmitter, ApplicationRef, EnvironmentInjector, ComponentRef, createComponent } from '@angular/core';
+import { toast } from 'ngx-sonner';
 import * as L from 'leaflet';
 
 import { Sighting } from '#core/services/sighting/sighting';
+import { Auth } from '#core/services/auth/auth';
 import { GeoCoords } from '#shared/types/coordinates';
 import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
 import { SightingItem } from '#types/sighting';
@@ -40,7 +42,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    * Reference to the currently open MapPopup Angular component.
    * Kept so it can be destroyed on `ngOnDestroy` if the popup is still open.
    */
-  private popupComponentRef?: ComponentRef<MapPopup>;
+  private mapPopupComponentRef?: ComponentRef<MapPopup>;
 
   /** Temporary marker showing the coordinates selected in the form. */
   private previewMarker?: L.Marker;
@@ -78,9 +80,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     popupAnchor: [1, -34],
   });
 
-  private readonly sighting = inject(Sighting);
   private readonly appRef = inject(ApplicationRef);
   private readonly envInjector = inject(EnvironmentInjector);
+  private readonly sighting = inject(Sighting);
+  private readonly auth = inject(Auth);
   private readonly sightingsMapState = inject(SightingsMapState);
 
   constructor() {
@@ -156,7 +159,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     if (this.resizeTimeout) {
       clearTimeout(this.resizeTimeout);
     }
-    this.destroyComponent(this.popupComponentRef);
+    this.destroyComponent(this.mapPopupComponentRef);
     this.map?.remove();
   }
 
@@ -193,22 +196,31 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     this.map.on('contextmenu', (e: L.LeafletMouseEvent) => {
 
       // Destroy any previously open popup component before creating a new one.
-      this.destroyComponent(this.popupComponentRef);
+      this.destroyComponent(this.mapPopupComponentRef);
 
       // Instantiate the `MapPopup` Angular component
-      this.popupComponentRef = createComponent(MapPopup, {
+      this.mapPopupComponentRef = createComponent(MapPopup, {
         environmentInjector: this.envInjector,
       });
 
-      // Capture this popup reference in a local const. The local const is what the `remove` closure will reference, ensuring it always destroys exactly this instance even if a later right-click has already replaced `this.popupComponentRef`.
-      const componentRef = this.popupComponentRef;
+      // Capture this popup reference in a local const. The local const is what the `remove` closure will reference, ensuring it always destroys exactly this instance even if a later right-click has already replaced `this.mapPopupComponentRef`.
+      const componentRef = this.mapPopupComponentRef;
+
+      // Set inputs
+      componentRef.setInput('isAuthenticated', this.auth.isAuthenticated());
 
       // Subscribe to the component's output
-      componentRef.instance.addSightingClick.subscribe(() => {
-        this.map?.closePopup();
-        this.sightingsMapState.setPreviewCoordinates({ latitude: e.latlng.lat, longitude: e.latlng.lng }, 'map');
-        this.addSightingRequested.emit();
-      });
+      componentRef.instance.addSightingClick
+        .subscribe(() => {
+          if (!this.auth.isAuthenticated()) {
+            toast.error('You must be logged in to add a sighting.');
+            return;
+          }
+
+          this.map?.closePopup();
+          this.sightingsMapState.setPreviewCoordinates({ latitude: e.latlng.lat, longitude: e.latlng.lng }, 'map');
+          this.addSightingRequested.emit();
+        });
 
       // Attach to ApplicationRef so Angular runs change detection on it
       this.appRef.attachView(componentRef.hostView);
@@ -226,8 +238,8 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       // Clear `this.popupComponentRef` only if it still points to this instance, since a later right-click may have already replaced it.
       popup.on('remove', () => {
         this.destroyComponent(componentRef);
-        if (this.popupComponentRef === componentRef) {
-          this.popupComponentRef = undefined;
+        if (this.mapPopupComponentRef === componentRef) {
+          this.mapPopupComponentRef = undefined;
         }
       });
 

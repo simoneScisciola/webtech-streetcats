@@ -15,10 +15,10 @@
     class="card-body position-relative"
     style="z-index: 1; pointer-events: none">
     <h6 class="card-title">
-      <fa-icon [icon]="faMapMarkerAlt" class="me-2" [style.color]="accentColor"></fa-icon>{{ title }}
+      <fa-icon [icon]="icons.title" class="me-2" [style.color]="accentColor"></fa-icon>{{ title }}
     </h6>
     <p class="card-text small text-muted mb-2">
-      <fa-icon [icon]="faClock" class="me-2"></fa-icon>{{ lastSeen }}
+      <fa-icon [icon]="icons.date" class="me-2"></fa-icon>{{ lastSeen }}
     </p>
     <p class="card-text">
       {{ description }}
@@ -31,7 +31,7 @@
       class="btn btn-sm btn-outline-primary"
       style="pointer-events: auto"
       (click)="onDetailsClick()">
-      <fa-icon [icon]="faEye" class="me-2"></fa-icon>Details
+      <fa-icon [icon]="icons.details" class="me-2"></fa-icon>Details
     </button>
   </div>
 
