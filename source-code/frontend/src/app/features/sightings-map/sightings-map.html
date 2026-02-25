@@ -4,8 +4,7 @@
   <div class="position-relative flex-grow-1">
     <app-leaflet-map
       [isPanelOpen]="isPanelOpen()"
-      (coordinatesPicked)="onCoordinatesSelected()"
-      (addSightingRequested)="onCoordinatesSelected()" />
+      (coordinatesPicked)="onCoordinatesPicked()" />
 
     <app-toggle-button 
       [isPanelOpen]="isPanelOpen()"

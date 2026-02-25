@@ -58,7 +58,7 @@ export class SightingsMap implements OnInit, OnDestroy {
    * Used both by map click (pick mode) and right-click context menu.
    * @param coords Latitude / longitude to pre-fill.
    */
-  onCoordinatesSelected(): void {
+  onCoordinatesPicked(): void {
     this.sightingsMapState.stopPicking();
 
     // Open panel if not already open

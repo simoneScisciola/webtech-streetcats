@@ -1,4 +1,5 @@
 import { Component, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject, effect, Output, EventEmitter, ApplicationRef, EnvironmentInjector, ComponentRef, createComponent } from '@angular/core';
+import { Router } from '@angular/router';
 import { toast } from 'ngx-sonner';
 import * as L from 'leaflet';
 
@@ -20,11 +21,8 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   /** Triggers map resize based on panel state */
   @Input() isPanelOpen = false;
 
-  /** Emitted when the user clicks the map while `isPickingCoordinates` is true. */
+  /** Emitted when the user clicks the map while `isPickingCoordinates` is true and when the user selects "Add sighting" from the right-click context menu. */
   @Output() coordinatesPicked = new EventEmitter();
-
-  /** Emitted when the user selects "Add sighting" from the right-click context menu. */
-  @Output() addSightingRequested = new EventEmitter();
 
   /** Leaflet map instance */
   private map?: L.Map;
@@ -33,7 +31,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   private resizeTimeout?: any;
 
   /** Map of sighting IDs -> Leaflet markers for efficient updates */
-  private readonly markerMap = new Map<number, L.Marker>();
+  private readonly markersMap = new Map<number, L.Marker>();
 
   /** Tracks whether the initial sync has already been performed. */
   private isFirstSync = true;
@@ -84,6 +82,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   private readonly envInjector = inject(EnvironmentInjector);
   private readonly sighting = inject(Sighting);
   private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
   private readonly sightingsMapState = inject(SightingsMapState);
 
   constructor() {
@@ -219,7 +218,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
           this.map?.closePopup();
           this.sightingsMapState.setPreviewCoordinates({ latitude: e.latlng.lat, longitude: e.latlng.lng }, 'map');
-          this.addSightingRequested.emit();
+          this.coordinatesPicked.emit();
         });
 
       // Attach to ApplicationRef so Angular runs change detection on it
@@ -264,10 +263,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     const incomingIds = new Set(sightings.map(s => s.id));
 
     // Remove markers that are no longer in the sightings list
-    for (const [id, marker] of this.markerMap.entries()) {
+    for (const [id, marker] of this.markersMap.entries()) {
       if (!incomingIds.has(id)) {
         marker.remove();
-        this.markerMap.delete(id);
+        this.markersMap.delete(id);
       }
     }
 
@@ -275,7 +274,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     for (const sighting of sightings) {
 
       // If it isn't in the markerMap (so it is not yet on map)
-      if (!this.markerMap.has(sighting.id)) {
+      if (!this.markersMap.has(sighting.id)) {
         const marker = L.marker(
           [sighting.latitude, sighting.longitude],
           {
@@ -294,7 +293,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
         marker.on('popupclose', () => this.clearFocusedMarker(marker));
 
         // Add marker to map
-        this.markerMap.set(sighting.id, marker);
+        this.markersMap.set(sighting.id, marker);
       }
 
     }
@@ -350,7 +349,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   private focusMarker(coords: GeoCoords): void {
 
     // Find the marker whose position matches the requested coordinates
-    const target = [...this.markerMap.values()].find(marker => {
+    const target = [...this.markersMap.values()].find(marker => {
       const position = marker.getLatLng();
       return position.lat === coords.latitude && position.lng === coords.longitude;
     });
