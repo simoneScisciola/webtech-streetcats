@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMapMarkerAlt, faClock, faEye } from '@fortawesome/free-solid-svg-icons';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-sighting-card',
-  imports: [FontAwesomeModule],
+  imports: [FontAwesomeModule, MarkdownModule],
   templateUrl: './sighting-card.html',
   styleUrl: './sighting-card.scss',
 })

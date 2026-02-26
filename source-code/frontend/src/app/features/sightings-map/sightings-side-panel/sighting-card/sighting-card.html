@@ -20,9 +20,7 @@
     <p class="card-text small text-muted mb-2">
       <fa-icon [icon]="icons.date" class="me-2"></fa-icon>{{ lastSeen }}
     </p>
-    <p class="card-text">
-      {{ description }}
-    </p>
+    <div class="card-text" markdown [data]="description"></div>
 
     <!-- pointer-events: auto restores interactivity only for this button -->
     <button

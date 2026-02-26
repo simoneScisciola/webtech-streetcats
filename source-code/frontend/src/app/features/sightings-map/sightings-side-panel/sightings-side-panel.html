@@ -46,7 +46,7 @@
         <app-sighting-card
           [title]="sighting.title"
           [lastSeen]="sighting.formattedCreatedAt ?? 'Unknown time'"
-          [description]="truncateText(sighting.description, 50) ?? ''"
+          [description]="sighting.description ?? ''"
           [accentColor]="'#E5772D'"
           (cardClick)="onSightingCardClick({ latitude: sighting.latitude, longitude: sighting.longitude })"
           (detailsClick)="onSightingDetailsClick(sighting.id)">

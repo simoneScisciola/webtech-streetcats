@@ -11,7 +11,6 @@ import { SidePanel } from '#shared/components/side-panel/side-panel';
 import { SidePanelHeader } from '#shared/components/side-panel/side-panel-header/side-panel-header';
 import { SidePanelBody } from '#shared/components/side-panel/side-panel-body/side-panel-body';
 import { SidePanelFooter } from '#shared/components/side-panel/side-panel-footer/side-panel-footer';
-import { truncateText } from '#shared/utils/text';
 import { Pagination } from '#shared/components/pagination/pagination';
 import { Auth } from '#core/services/auth/auth';
 import { SightingCard } from './sighting-card/sighting-card';
@@ -38,9 +37,6 @@ export class SightingsSidePanel {
 
   /** Tracks if add sighting form should be shown */
   isAddingNewSighting = signal(false);
-
-  // Text formatting util
-  protected readonly truncateText = truncateText;
 
   protected readonly sighting = inject(Sighting);
   private readonly sightingsMapState = inject(SightingsMapState);

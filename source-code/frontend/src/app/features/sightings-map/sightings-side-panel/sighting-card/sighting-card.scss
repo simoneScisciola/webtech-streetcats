@@ -1,0 +1,13 @@
+.card-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+
+  ::ng-deep a {
+    pointer-events: auto;
+    position: relative;
+    z-index: 2;
+  }
+}
