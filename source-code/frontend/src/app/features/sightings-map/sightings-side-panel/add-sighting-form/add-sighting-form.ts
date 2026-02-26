@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, effect, EventEmitter, inject, Output } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faTag, faAlignLeft, faArrowsUpDown, faArrowsLeftRight, faLocationDot, faLocationCrosshairs, faPlus, faImage } from '@fortawesome/free-solid-svg-icons';
@@ -10,10 +10,11 @@ import { FormCardHeader } from '#shared/components/form-card/form-card-header/fo
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
 import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
 import { FormCardDragAndDropImage } from '#shared/components/form-card/form-card-drag-and-drop-image/form-card-drag-and-drop-image';
+import { FormCardTextMarkdown } from '#shared/components/form-card/form-card-text-markdown/form-card-text-markdown';
 
 @Component({
   selector: 'app-add-sighting-form',
-  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardField, FontAwesomeModule, FormCardDragAndDropImage],
+  imports: [ReactiveFormsModule, FormCard, FormCardHeader, FormCardBody, FormCardField, FontAwesomeModule, FormCardDragAndDropImage, FormCardTextMarkdown],
   templateUrl: './add-sighting-form.html',
   styleUrl: './add-sighting-form.scss',
 })

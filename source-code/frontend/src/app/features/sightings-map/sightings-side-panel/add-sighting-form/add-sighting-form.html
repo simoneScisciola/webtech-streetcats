@@ -17,25 +17,14 @@
         [errors]="titleErrors">
       </app-form-card-field>
 
-      <!-- Custom description Textarea -->
-      <div class="mb-3">
-        <label for="description" class="form-label fw-semibold">Description</label>
-        <div class="input-group align-items-start">
-          <span class="input-group-text text-muted pt-2">
-            <fa-icon [icon]="icons.description"></fa-icon>
-          </span>
-          <textarea
-            id="description"
-            formControlName="description"
-            class="form-control"
-            [class.is-invalid]="description.invalid && description.touched"
-            [class.is-valid]="description.valid && description.touched"
-            rows="3"
-            placeholder="(Optional) Describe your sighting...">
-          </textarea>
-        </div>
-        <!-- Description error goes here -->
-      </div>
+      <!-- Description Textarea -->
+      <app-form-card-text-markdown
+        id="description2"
+        label="Description"
+        placeholder="(Optional) Describe your sighting..."
+        [control]="description"
+        [icon]="icons.description">
+      </app-form-card-text-markdown>
 
       <!-- Photo drag and drop -->
       <app-form-card-drag-and-drop-image

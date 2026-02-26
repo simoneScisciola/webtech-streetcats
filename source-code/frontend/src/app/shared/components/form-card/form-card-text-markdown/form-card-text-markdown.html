@@ -1,0 +1,39 @@
+<div class="mb-3">
+
+  <!-- Input label -->
+  <label for="description" class="form-label fw-semibold">{{ label }}</label>
+
+  <div class="input-group align-items-start">
+
+    <!-- Input field icon -->
+    @if (icon) {
+      <span class="input-group-text text-muted pt-2">
+        <fa-icon [icon]="icon!"></fa-icon>
+      </span>
+    }
+
+    <!-- Input field -->
+    <textarea
+      [id]="id"
+      [formControl]="control"
+      [placeholder]="placeholder"
+      class="form-control"
+      [class.is-invalid]="control.invalid && control.touched"
+      [class.is-valid]="control.valid && control.touched"
+      rows="3">
+    </textarea>
+
+  </div>
+
+  <!-- Error message -->
+  @if (control.invalid && control.touched) {
+    @for (error of errors | keyvalue; track error.key) {
+      @if (control.hasError(error.key)) {
+        <div class="invalid-feedback d-block">
+          {{ error.value }}
+        </div>
+      }
+    }
+  }
+
+</div>

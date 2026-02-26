@@ -8,7 +8,7 @@ import { PaginatedResponse } from '#shared/types/pagination';
 @Injectable({
   providedIn: 'root',
 })
-export class Comments {
+export class Comment {
 
   // -- Dependency Injection --------------------------------------------------
 
