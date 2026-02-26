@@ -1,9 +1,18 @@
 .markdown-preview {
-  min-height: 80px;
+  min-height: 134px;
   background-color: var(--bs-body-bg);
   overflow-y: auto;
 
   // Remove bottom margin from last paragraph to avoid extra spacing
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.markdown-modal-body {
+  min-height: 200px;
+  padding: 1.5rem 2rem;
+
   p:last-child {
     margin-bottom: 0;
   }

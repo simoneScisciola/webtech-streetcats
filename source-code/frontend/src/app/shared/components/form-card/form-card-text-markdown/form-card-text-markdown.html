@@ -20,9 +20,20 @@
         class="btn btn-sm btn-outline-secondary"
         style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: .40rem;"
         [disabled]="!control.value && !isPreview"
-        (click)="togglePreview()"
-        [title]="isPreview ? 'Back to edit' : 'Preview markdown'">
+        [title]="isPreview ? 'Back to edit' : 'Preview markdown'"
+        (click)="togglePreview()">
         <fa-icon [icon]="isPreview ? icons.edit : icons.preview"></fa-icon>
+      </button>
+
+      <!-- Full-screen button: opens the ng-bootstrap modal, only visible in preview mode -->
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: .40rem;"
+        [disabled]="!isPreview"
+        title="Full screen preview"
+        (click)="openFullPreview(previewModal)">
+        <fa-icon [icon]="icons.fullscreen"></fa-icon>
       </button>
 
     </div>
@@ -36,7 +47,9 @@
         class="form-control"
         [class.is-invalid]="control.invalid && control.touched"
         [class.is-valid]="control.valid && control.touched"
-        rows="3">
+        [style.height]="currentTextareaHeight"
+        rows="5"
+        (mouseup)="onTextareaMouseUp($event)">
       </textarea>
     }
 
@@ -45,7 +58,8 @@
       <div
         class="form-control markdown-preview"
         markdown
-        [data]="control.value || '*Nothing to preview.*'">
+        [style.min-height]="currentTextareaHeight"
+        [data]="control.value ?? '*Nothing to preview.*'">
       </div>
     }
 
@@ -63,3 +77,25 @@
   }
 
 </div>
+
+<!-- ng-bootstrap modal template for full-screen markdown preview -->
+<ng-template #previewModal let-modal>
+
+  <div class="modal-header">
+    <h5 class="modal-title fw-semibold">{{ label }} - Markdown Preview</h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="modal.dismiss()"
+      aria-label="Close">
+    </button>
+  </div>
+
+  <!-- Rendered markdown -->
+  <div
+    class="modal-body markdown-modal-body"
+    markdown
+    [data]="control.value ?? '*Nothing to preview.*'">
+  </div>
+
+</ng-template>
