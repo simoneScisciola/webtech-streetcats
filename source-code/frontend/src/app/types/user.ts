@@ -7,6 +7,7 @@ export interface UserPayload {
 export interface UserResponse {
   username: string;
   email: string;
-  createdAt: string;
-  updatedAt: string;
+  avatarUrl?: string | null;
+  createdAt: Date,
+  updatedAt: Date
 }

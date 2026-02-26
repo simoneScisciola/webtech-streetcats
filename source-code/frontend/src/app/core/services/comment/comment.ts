@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend';
 import { CommentResponse, CommentPayload} from '#types/comment';
@@ -14,6 +14,20 @@ export class Comment {
 
   private readonly restBackend = inject(RestBackend);
 
+  // -- Mapping ---------------------------------------------------------------
+    
+  /**
+   * Normalises a single raw API object into a fully-typed `CommentResponse`.
+   * @param raw Untyped object straight from the HTTP layer
+   */
+  parseRawResponse(raw: any): CommentResponse {
+    return {
+      ...raw,
+      createdAt: new Date(raw.createdAt),
+      updatedAt: new Date(raw.updatedAt),
+    }
+  }
+
   // -- CRUD ------------------------------------------------------------------
 
   /**
@@ -25,6 +39,8 @@ export class Comment {
       '/comments',
       'POST',
       payload
+    ).pipe(
+      map(raw => this.parseRawResponse(raw))
     );
   }
 
@@ -33,11 +49,16 @@ export class Comment {
    * GET /comments?sightingId=...
    */
   getAll(params?: { sightingId?: number }): Observable<PaginatedResponse<CommentResponse>> {
-    return this.restBackend.request(
+    return this.restBackend.request<PaginatedResponse<CommentResponse>>(
       '/comments',
       'GET',
       null,
       params
+    ).pipe(
+      map(raw => ({
+        ...raw,
+        data: raw.data.map(item => this.parseRawResponse(item))
+      }))
     );
   }
 
@@ -50,6 +71,8 @@ export class Comment {
       `/comments/${id}`,
       'PATCH',
       payload
+    ).pipe(
+      map(raw => this.parseRawResponse(raw))
     );
   }
 

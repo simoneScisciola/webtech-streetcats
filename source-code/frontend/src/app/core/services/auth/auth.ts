@@ -1,9 +1,10 @@
 import { Injectable, inject, WritableSignal, computed, effect, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { jwtDecode } from "jwt-decode";
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
 import { AuthState, LoginPayload, SignupPayload, AuthResponse } from '#types/auth';
+import { User } from '#core/services/user/user';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ export class Auth {
   // -- Dependency Injection --------------------------------------------------
   
   private readonly restBackend = inject(RestBackend);
+  private readonly userService = inject(User);
 
   // -- State and Signals -----------------------------------------------------
 
@@ -50,6 +52,19 @@ export class Auth {
     });
   }
 
+  // -- Mapping ---------------------------------------------------------------
+    
+  /**
+   * Normalises a single raw API object into a fully-typed `AuthResponse`.
+   * @param raw Untyped object straight from the HTTP layer
+   */
+  parseRawResponse(raw: any): AuthResponse {
+    return {
+      ...raw,
+      user: this.userService.parseRawResponse(raw.user)
+    }
+  }
+
   // -- Methods ---------------------------------------------------------------
 
   // Login function
@@ -57,6 +72,7 @@ export class Auth {
     return this.restBackend.request<AuthResponse>("/auth", "POST", payload)
       .pipe(
         // On every Observer emit:
+        map(raw => this.parseRawResponse(raw)),
         tap((response) => {
           this.updateAuthResponse(response); // Update Auth state
         }),
@@ -68,6 +84,7 @@ export class Auth {
     return this.restBackend.request<AuthResponse>("/signup", "POST", payload)
       .pipe(
         // On every Observer emit:
+        map(raw => this.parseRawResponse(raw)),
         tap((response) => {
           this.updateAuthResponse(response); // Update Auth state
         }),
@@ -86,9 +103,15 @@ export class Auth {
   // Update state after login or signup
   updateAuthResponse(authResponse: AuthResponse) {
     this.authState.set({
-      user: authResponse.user,
       authToken: authResponse.authToken,
-      isAuthenticated: this.verifyToken(authResponse.authToken)
+      isAuthenticated: this.verifyToken(authResponse.authToken),
+      user: {
+        username: authResponse.user.username,
+        avatarUrl: authResponse.user.avatarUrl,
+        email: authResponse.user.email,
+        createdAt: authResponse.user.createdAt,
+        updatedAt: authResponse.user.updatedAt
+      }
     })
   }
 

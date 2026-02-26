@@ -7,7 +7,7 @@ import { Sighting } from '#core/services/sighting/sighting';
 import { Auth } from '#core/services/auth/auth';
 import { GeoCoords } from '#shared/types/coordinates';
 import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
-import { SightingItem } from '#types/sighting';
+import { SightingViewModel } from '#types/sighting';
 import { MapPopup } from './map-popup/map-popup';
 import { MarkerPopup } from './marker-popup/marker-popup';
 
@@ -101,7 +101,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   constructor() {
     // Sync markers whenever `sightings` signal changes
     effect(() => {
-      const sightings = this.sighting.sightings();
+      const sightings = this.sighting.sightingsVM();
       if (this.map) {
         this.syncMarkers(sightings);
       }
@@ -141,7 +141,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    */
   ngAfterViewInit(): void {
     this.initMap();
-    this.syncMarkers(this.sighting.sightings());
+    this.syncMarkers(this.sighting.sightingsVM());
   }
 
   /**
@@ -220,7 +220,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    * On the first sync with data, fits the viewport to show all markers.
    * @param sightings Current list of sightings from the service.
    */
-  private syncMarkers(sightings: SightingItem[]): void {
+  private syncMarkers(sightings: SightingViewModel[]): void {
 
     // If there's no map
     if (!this.map)
@@ -326,7 +326,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
       // Retrieve the sighting ID for this marker, then look it up in the sightings list to get the full data needed for the popup
       const sightingId = [...this.markersMap.entries()].find(([, marker]) => marker === target)?.[0];
-      const sighting = this.sighting.sightings().find(sighting => sighting.id === sightingId);
+      const sighting = this.sighting.sightingsVM().find(sighting => sighting.id === sightingId);
 
       this.map.flyTo(target.getLatLng(), 12, { duration: 0.6 }); // Use `flyTo` for a smooth animated transition
 
@@ -421,7 +421,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    * @param marker The Leaflet marker that was clicked or focused.
    * @param sighting The sighting data to pass to the popup component.
    */
-  private openMarkerPopup(marker: L.Marker, sighting: SightingItem): void {
+  private openMarkerPopup(marker: L.Marker, sighting: SightingViewModel): void {
 
     // Destroy the Angular component of the previous popup
     this.destroyComponent(this.markerPopupComponentRef);

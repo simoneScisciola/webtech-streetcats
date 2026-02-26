@@ -1,11 +1,11 @@
 import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
-import { catchError, EMPTY, Observable, Subscription, switchMap, tap, timer } from 'rxjs';
+import { catchError, EMPTY, map, Observable, Subscription, switchMap, tap, timer } from 'rxjs';
 import { toast } from 'ngx-sonner';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
-import { SightingResponse, SightingItem } from '#types/sighting';
+import { SightingResponse, SightingViewModel } from '#types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
-import { formatDate, formatTime } from '#shared/utils/date';
+import { formatDate, formatRelativeTime, formatTime } from '#shared/utils/date';
 import { Sort } from '#shared/types/query-params';
 
 /** Polling interval in milliseconds */
@@ -25,7 +25,7 @@ export class Sighting implements OnDestroy {
   private pollSubscription?: Subscription;
 
   /** List of sightings for the current page */
-  readonly sightings = signal<SightingItem[]>([]);
+  readonly sightingsVM = signal<SightingViewModel[]>([]);
 
   /** Loading state for the current page */
   readonly isLoading = signal(false);
@@ -56,6 +56,7 @@ export class Sighting implements OnDestroy {
 
   private readonly formatDate = formatDate;
   private readonly formatTime = formatTime;
+  private readonly formatRelativeTime = formatRelativeTime;
 
   // -- Lifecycle -------------------------------------------------------------
 
@@ -71,7 +72,7 @@ export class Sighting implements OnDestroy {
    * Each tick fetches the page the user is currently viewing.
    */
   startPolling(): void {
-    
+
     // Do not create a second subscription if already polling
     if (this.pollSubscription)
       return;
@@ -98,8 +99,8 @@ export class Sighting implements OnDestroy {
       )
       .subscribe((response) => {
 
-        // Map raw API items to UI-ready objects
-        this.sightings.set(response.data.map(raw => this.toSightingItem(raw)));
+        // Map API items to UI-ready objects
+        this.sightingsVM.set(response.data.map(response => this.toSightingViewModel(response)));
 
         // Persist pagination metadata for the pagination component
         this.totalPages.set(response.totalPages);
@@ -137,17 +138,31 @@ export class Sighting implements OnDestroy {
   }
 
   // -- Mapping ---------------------------------------------------------------
-
-  /** Maps a raw API response item to a UI-ready SightingItem */
-  toSightingItem(raw: SightingResponse): SightingItem {
+      
+  /**
+   * Normalises a single raw API object into a fully-typed `SightingResponse`.
+   * @param raw Untyped object straight from the HTTP layer
+   */
+  parseRawResponse(raw: any): SightingResponse {
     return {
       ...raw,
       latitude: Number.parseFloat(raw.latitude),
       longitude: Number.parseFloat(raw.longitude),
       createdAt: new Date(raw.createdAt),
       updatedAt: new Date(raw.updatedAt),
-      formattedCreatedAt: this.formatDate(new Date(raw.createdAt)),
-      formattedUpdatedAt: this.formatTime(new Date(raw.updatedAt)),
+    }
+  }
+
+  /**
+   * Maps a `SightingResponse` (already normalised) to a UI-ready `SightingViewModel`.
+   */
+  toSightingViewModel(response: SightingResponse): SightingViewModel {
+    return {
+      ...response,
+      formattedCreatedAt: this.formatDate(response.createdAt),
+      formattedUpdatedAt: this.formatTime(response.updatedAt),
+      relativeCreatedAt: this.formatRelativeTime(response.createdAt),
+      relativeUpdatedAt: this.formatRelativeTime(response.updatedAt),
     };
   }
 
@@ -162,6 +177,8 @@ export class Sighting implements OnDestroy {
       `/sightings`,
       'POST',
       payload
+    ).pipe(
+      map(raw => this.parseRawResponse(raw))
     );
   }
 
@@ -173,6 +190,8 @@ export class Sighting implements OnDestroy {
     return this.restBackend.request(
       `/sightings/${id}`,
       'GET'
+    ).pipe(
+      map(raw => this.parseRawResponse(raw))
     );
   }
 
@@ -189,9 +208,14 @@ export class Sighting implements OnDestroy {
    * GET /sightings?page=:page&size=:size
    */
   getAll(sort: Sort, page = 0, size = 20): Observable<PaginatedResponse<SightingResponse>> {
-    return this.restBackend.request(
+    return this.restBackend.request<PaginatedResponse<SightingResponse>>(
       `/sightings?page=${page}&size=${size}&sort=${sort.field},${sort.direction}`,
       'GET'
+    ).pipe(
+      map(raw => ({
+        ...raw,
+        data: raw.data.map(item => this.parseRawResponse(item))
+      }))
     );
   }
 
@@ -204,6 +228,8 @@ export class Sighting implements OnDestroy {
       `/sightings/${id}`,
       'PATCH',
       payload
+    ).pipe(
+      map(raw => this.parseRawResponse(raw))
     );
   }
 

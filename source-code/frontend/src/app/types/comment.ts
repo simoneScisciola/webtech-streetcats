@@ -9,6 +9,6 @@ export interface CommentResponse {
   content: string;
   username: string;
   sightingId: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

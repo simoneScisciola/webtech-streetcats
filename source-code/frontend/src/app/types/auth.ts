@@ -1,12 +1,9 @@
+import { UserResponse } from "./user";
+
 export interface AuthState {
   authToken: string | null;
   isAuthenticated: boolean;
-  user: {
-    username: string | null;
-    avatarUrl?: string | null;
-    email?: string | null;
-    // Other fields
-  } | null;
+  user: UserResponse | null;
 }
 
 export interface LoginPayload {
@@ -24,7 +21,5 @@ export interface AuthResponse {
   authToken: string;
   // refreshToken: string, // TODO: implement refresh token
   expiresIn: number;
-  user: {
-    username: string;
-  };
+  user: UserResponse;
 }
