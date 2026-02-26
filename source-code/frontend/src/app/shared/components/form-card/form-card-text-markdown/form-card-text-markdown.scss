@@ -1,0 +1,10 @@
+.markdown-preview {
+  min-height: 80px;
+  background-color: var(--bs-body-bg);
+  overflow-y: auto;
+
+  // Remove bottom margin from last paragraph to avoid extra spacing
+  p:last-child {
+    margin-bottom: 0;
+  }
+}

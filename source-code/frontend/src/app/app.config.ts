@@ -1,6 +1,7 @@
 import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideMarkdown } from 'ngx-markdown';
 
 import { Config } from '#core/services/config/config';
 import { authInterceptor } from '#core/interceptors/auth-interceptor/auth-interceptor';
@@ -16,6 +17,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(), // Use the Fetch API instead of XMLHttpRequests
       withInterceptors([authInterceptor, sessionExpiredInterceptor])
     ),
+    provideMarkdown(),
     provideAppInitializer(() => {
       const config = inject(Config);
       return config.load();

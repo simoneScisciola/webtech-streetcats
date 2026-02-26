@@ -1,32 +1,58 @@
 <div class="mb-3">
 
   <!-- Input label -->
-  <label for="description" class="form-label fw-semibold">{{ label }}</label>
+  <label [for]="id" class="form-label fw-semibold">{{ label }}</label>
 
   <div class="input-group align-items-start">
 
-    <!-- Input field icon -->
-    @if (icon) {
-      <span class="input-group-text text-muted pt-2">
-        <fa-icon [icon]="icon!"></fa-icon>
-      </span>
+    <div class="d-flex flex-column align-items-end gap-1">
+
+      <!-- Input field icon -->
+      @if (icon) {
+        <span class="input-group-text text-muted pt-2">
+          <fa-icon [icon]="icon!"></fa-icon>
+        </span>
+      }
+
+      <!-- Toggle button: switches between edit and markdown preview mode -->
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        style="--bs-btn-padding-y: .30rem; --bs-btn-padding-x: .40rem;"
+        [disabled]="!control.value && !isPreview"
+        (click)="togglePreview()"
+        [title]="isPreview ? 'Back to edit' : 'Preview markdown'">
+        <fa-icon [icon]="isPreview ? icons.edit : icons.preview"></fa-icon>
+      </button>
+
+    </div>
+
+    <!-- Edit mode: normal textarea -->
+    @if (!isPreview) {
+      <textarea
+        [id]="id"
+        [formControl]="control"
+        [placeholder]="placeholder"
+        class="form-control"
+        [class.is-invalid]="control.invalid && control.touched"
+        [class.is-valid]="control.valid && control.touched"
+        rows="3">
+      </textarea>
     }
 
-    <!-- Input field -->
-    <textarea
-      [id]="id"
-      [formControl]="control"
-      [placeholder]="placeholder"
-      class="form-control"
-      [class.is-invalid]="control.invalid && control.touched"
-      [class.is-valid]="control.valid && control.touched"
-      rows="3">
-    </textarea>
+    <!-- Preview mode: rendered and sanitized markdown output -->
+    @if (isPreview) {
+      <div
+        class="form-control markdown-preview"
+        markdown
+        [data]="control.value || '*Nothing to preview.*'">
+      </div>
+    }
 
   </div>
 
-  <!-- Error message -->
-  @if (control.invalid && control.touched) {
+  <!-- Error message (shown only in edit mode) -->
+  @if (!isPreview && control.invalid && control.touched) {
     @for (error of errors | keyvalue; track error.key) {
       @if (control.hasError(error.key)) {
         <div class="invalid-feedback d-block">
