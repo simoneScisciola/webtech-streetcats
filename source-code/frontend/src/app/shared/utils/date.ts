@@ -33,22 +33,27 @@ export function formatTime(dateTime: FormattableDate) {
 
 }
 
-export function formatRelativeTime(dateTime: FormattableDate, locale: string = 'en') {
-  if (!dateTime){
+const rtfCache = new Map<string, Intl.RelativeTimeFormat>();
+
+function getRtf(locale: string): Intl.RelativeTimeFormat {
+  if (!rtfCache.has(locale))
+    rtfCache.set(locale, new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }));
+  return rtfCache.get(locale)!;
+}
+
+export function formatRelativeTime(dateTime: FormattableDate, locale = 'en'): string | null {
+  if (!dateTime) {
     return null;
   }
 
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+  const rtf = getRtf(locale);
+  const diffSeconds = Math.trunc((new Date(dateTime).getTime() - Date.now()) / 1000);
 
-  const now = new Date();
-  const target = new Date(dateTime);
-  const diffSeconds = Math.floor((target.getTime() - now.getTime()) / 1000);
-
-  const minutes = Math.floor(diffSeconds / 60);
-  const hours = Math.floor(diffSeconds / 3600);
-  const days = Math.floor(diffSeconds / 86400);
-  const months = Math.floor(diffSeconds / 2592000);
-  const years = Math.floor(diffSeconds / 31536000);
+  const minutes = Math.trunc(diffSeconds / 60);
+  const hours = Math.trunc(diffSeconds / 3_600);
+  const days = Math.trunc(diffSeconds / 86_400);
+  const months = Math.trunc(diffSeconds / 2_592_000);
+  const years = Math.trunc(diffSeconds / 31_536_000);
 
   if (Math.abs(minutes) < 60) return rtf.format(minutes, 'minute');
   if (Math.abs(hours) < 24) return rtf.format(hours, 'hour');
