@@ -7,7 +7,7 @@ import { Sighting } from '#core/services/sighting/sighting';
 import { Auth } from '#core/services/auth/auth';
 import { GeoCoords } from '#shared/types/coordinates';
 import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
-import { SightingViewModel } from '#types/sighting';
+import { SightingViewModel } from '#shared/types/sighting';
 import { MapPopup } from './map-popup/map-popup';
 import { MarkerPopup } from './marker-popup/marker-popup';
 

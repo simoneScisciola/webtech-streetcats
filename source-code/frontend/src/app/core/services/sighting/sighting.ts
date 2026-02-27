@@ -3,7 +3,7 @@ import { catchError, EMPTY, map, Observable, Subscription, switchMap, tap, timer
 import { toast } from 'ngx-sonner';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
-import { SightingResponse, SightingViewModel } from '#types/sighting';
+import { SightingResponse, SightingViewModel } from '#shared/types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
 import { formatDate, formatRelativeTime, formatTime } from '#shared/utils/date';
 import { Sort } from '#shared/types/query-params';

@@ -1,10 +1,14 @@
-export function formatDate(dateTime: Date | null) {
+type FormattableDate = Date | string | null;
+
+export function formatDate(dateTime: FormattableDate) {
 
   if (!dateTime) {
     return null;
   }
 
-  return dateTime.toLocaleString('it-IT', {
+  const target = new Date(dateTime);
+
+  return target.toLocaleString('it-IT', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -14,28 +18,30 @@ export function formatDate(dateTime: Date | null) {
 
 }
 
-export function formatTime(dateTime: Date | null) {
+export function formatTime(dateTime: FormattableDate) {
 
   if (!dateTime) {
     return null;
   }
 
-  return dateTime.toLocaleTimeString('it-IT', {
+  const target = new Date(dateTime);
+  
+  return target.toLocaleTimeString('it-IT', {
     hour: '2-digit',
     minute: '2-digit'
   });
 
 }
 
-export function formatRelativeTime(date: Date | string | null, locale: string = 'en') {
-  if (!date){
+export function formatRelativeTime(dateTime: FormattableDate, locale: string = 'en') {
+  if (!dateTime){
     return null;
   }
 
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
 
   const now = new Date();
-  const target = new Date(date);
+  const target = new Date(dateTime);
   const diffSeconds = Math.floor((target.getTime() - now.getTime()) / 1000);
 
   const minutes = Math.floor(diffSeconds / 60);

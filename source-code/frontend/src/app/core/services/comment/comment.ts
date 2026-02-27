@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend';
-import { CommentResponse, CommentPayload} from '#types/comment';
+import { CommentResponse, CommentPayload} from '#shared/types/comment';
 import { PaginatedResponse } from '#shared/types/pagination';
 
 @Injectable({

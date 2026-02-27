@@ -9,7 +9,7 @@ import { FormCardHeader } from '#shared/components/form-card/form-card-header/fo
 import { FormCardBody } from '#shared/components/form-card/form-card-body/form-card-body';
 import { FormCardFooter } from '#shared/components/form-card/form-card-footer/form-card-footer';
 import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
-import { SignupPayload } from '#types/auth';
+import { SignupPayload } from '#shared/types/auth';
 
 @Component({
   selector: 'app-signup-form',

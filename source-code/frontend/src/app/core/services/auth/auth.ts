@@ -3,7 +3,7 @@ import { map, Observable, tap } from 'rxjs';
 import { jwtDecode } from "jwt-decode";
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
-import { AuthState, LoginPayload, SignupPayload, AuthResponse } from '#types/auth';
+import { AuthState, LoginPayload, SignupPayload, AuthResponse } from '#shared/types/auth';
 import { User } from '#core/services/user/user';
 
 @Injectable({

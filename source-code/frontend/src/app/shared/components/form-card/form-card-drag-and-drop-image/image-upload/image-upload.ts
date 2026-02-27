@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fromEvent } from 'file-selector';
 
-import { ImageProcessResult } from '#types/image-upload';
+import { ImageProcessResult } from '#shared/types/image-upload';
 
 const ACCEPTED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB

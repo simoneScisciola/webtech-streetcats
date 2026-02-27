@@ -42,10 +42,10 @@
       </div>
 
       <!-- Sightings list -->
-      @for (sighting of this.sighting.sightings(); track sighting.id) {
+      @for (sighting of this.sighting.sightingsVM(); track sighting.id) {
         <app-sighting-card
           [title]="sighting.title"
-          [lastSeen]="sighting.formattedCreatedAt ?? 'Unknown time'"
+          [lastSeen]="sighting.relativeCreatedAt ?? 'Unknown time'"
           [description]="sighting.description ?? ''"
           [accentColor]="'#E5772D'"
           (cardClick)="onSightingCardClick({ latitude: sighting.latitude, longitude: sighting.longitude })"

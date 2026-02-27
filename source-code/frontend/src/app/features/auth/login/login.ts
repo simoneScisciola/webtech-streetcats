@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { Auth } from '#core/services/auth/auth';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
-import { LoginPayload } from '#types/auth';
+import { LoginPayload } from '#shared/types/auth';
 import { LoginForm } from './login-form/login-form';
 
 @Component({

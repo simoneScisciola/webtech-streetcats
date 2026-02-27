@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend';
-import { UserResponse, UserPayload } from '#types/user';
+import { UserResponse, UserPayload } from '#shared/types/user';
 
 @Injectable({
   providedIn: 'root',
