@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend';
-import { UserResponse, UserPayload } from '#shared/types/user';
+import { UserResponse, UserPayload, UserViewModel } from '#shared/types/user';
+import { formatDate } from '#shared/utils/date';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,10 @@ export class User {
   // -- Dependency Injection --------------------------------------------------
 
   private readonly restBackend = inject(RestBackend);
+
+  // -- Utils -----------------------------------------------------------------
+
+  private readonly formatDate = formatDate;
 
   // -- Mapping ---------------------------------------------------------------
   
@@ -25,6 +30,17 @@ export class User {
       createdAt: new Date(raw.createdAt),
       updatedAt: new Date(raw.updatedAt),
     }
+  }
+
+  /**
+   * Maps a `UserResponse` (already normalised) to a UI-ready `UserViewModel`.
+   */
+  toUserViewModel(response: UserResponse): UserViewModel {
+    return {
+      ...response,
+      formattedCreatedAt: this.formatDate(response.createdAt),
+      formattedUpdatedAt: this.formatDate(response.updatedAt),
+    };
   }
 
   // -- CRUD ------------------------------------------------------------------

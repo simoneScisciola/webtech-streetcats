@@ -98,7 +98,6 @@ export class Sighting implements OnDestroy {
         ),
       )
       .subscribe((response) => {
-
         // Map API items to UI-ready objects
         this.sightingsVM.set(response.data.map(response => this.toSightingViewModel(response)));
 
@@ -160,7 +159,7 @@ export class Sighting implements OnDestroy {
     return {
       ...response,
       formattedCreatedAt: this.formatDate(response.createdAt),
-      formattedUpdatedAt: this.formatTime(response.updatedAt),
+      formattedUpdatedAt: this.formatDate(response.updatedAt),
       relativeCreatedAt: this.formatRelativeTime(response.createdAt),
       relativeUpdatedAt: this.formatRelativeTime(response.updatedAt),
     };
