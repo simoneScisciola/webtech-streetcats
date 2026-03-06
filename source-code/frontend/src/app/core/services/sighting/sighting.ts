@@ -25,7 +25,7 @@ export class Sighting implements OnDestroy {
   private pollSubscription?: Subscription;
 
   /** List of sightings for the current page */
-  readonly sightingsVM = signal<SightingViewModel[]>([]);
+  readonly sightings = signal<SightingResponse[]>([]);
 
   /** Loading state for the current page */
   readonly isLoading = signal(false);
@@ -98,8 +98,7 @@ export class Sighting implements OnDestroy {
         ),
       )
       .subscribe((response) => {
-        // Map API items to UI-ready objects
-        this.sightingsVM.set(response.data.map(response => this.toSightingViewModel(response)));
+        this.sightings.set(response.data);
 
         // Persist pagination metadata for the pagination component
         this.totalPages.set(response.totalPages);

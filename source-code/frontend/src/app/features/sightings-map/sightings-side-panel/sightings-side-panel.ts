@@ -39,7 +39,7 @@ export class SightingsSidePanel {
   isAddingNewSighting = signal(false);
 
   protected readonly sighting = inject(Sighting);
-  private readonly sightingsMapState = inject(SightingsMapState);
+  protected readonly sightingsMapState = inject(SightingsMapState);
   protected readonly auth = inject(Auth);
   private readonly observableToast = inject(ObservableToast);
   private readonly router = inject(Router);

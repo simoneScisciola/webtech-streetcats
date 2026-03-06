@@ -71,7 +71,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   constructor() {
     // Sync markers whenever `sightings` signal changes
     effect(() => {
-      const sightings = this.sighting.sightingsVM();
+      const sightings = this.sightingsMapState.sightingsVM();
       if (this.map) {
         this.syncMarkers(sightings);
       }
@@ -111,7 +111,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    */
   ngAfterViewInit(): void {
     this.initMap();
-    this.syncMarkers(this.sighting.sightingsVM());
+    this.syncMarkers(this.sightingsMapState.sightingsVM());
   }
 
   /**
@@ -290,7 +290,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
       // Retrieve the sighting ID for this marker, then look it up in the sightings list to get the full data needed for the popup
       const sightingId = [...this.markersMap.entries()].find(([, marker]) => marker === target)?.[0];
-      const sighting = this.sighting.sightingsVM().find(sighting => sighting.id === sightingId);
+      const sighting = this.sightingsMapState.sightingsVM().find(sighting => sighting.id === sightingId);
 
       this.map.flyTo(target.getLatLng(), 12, { duration: 0.6 }); // Use `flyTo` for a smooth animated transition
 

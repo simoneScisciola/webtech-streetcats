@@ -42,7 +42,7 @@
       </div>
 
       <!-- Sightings list -->
-      @for (sighting of this.sighting.sightingsVM(); track sighting.id) {
+      @for (sighting of this.sightingsMapState.sightingsVM(); track sighting.id) {
         <app-sighting-card
           [title]="sighting.title"
           [lastSeen]="sighting.relativeCreatedAt ?? 'Unknown time'"

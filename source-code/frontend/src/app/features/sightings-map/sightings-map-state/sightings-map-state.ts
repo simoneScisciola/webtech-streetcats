@@ -1,6 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 
 import { GeoCoords } from '#shared/types/coordinates';
+import { Sighting } from '#core/services/sighting/sighting';
+import { SightingViewModel } from '#shared/types/sighting';
 
 /**
  * Local UI state for the SightingsMap feature.
@@ -8,6 +10,10 @@ import { GeoCoords } from '#shared/types/coordinates';
  */
 @Injectable()
 export class SightingsMapState {
+
+  // -- Dependency Injection --------------------------------------------------
+  
+    private readonly sightingService = inject(Sighting);
 
   // -- State and Signals -----------------------------------------------------
 
@@ -34,6 +40,12 @@ export class SightingsMapState {
   readonly focusCoordinates   = this._focusCoordinates.asReadonly();
   readonly isPickingCoordinates = this._isPickingCoordinates.asReadonly();
 
+  // -- Computed signals ------------------------------------------------------
+
+  /** UI-ready sightings derived from raw API data. */
+  readonly sightingsVM = computed<SightingViewModel[]>(
+    () => this.sightingService.sightings().map(sighting => this.sightingService.toSightingViewModel(sighting))
+  );
 
   // -- Methods ---------------------------------------------------------------
 
