@@ -1,9 +1,10 @@
-import { Component, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject, effect, Output, EventEmitter, ApplicationRef, EnvironmentInjector, ComponentRef, createComponent, Type } from '@angular/core';
+import { Component, Input, AfterViewInit, OnDestroy, OnChanges, SimpleChanges, inject, effect, Output, EventEmitter, ComponentRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { toast } from 'ngx-sonner';
 import * as L from 'leaflet';
 
 import { Sighting } from '#core/services/sighting/sighting';
+import { Leaflet } from '#core/services/leaflet/leaflet';
 import { Auth } from '#core/services/auth/auth';
 import { GeoCoords } from '#shared/types/coordinates';
 import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
@@ -57,41 +58,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   /** Currently focused marker. */
   private focusedMarker?: L.Marker;
 
-  /** Custom icon for the preview marker. */
-  private readonly previewIcon = L.icon({
-    iconUrl: 'assets/leaflet/preview-marker-icon.png',
-    iconRetinaUrl: 'assets/leaflet/preview-marker-icon-2x.png',
-    shadowUrl: 'assets/leaflet/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-  });
-
-  /** Default Leaflet marker icon. */
-  private readonly defaultIcon = L.icon({
-    iconUrl: 'assets/leaflet/marker-icon.png',
-    iconRetinaUrl: 'assets/leaflet/marker-icon-2x.png',
-    shadowUrl: 'assets/leaflet/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-  });
-
-  /** Icon used when a marker is focused. */
-  private readonly focusedIcon = L.icon({
-    iconUrl: 'assets/leaflet/focus-marker-icon.png',
-    iconRetinaUrl: 'assets/leaflet/focus-marker-icon-2x.png',
-    shadowUrl: 'assets/leaflet/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-  });
-
   // -- Dependency Injection --------------------------------------------------
 
-  private readonly appRef = inject(ApplicationRef);
-  private readonly envInjector = inject(EnvironmentInjector);
   private readonly sighting = inject(Sighting);
+  private readonly leaflet = inject(Leaflet);
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
   private readonly sightingsMapState = inject(SightingsMapState);
@@ -173,8 +143,8 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     }
 
     // Destroy any open Angular popup components to prevent memory leaks
-    this.destroyComponent(this.mapPopupComponentRef);
-    this.destroyComponent(this.markerPopupComponentRef);
+    this.leaflet.destroyComponent(this.mapPopupComponentRef);
+    this.leaflet.destroyComponent(this.markerPopupComponentRef);
 
     this.map?.remove();
   }
@@ -186,15 +156,9 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    */
   private initMap(): void {
 
-    // Initialise map and fit to Europe/Italy bounds
-    this.map = L.map('map');
+    // Fit to Europe/Italy bounds
+    this.map = this.leaflet.initMap('map');
     this.map.fitBounds([[30, -29], [55, 55]]);
-
-    // Add OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(this.map);
 
     // === Map Listeners === //
 
@@ -245,7 +209,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       if (!this.markersMap.has(sighting.id)) {
         const marker = L.marker(
           [sighting.latitude, sighting.longitude],
-          { icon: this.defaultIcon }
+          { icon: this.leaflet.defaultIcon }
         ).addTo(this.map);
 
         // === Marker Listeners === //
@@ -292,7 +256,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
       this.previewMarker = L.marker(
         [coords.latitude, coords.longitude],
         {
-          icon: this.previewIcon,
+          icon: this.leaflet.previewIcon,
           draggable: true
         }
       ).addTo(this.map!);
@@ -352,11 +316,11 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
     // Restore default icon on previously focused marker
     if (this.focusedMarker) {
-      this.focusedMarker.setIcon(this.defaultIcon);
+      this.focusedMarker.setIcon(this.leaflet.defaultIcon);
     }
 
     // Apply focused icon to the new target
-    marker.setIcon(this.focusedIcon);
+    marker.setIcon(this.leaflet.focusedIcon);
 
     // Update the reference to the currently focused marker
     this.focusedMarker = marker;
@@ -367,7 +331,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    * @param marker The marker whose focus state should be cleared.
    */
   private clearFocusedMarker(marker: L.Marker): void {
-    marker.setIcon(this.defaultIcon);
+    marker.setIcon(this.leaflet.defaultIcon);
     this.focusedMarker = undefined;
   }
 
@@ -380,10 +344,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   private openMapPopup(latlng: L.LatLng): void {
 
     // Destroy the Angular component of the previous popup
-    this.destroyComponent(this.mapPopupComponentRef);
+    this.leaflet.destroyComponent(this.mapPopupComponentRef);
 
     // Instantiate the `MapPopup` Angular component
-    const { popup, componentRef } = this.createAngularPopup(
+    const { popup, componentRef } = this.leaflet.createAngularPopup(
       MapPopup,
       (compRef) => {
         // Pass authentication state Input
@@ -424,10 +388,10 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   private openMarkerPopup(marker: L.Marker, sighting: SightingViewModel): void {
 
     // Destroy the Angular component of the previous popup
-    this.destroyComponent(this.markerPopupComponentRef);
+    this.leaflet.destroyComponent(this.markerPopupComponentRef);
 
     // Instantiate the `MarkerPopup` Angular component
-    const { popup, componentRef } = this.createAngularPopup(
+    const { popup, componentRef } = this.leaflet.createAngularPopup(
       MarkerPopup,
       (compRef) => {
         // Pass title Input
@@ -467,55 +431,6 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    */
   onMarkerPopupDetailsClick(sightingId: number): void {
     this.router.navigate(['/sighting', sightingId, 'details']);
-  }
-
-  /**
-   * Factory that creates a dynamic Angular component, mounts it into the ApplicationRef, wraps it in a Leaflet popup, and registers a cleanup callback for when the popup is removed.
-   * Note: positioning (setLatLng / bindPopup) is left to the caller, since it differs between map popups (anchored to coordinates) and marker popups (anchored to the marker).
-   * @param ComponentClass The Angular component class to instantiate.
-   * @param configureInputOutput Optional callback to set inputs / subscribe to outputs on the new ComponentRef.
-   * @param onRemove Optional callback invoked when Leaflet removes the popup.
-   * @returns The Leaflet popup and the Angular ComponentRef.
-   */
-  private createAngularPopup<T>(ComponentClass: Type<T>, configureInputOutput?: (ref: ComponentRef<T>) => void, onRemove?: (ref: ComponentRef<T>) => void): { popup: L.Popup; componentRef: ComponentRef<T> } {
-
-    // Instantiate the Angular component (it'll be outside the normal component tree)
-    const componentRef = createComponent(ComponentClass, {
-      environmentInjector: this.envInjector,
-    });
-
-    // Allow the caller to set inputs and subscribe to outputs
-    configureInputOutput?.(componentRef);
-
-    // Attach to ApplicationRef so Angular runs change detection on it
-    this.appRef.attachView(componentRef.hostView);
-
-    // Force initial rendering so the DOM element is ready before Leaflet reads it
-    componentRef.changeDetectorRef.detectChanges();
-
-    // Build the Leaflet popup using the Angular component's rendered DOM element as content
-    const popup = L.popup({ closeButton: true })
-      .setContent(componentRef.location.nativeElement);
-
-    // When Leaflet removes the popup, destroy the Angular component to prevent memory leaks and invoke an optional callback
-    popup.on('remove', () => {
-      this.destroyComponent(componentRef);
-      onRemove?.(componentRef);
-    });
-
-    return { popup, componentRef };
-  }
-
-  /**
-   * Detaches and destroys a dynamic component in order to prevent memory leaks.
-   * Safe to call when `componentRef` is undefined.
-   * @param componentRef The ComponentRef to destroy, or undefined.
-   */
-  private destroyComponent(componentRef?: ComponentRef<any>): void {
-    if (componentRef) {
-      this.appRef.detachView(componentRef.hostView);
-      componentRef.destroy();
-    }
   }
 
 }
