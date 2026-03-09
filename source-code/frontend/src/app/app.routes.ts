@@ -4,6 +4,7 @@ import { Home } from '#features/home/home';
 import { SightingsMap } from '#features/sightings-map/sightings-map';
 import { Login } from '#features/auth/login/login';
 import { Signup } from '#features/auth/signup/signup';
+import { SightingDetails } from '#features/sighting-details/sighting-details';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,21 @@ export const routes: Routes = [
     path: 'sign-up',
     title: "Sign Up",
     component: Signup
+  },
+  {
+    path: 'profile',
+    title: "Profile",
+    component: Home
+  },
+  {
+    path: 'my-sightings',
+    title: "My Sightings",
+    component: Home
+  },
+  {
+    path: 'sighting/:id/details',
+    title: "Sighting Details",
+    component: SightingDetails
   },
   {
     path: '**',
