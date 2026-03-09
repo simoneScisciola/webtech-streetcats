@@ -73,18 +73,18 @@ export class SightingsMapState implements OnDestroy {
   readonly focusCoordinates = this._focusCoordinates.asReadonly();
   readonly isPickingCoordinates = this._isPickingCoordinates.asReadonly();
 
-  // -- Utils -----------------------------------------------------------------
-
-  private readonly formatTime = formatTime;
-
   // -- Computed signals ------------------------------------------------------
 
   readonly lastUpdatedFormatted = computed(() => this.formatTime(this.lastUpdated()));
 
   /** UI-ready sightings derived from raw API data. */
   readonly sightingsVM = computed<SightingViewModel[]>(
-    () => this.sightings().map(s => this.sightingService.toSightingViewModel(s))
+    () => this.sightings().map(sighting => this.sightingService.toSightingViewModel(sighting))
   );
+
+  // -- Utils -----------------------------------------------------------------
+
+  private readonly formatTime = formatTime;
 
   // -- Lifecycle -------------------------------------------------------------
 
