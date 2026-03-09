@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend';
 import { UserResponse, UserPayload, UserViewModel } from '#shared/types/user';
-import { formatDate } from '#shared/utils/date';
+import { formatDate, formatRelativeTime } from '#shared/utils/date';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,7 @@ export class User {
   // -- Utils -----------------------------------------------------------------
 
   private readonly formatDate = formatDate;
+  private readonly formatRelativeTime = formatRelativeTime;
 
   // -- Mapping ---------------------------------------------------------------
   
@@ -40,6 +41,8 @@ export class User {
       ...response,
       formattedCreatedAt: this.formatDate(response.createdAt),
       formattedUpdatedAt: this.formatDate(response.updatedAt),
+      relativeCreatedAt: this.formatRelativeTime(response.createdAt),
+      relativeUpdatedAt: this.formatRelativeTime(response.updatedAt),
     };
   }
 

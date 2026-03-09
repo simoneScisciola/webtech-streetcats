@@ -16,4 +16,6 @@ export interface CommentResponse {
 export interface CommentViewModel extends CommentResponse {
   formattedCreatedAt: string | null;
   formattedUpdatedAt: string | null;
+  relativeCreatedAt: string | null;
+  relativeUpdatedAt: string | null;
 }

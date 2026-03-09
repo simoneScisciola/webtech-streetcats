@@ -15,4 +15,6 @@ export interface UserResponse {
 export interface UserViewModel extends UserResponse {
   formattedCreatedAt: string | null;
   formattedUpdatedAt: string | null;
+  relativeCreatedAt: string | null;
+  relativeUpdatedAt: string | null;
 }

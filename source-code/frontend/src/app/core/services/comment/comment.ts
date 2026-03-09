@@ -4,7 +4,8 @@ import { map, Observable } from 'rxjs';
 import { RestBackend } from '#core/services/rest-backend/rest-backend';
 import { CommentResponse, CommentPayload, CommentViewModel} from '#shared/types/comment';
 import { PaginatedResponse } from '#shared/types/pagination';
-import { formatDate } from '#shared/utils/date';
+import { formatDate, formatRelativeTime } from '#shared/utils/date';
+import { Sort } from '#shared/types/query-params';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class Comment {
   // -- Utils -----------------------------------------------------------------
   
   private readonly formatDate = formatDate;
+  private readonly formatRelativeTime = formatRelativeTime;
 
   // -- Mapping ---------------------------------------------------------------
     
@@ -41,6 +43,8 @@ export class Comment {
       ...response,
       formattedCreatedAt: this.formatDate(response.createdAt),
       formattedUpdatedAt: this.formatDate(response.updatedAt),
+      relativeCreatedAt: this.formatRelativeTime(response.createdAt),
+      relativeUpdatedAt: this.formatRelativeTime(response.updatedAt),
     };
   }
 
@@ -64,9 +68,9 @@ export class Comment {
    * Get all comments (optionally filtered by sightingId)
    * GET /comments?sightingId=...
    */
-  getAll(params?: { sightingId?: number }): Observable<PaginatedResponse<CommentResponse>> {
+  getAll(sort: Sort, params?: { sightingId?: number }): Observable<PaginatedResponse<CommentResponse>> {
     return this.restBackend.request<PaginatedResponse<CommentResponse>>(
-      '/comments',
+      `/comments?sort=${sort.field},${sort.direction}`,
       'GET',
       null,
       params
