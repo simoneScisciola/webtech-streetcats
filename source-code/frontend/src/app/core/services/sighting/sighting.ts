@@ -1,142 +1,28 @@
-import { Injectable, OnDestroy, computed, inject, signal } from '@angular/core';
-import { catchError, EMPTY, map, Observable, Subscription, switchMap, tap, timer } from 'rxjs';
-import { toast } from 'ngx-sonner';
+import { Injectable, inject } from '@angular/core';
+import { map, Observable } from 'rxjs';
 
 import { RestBackend } from '#core/services/rest-backend/rest-backend'
 import { SightingResponse, SightingViewModel } from '#shared/types/sighting';
 import { PaginatedResponse } from '#shared/types/pagination';
-import { formatDate, formatRelativeTime, formatTime } from '#shared/utils/date';
+import { formatDate, formatRelativeTime } from '#shared/utils/date';
 import { Sort } from '#shared/types/query-params';
-
-/** Polling interval in milliseconds */
-const POLL_INTERVAL_MS = 60_000; // 60 seconds
 
 @Injectable({
   providedIn: 'root',
 })
-export class Sighting implements OnDestroy {
+export class Sighting {
 
   // -- Dependency Injection --------------------------------------------------
 
   private readonly restBackend = inject(RestBackend);
 
-  // -- State and Signals -----------------------------------------------------
-
-  private pollSubscription?: Subscription;
-
-  /** List of sightings for the current page */
-  readonly sightings = signal<SightingResponse[]>([]);
-
-  /** Loading state for the current page */
-  readonly isLoading = signal(false);
-
-  /** Timestamp of the last successful sync with the backend */
-  readonly lastUpdated = signal<Date | null>(null);
-
-  /** Currently displayed page (0-based index) */
-  readonly currentPage = signal(0);
-
-  /** Number of items per page */
-  readonly pageSize = signal(20);
-
-  /** Total number of pages returned by the backend */
-  readonly totalPages = signal(0);
-
-  /** Total number of items across all pages */
-  readonly totalItems = signal(0);
-
-  /** Current selected sort */
-  readonly currentSort = signal<Sort>({ field: 'createdAt', direction: 'desc' });
-
-  // -- Computed signals ------------------------------------------------------
-
-  readonly lastUpdatedFormatted = computed(() => this.formatTime(this.lastUpdated()));
-
   // -- Utils -----------------------------------------------------------------
 
   private readonly formatDate = formatDate;
-  private readonly formatTime = formatTime;
   private readonly formatRelativeTime = formatRelativeTime;
 
-  // -- Lifecycle -------------------------------------------------------------
-
-  /** Stop polling on service destroy */
-  ngOnDestroy(): void {
-    this.stopPolling();
-  }
-
-  // -- Polling ---------------------------------------------------------------
-
-  /**
-   * Starts polling the backend automatically.
-   * Each tick fetches the page the user is currently viewing.
-   */
-  startPolling(): void {
-
-    // Do not create a second subscription if already polling
-    if (this.pollSubscription)
-      return;
-
-    // Start an RxJS timer that ticks immediately and then every POLL_INTERVAL_MS
-    this.pollSubscription = timer(0, POLL_INTERVAL_MS)
-      .pipe(
-
-        // Set loading state
-        tap(() => this.isLoading.set(true)),
-
-        // Call getAll() and switch to the new Observable, cancelling any previous one if still active.
-        // We read currentPage() here so that each tick fetches the page the user is currently on.
-        switchMap(() =>
-          this.getAll(this.currentSort(), this.currentPage(), this.pageSize()).pipe(
-            catchError((err) => {
-              console.error('Sightings sync failed.', err);
-              this.isLoading.set(false);
-              toast.error('Sightings sync failed.');
-              return EMPTY; // Return EMPTY so the outer timer keeps ticking despite the error
-            })
-          )
-        ),
-      )
-      .subscribe((response) => {
-        this.sightings.set(response.data);
-
-        // Persist pagination metadata for the pagination component
-        this.totalPages.set(response.totalPages);
-        this.totalItems.set(response.totalItems);
-
-        this.isLoading.set(false);
-        this.lastUpdated.set(new Date());
-        toast.success('Sightings synced successfully.');
-      });
-  }
-
-  /** Unsubscribes from the polling timer */
-  stopPolling(): void {
-    this.pollSubscription?.unsubscribe();
-    this.pollSubscription = undefined;
-  }
-
-  /**
-   * Resets the polling interval.
-   * Useful after a manual refresh to avoid an immediate subsequent request.
-   */
-  refresh(): void {
-    this.stopPolling();
-    this.startPolling();
-  }
-
-  /**
-   * Navigates to a specific page and resets the polling interval.
-   * The next (and all subsequent) poll ticks will fetch this page.
-   * @param page 0-based page index
-   */
-  goToPage(page: number): void {
-    this.currentPage.set(page);
-    this.refresh();
-  }
-
   // -- Mapping ---------------------------------------------------------------
-      
+
   /**
    * Normalises a single raw API object into a fully-typed `SightingResponse`.
    * @param raw Untyped object straight from the HTTP layer

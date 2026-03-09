@@ -21,8 +21,8 @@
       <!-- Refresh bar -->
       <div class="d-flex align-items-center justify-content-between px-3 pb-2 mb-3 border-bottom">
         <span class="text-muted small">
-          @if (this.sighting.lastUpdatedFormatted()) {
-            Last sync at {{ this.sighting.lastUpdatedFormatted() }}
+          @if (this.sightingsMapState.lastUpdatedFormatted()) {
+            Last sync at {{ this.sightingsMapState.lastUpdatedFormatted() }}
           } @else {
             Not synced yet
           }
@@ -30,12 +30,12 @@
         <button
           class="btn btn-sm btn-outline-dark"
           title="Refresh sightings"
-          [disabled]="this.sighting.isLoading()"
+          [disabled]="this.sightingsMapState.isLoading()"
           (click)="onRefresh()"
           style="--bs-btn-padding-y: .15rem; --bs-btn-padding-x: .30rem;">
           <fa-icon
-            [icon]="this.sighting.isLoading() ? icons.loading : icons.refresh"
-            [animation]="this.sighting.isLoading() ? 'spin' : undefined"
+            [icon]="this.sightingsMapState.isLoading() ? icons.loading : icons.refresh"
+            [animation]="this.sightingsMapState.isLoading() ? 'spin' : undefined"
             [size]="'sm'">
           </fa-icon>
         </button>
@@ -52,7 +52,7 @@
           (detailsClick)="onSightingDetailsClick(sighting.id)">
         </app-sighting-card>
       } @empty {
-        @if (!this.sighting.isLoading()) {
+        @if (!this.sightingsMapState.isLoading()) {
           <p class="text-muted text-center p-4">No sightings found.</p>
         }
       }
@@ -60,9 +60,9 @@
       <!-- Pagination control -->
       <app-pagination
         class="mt-auto"
-        [currentPage]="sighting.currentPage()"
-        [totalPages]="sighting.totalPages()"
-        (pageChange)="sighting.goToPage($event)">
+        [currentPage]="sightingsMapState.currentPage()"
+        [totalPages]="sightingsMapState.totalPages()"
+        (pageChange)="sightingsMapState.goToPage($event)">
       </app-pagination>
 
     }

@@ -27,11 +27,11 @@ export class SightingsMap implements OnInit, OnDestroy {
   // -- Lifecycle -------------------------------------------------------------
 
   ngOnInit(): void {
-    this.sightingService.startPolling();
+    this.sightingsMapState.startPolling();
   }
 
   ngOnDestroy(): void {
-    this.sightingService.stopPolling();
+    this.sightingsMapState.stopPolling();
   }
 
   // -- Methods ---------------------------------------------------------------

@@ -38,7 +38,7 @@ export class SightingsSidePanel {
   /** Tracks if add sighting form should be shown */
   isAddingNewSighting = signal(false);
 
-  protected readonly sighting = inject(Sighting);
+  protected readonly sightingService = inject(Sighting);
   protected readonly sightingsMapState = inject(SightingsMapState);
   protected readonly auth = inject(Auth);
   private readonly observableToast = inject(ObservableToast);
@@ -77,7 +77,7 @@ export class SightingsSidePanel {
   }
 
   onRefresh(): void {
-    this.sighting.refresh();
+    this.sightingsMapState.refresh();
   }
 
   onCancelAddSighting(): void {
@@ -99,7 +99,7 @@ export class SightingsSidePanel {
    */
   onAddSightingSubmit(payload: FormData) {
     this.observableToast.trigger(
-      this.sighting.create(payload),
+      this.sightingService.create(payload),
       {
         loading: "Adding sighting...",
         success: "Sighting added successfully.",
@@ -110,10 +110,10 @@ export class SightingsSidePanel {
           this.closeAddSightingForm();
           this.closePanel.emit();
 
-          this.sighting.goToPage(0);
+          this.sightingsMapState.goToPage(0);
         },
         onError: (err) => console.error('Add sighting failed.', err),
-        onRetry: () => this.sighting.create(payload)
+        onRetry: () => this.sightingService.create(payload)
       }
     )
   }
