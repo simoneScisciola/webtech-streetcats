@@ -1,114 +1,155 @@
-<!-- sighting-detail.component.html -->
-
 <!-- Loading spinner -->
 @if (loading()) {
-  <div class="d-flex justify-content-center py-5">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading…</span>
-    </div>
-  </div>
+  <output class="d-flex justify-content-center align-items-center h-100">
+    <div class="spinner-border text-primary" aria-hidden="true"></div>
+    <span class="visually-hidden">Loading...</span>
+  </output>
 }
 
 <!-- Error alert -->
 @if (error()) {
   <div class="container py-4">
     <div class="alert alert-danger" role="alert">
-      <i class="fa-solid fa-circle-exclamation me-2"></i>
-      Unable to load sighting. Please try again.
+      <fa-icon
+        [icon]="icons.error"
+        class="me-2">
+      </fa-icon>Unable to load sighting. Please try again.
     </div>
   </div>
 }
 
 <!-- Main content -->
-@if (!loading() && !error() && sightingVM(); as s) {
+@if (!loading() && !error() && sightingVM(); as sighting) {
   <div class="container py-4">
 
-    <!-- ── Header ──────────────────────────────────────────────────────── -->
-    <div class="mb-4">
+    <!-- Header -->
+    <div class="d-flex flex-column align-items-center align-items-sm-start mb-4 gap-3">
 
-      <h1 class="fw-bold mb-2">{{ s.title }}</h1>
+      <h1 class="fw-bold text-break">{{ sighting.title }}</h1>
 
-      <!-- Author avatar + username + creation date -->
-      <div class="d-flex align-items-center gap-2 text-body-secondary">
+      <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 w-100">
 
-        <div class="bg-primary text-white rounded-circle d-flex
-                    align-items-center justify-content-center fw-bold flex-shrink-0"
-             style="width:36px; height:36px; font-size:.9rem;"
-             [attr.aria-label]="s.username">
-          {{ initial(s.username) }}
+        <!-- Photo + Username-->
+        <div class="d-flex align-items-center gap-2">
+          <div
+            class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+            style="width:36px; height:36px; font-size:.9rem;"
+            [attr.aria-label]="sighting.username">
+            {{ this.initial(sighting.username) }}
+          </div>
+          
+          <span class="fw-semibold text-body text-break">{{ sighting.username }}</span>
         </div>
 
-        <span class="fw-semibold text-body">{{ s.username }}</span>
-        <span>·</span>
-        <small>
-          <i class="fa-regular fa-calendar me-1"></i>
-          {{ s.formattedCreatedAt }}
+        <!-- Date -->
+        <small class="text-body-secondary">
+          <fa-icon
+            [icon]="icons.calendar"
+            class="me-2" >
+          </fa-icon>{{ sighting.formattedCreatedAt }}
         </small>
 
       </div>
+
     </div>
 
-    <!-- ── Two-column layout ───────────────────────────────────────────── -->
-    <div class="row g-4">
-
-      <!-- Photo + description -->
-      <div class="col-12 col-lg-7">
-
-        <!-- Fixed-height crop wrapper (only custom CSS needed) -->
-        <div class="card border-0 shadow-sm mb-4">
-          <div class="sighting-photo-wrapper">
-            <img [src]="resolveUrl(s.photoUrl)" [alt]="s.title" class="sighting-photo" />
-          </div>
+    <!-- Photo -->
+    @if (sighting.photoUrl) {
+      <div class="card border-0 shadow-sm my-4">
+        <div class="sighting-photo-wrapper">
+          <img
+            [src]="restBackendService.resolveUrl(sighting.photoUrl)"
+            [alt]="sighting.title"
+            class="w-100 h-100 object-fit-contain d-block"
+          />
         </div>
+      </div>
+    }
 
-        @if (s.description) {
-          <div class="card border-0 shadow-sm">
-            <div class="card-body">
-              <h5 class="card-title text-primary">
-                <i class="fa-solid fa-feather me-2"></i>Description
-              </h5>
-              <p class="card-text">{{ s.description }}</p>
+    <!-- Description -->
+    @if (sighting.description) {
+      <div class="card border-0 shadow-sm my-4">
+        <div class="card-body p-2 p-sm-3">
+
+          <!-- Title -->
+          <h4 class="card-title text-primary">
+            Description
+          </h4>
+
+          <!-- Text -->
+          <div class="position-relative">
+            <div
+              class="description-body"
+              [class.collapsed]="!isDescriptionExpanded()"
+              [class.expanded]="isDescriptionExpanded()"
+            >
+              <!-- Renders the markdown -->
+              <div class="card-text" markdown [data]="sighting.description"></div>
             </div>
+
+            <!-- Gradient fade, visible only while the block is collapsed -->
+            @if (!isDescriptionExpanded()) {
+              <div class="description-fade"></div>
+            }
           </div>
+
+          <!-- Toggle button -->
+          <button
+            class="btn btn-link btn-sm px-0 mt-2 text-primary"
+            (click)="isDescriptionExpanded.set(!isDescriptionExpanded())"
+          >
+            @if (isDescriptionExpanded()) {
+              <fa-icon
+                [icon]="icons.readLess"
+                class="me-2" >
+              </fa-icon>Read less
+            } @else {
+              <fa-icon
+                [icon]="icons.readMore"
+                class="me-2" >
+              </fa-icon>Read more
+            }
+          </button>
+
+        </div>
+      </div>
+    }
+
+    <!-- Map -->
+    <div class="card border-0 shadow-sm my-4">
+      <div class="card-body p-2 p-sm-3">
+
+        <!-- Title -->
+        <h4 class="card-title text-primary">
+          Location
+        </h4>
+
+        <!-- Optional address -->
+        @if (sighting.address) {
+          <p class="fw-semibold my-1">{{ sighting.address }}</p>
         }
 
+        <!-- Coordinates -->
+        <p class="d-flex align-items-center font-monospace small text-body-secondary text-break mb-3">
+          <fa-icon
+            [icon]="icons.coordinates"
+            class="d-flex align-items-center me-1" >
+          </fa-icon>{{ sighting.latitude }}, {{ sighting.longitude }}
+        </p>
+
+        <!-- Interactive map  -->
+        <app-sighting-details-map
+          [latitude]="sighting.latitude"
+          [longitude]="sighting.longitude"
+          [address]="sighting.address"
+        />
+
       </div>
-
-      <!-- Map -->
-      <div class="col-12 col-lg-5">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body">
-
-            <h5 class="card-title text-primary">
-              <i class="fa-solid fa-map-location-dot me-2"></i>Location
-            </h5>
-
-            <!-- Address (prominent) and coordinates (monospace, secondary) -->
-            @if (s.address) {
-              <p class="fw-semibold mb-1">{{ s.address }}</p>
-            }
-            <p class="text-body-secondary mb-3" style="font-family:monospace; font-size:.8rem;">
-              <i class="fa-solid fa-crosshairs me-1"></i>
-              {{ s.latitude }}, {{ s.longitude }}
-            </p>
-
-            <!-- Map subcomponent owns the Leaflet lifecycle -->
-            <app-sighting-details-map
-              [latitude]="s.latitude"
-              [longitude]="s.longitude"
-              [address]="s.address"
-            />
-
-          </div>
-        </div>
-      </div>
-
     </div>
 
-    <!-- ── Comments ────────────────────────────────────────────────────── -->
-    <div class="mt-5">
-      <!-- Comments subcomponent owns its own data fetching and form state -->
-      <app-sighting-comments [sightingId]="s.id" />
+    <!-- Comments -->
+    <div class="my-2">
+      <app-sighting-comments [sightingId]="sighting.id" />
     </div>
 
   </div>

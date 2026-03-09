@@ -1,6 +1,9 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { MarkdownModule } from 'ngx-markdown';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCircleExclamation, faCalendar, faChevronUp, faChevronDown, faLocationCrosshairs } from '@fortawesome/free-solid-svg-icons';
 
 import { Sighting } from '#core/services/sighting/sighting';
 import { SightingDetailsMap } from './sighting-details-map/sighting-details-map';
@@ -11,7 +14,7 @@ import { initial } from '#shared/utils/text';
 
 @Component({
   selector: 'app-sighting-details',
-  imports: [SightingDetailsMap, SightingComments],
+  imports: [SightingDetailsMap, SightingComments, MarkdownModule, FontAwesomeModule],
   templateUrl: './sighting-details.html',
   styleUrl: './sighting-details.scss',
 })
@@ -25,13 +28,30 @@ export class SightingDetails implements OnInit {
 
   // -- State and Signals -----------------------------------------------------
 
+  /** Retrieved sighting */
   sighting = signal<SightingResponse | null>(null);
+
+  /** Manages "loading data" state */
   loading = signal(true);
+
+  /** Manages "error in data retrieve" state */
   error = signal(false);
+
+  /** Controls whether the description card is fully expanded or clamped */
+  isDescriptionExpanded = signal(false);
+
+  // Details icons
+  icons = {
+    error: faCircleExclamation,
+    calendar: faCalendar,
+    readLess: faChevronUp,
+    readMore: faChevronDown,
+    coordinates: faLocationCrosshairs,
+  };
 
   // -- Computed signals ------------------------------------------------------
 
-  /** UI-ready sighiting derived from raw API data. */
+  /** UI-ready sighting derived from raw API data. */
   readonly sightingVM = computed<SightingViewModel | null>(
     () => {
       if (!this.sighting())
@@ -42,7 +62,7 @@ export class SightingDetails implements OnInit {
   );
 
   // -- Utils -----------------------------------------------------------------
-  
+
   protected readonly initial = initial;
 
   // -- Lifecycle -------------------------------------------------------------
