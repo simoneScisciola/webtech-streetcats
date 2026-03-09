@@ -77,6 +77,8 @@ sightingRouter.get("/uploads/sightings/:filename", async (req: Request, res: Res
             throw new createError.NotFound('Photo not found.');
         }
 
+        // Allow cross-origin loading of this static asset (required by Helmet's COEP policy)
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
         res.sendFile(filepath);
     } catch (err) {
         next(err);

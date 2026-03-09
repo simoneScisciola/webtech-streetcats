@@ -108,9 +108,10 @@ export class SightingsMapState implements OnDestroy {
     // Start an RxJS timer that ticks immediately and then every POLL_INTERVAL_MS
     this.pollSubscription = timer(0, POLL_INTERVAL_MS)
       .pipe(
-
-        // Set loading state
-        tap(() => this.isLoading.set(true)),
+        tap(() =>
+          // Set loading state
+          this.isLoading.set(true)
+        ),
 
         // Call getAll() and switch to the new Observable, cancelling any previous one if still active.
         // We read currentPage() here so that each tick fetches the page the user is currently on.
@@ -123,7 +124,7 @@ export class SightingsMapState implements OnDestroy {
               return EMPTY; // Return EMPTY so the outer timer keeps ticking despite the error
             })
           )
-        ),
+        )
       )
       .subscribe((response) => {
         this.sightings.set(response.data);

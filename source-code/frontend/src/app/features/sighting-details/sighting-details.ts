@@ -6,6 +6,8 @@ import { Sighting } from '#core/services/sighting/sighting';
 import { SightingDetailsMap } from './sighting-details-map/sighting-details-map';
 import { SightingComments } from './sighting-comments/sighting-comments';
 import { SightingResponse, SightingViewModel } from '#shared/types/sighting';
+import { RestBackend } from '#core/services/rest-backend/rest-backend';
+import { initial } from '#shared/utils/text';
 
 @Component({
   selector: 'app-sighting-details',
@@ -15,12 +17,19 @@ import { SightingResponse, SightingViewModel } from '#shared/types/sighting';
 })
 export class SightingDetails implements OnInit {
 
-  private readonly route           = inject(ActivatedRoute);
+  // -- Dependency Injection --------------------------------------------------
+
+  private readonly route = inject(ActivatedRoute);
   private readonly sightingService = inject(Sighting);
+  protected readonly restBackendService = inject(RestBackend)
+
+  // -- State and Signals -----------------------------------------------------
 
   sighting = signal<SightingResponse | null>(null);
-  loading  = signal(true);
-  error    = signal(false);
+  loading = signal(true);
+  error = signal(false);
+
+  // -- Computed signals ------------------------------------------------------
 
   /** UI-ready sighiting derived from raw API data. */
   readonly sightingVM = computed<SightingViewModel | null>(
@@ -32,24 +41,30 @@ export class SightingDetails implements OnInit {
     }
   );
 
+  // -- Utils -----------------------------------------------------------------
+  
+  protected readonly initial = initial;
+
+  // -- Lifecycle -------------------------------------------------------------
+
   ngOnInit(): void {
     // Read :id from the route, then fetch the matching sighting
     this.route.paramMap
-      .pipe(switchMap(params => this.sightingService.getOne(Number(params.get('id')))))
+      .pipe(
+        switchMap((params) =>
+          this.sightingService.getOne(Number(params.get('id')))
+        )
+      )
       .subscribe({
-        next:  data => { this.sighting.set(data); this.loading.set(false); },
-        error: ()   => { this.error.set(true);    this.loading.set(false); },
+        next: data => {
+          this.sighting.set(data);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        },
       });
-  }
-
-  /** Prepends the API base URL to resource-relative paths (e.g. /uploads/…) */
-  resolveUrl(url: string): string {
-    return url.startsWith('http') ? url : `http://localhost:8080${url}`;
-  }
-
-  /** First letter of the username, uppercased – used for the avatar placeholder */
-  initial(name: string): string {
-    return name.charAt(0).toUpperCase();
   }
 
 }

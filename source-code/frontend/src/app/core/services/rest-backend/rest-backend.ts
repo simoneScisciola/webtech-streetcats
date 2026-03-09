@@ -98,4 +98,9 @@ export class RestBackend {
     });
   }
 
+  /** Prepends the API base URL to resource-relative paths (e.g. /uploads/…) */
+  resolveUrl(url: string): string {
+    return url.startsWith('http') ? url : `${this.baseUrl}${url}`;
+  }
+
 }
