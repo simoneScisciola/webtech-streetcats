@@ -7,6 +7,10 @@ body {
   background-color: var(--bs-light);
 }
 
+router-outlet + * {
+  width: 100%;
+}
+
 // Sonner toast styles
 [data-sonner-toast] {
 
