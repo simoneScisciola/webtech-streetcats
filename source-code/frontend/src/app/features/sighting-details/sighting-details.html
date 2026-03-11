@@ -23,7 +23,7 @@
   <div class="container py-4">
 
     <!-- Header -->
-    <div class="d-flex flex-column align-items-center align-items-sm-start mb-4 gap-3">
+    <div class="d-flex flex-column align-items-center align-items-sm-start mb-3 gap-3">
 
       <h1 class="fw-bold text-break">{{ sighting.title }}</h1>
 
@@ -53,18 +53,60 @@
 
     </div>
 
-    <!-- Photo -->
-    @if (sighting.photoUrl) {
-      <div class="card border-0 shadow-sm my-4">
-        <div class="sighting-photo-wrapper">
-          <img
-            [src]="restBackendService.resolveUrl(sighting.photoUrl)"
-            [alt]="sighting.title"
-            class="w-100 h-100 object-fit-contain d-block"
-          />
+    <!-- Photo + Map -->
+    <div class="row g-3 my-4 mt-3">
+
+      <!-- Photo -->
+      @if (sighting.photoUrl) {
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm">
+            <div class="sighting-photo-wrapper rounded">
+              <img
+                [src]="restBackendService.resolveUrl(sighting.photoUrl)"
+                [alt]="sighting.title"
+                class="w-100 h-100 object-fit-contain d-block"
+              />
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Map -->
+      <div class="col-lg">
+        <div class="card border-0 shadow-sm h-100 d-flex flex-column">
+          <div class="card-body p-2 p-sm-3 d-flex flex-column">
+
+            <!-- Title -->
+            <h4 class="card-title text-primary">
+              Location
+            </h4>
+
+            <!-- Optional address -->
+            @if (sighting.address) {
+              <p class="fw-semibold my-1">{{ sighting.address }}</p>
+            }
+
+            <!-- Coordinates -->
+            <p class="d-flex align-items-center font-monospace small text-body-secondary text-break mb-3">
+              <fa-icon
+                [icon]="icons.coordinates"
+                class="d-flex align-items-center me-1">
+              </fa-icon>{{ sighting.latitude }}, {{ sighting.longitude }}
+            </p>
+
+            <!-- Interactive map -->
+            <app-sighting-details-map
+              class="flex-grow-1"
+              [latitude]="sighting.latitude"
+              [longitude]="sighting.longitude"
+              [address]="sighting.address"
+            />
+
+          </div>
         </div>
       </div>
-    }
+
+    </div>
 
     <!-- Description -->
     @if (sighting.description) {
@@ -115,40 +157,8 @@
       </div>
     }
 
-    <!-- Map -->
-    <div class="card border-0 shadow-sm my-4">
-      <div class="card-body p-2 p-sm-3">
-
-        <!-- Title -->
-        <h4 class="card-title text-primary">
-          Location
-        </h4>
-
-        <!-- Optional address -->
-        @if (sighting.address) {
-          <p class="fw-semibold my-1">{{ sighting.address }}</p>
-        }
-
-        <!-- Coordinates -->
-        <p class="d-flex align-items-center font-monospace small text-body-secondary text-break mb-3">
-          <fa-icon
-            [icon]="icons.coordinates"
-            class="d-flex align-items-center me-1" >
-          </fa-icon>{{ sighting.latitude }}, {{ sighting.longitude }}
-        </p>
-
-        <!-- Interactive map  -->
-        <app-sighting-details-map
-          [latitude]="sighting.latitude"
-          [longitude]="sighting.longitude"
-          [address]="sighting.address"
-        />
-
-      </div>
-    </div>
-
     <!-- Comments -->
-    <div class="my-2">
+    <div class="mt-4">
       <app-sighting-comments [sightingId]="sighting.id" />
     </div>
 

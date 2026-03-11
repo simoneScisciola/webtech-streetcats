@@ -1,0 +1,9 @@
+div#details-map {
+  // xs (<576px)
+  min-height: 220px;
+
+  // lg (≥992px)
+  @media (min-width: 992px) {
+    min-height: 100%;
+  }
+}
