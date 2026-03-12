@@ -13,6 +13,7 @@ import { initial } from '#shared/utils/text';
 @Component({
   selector: 'app-sighting-comments',
   imports: [ReactiveFormsModule, FontAwesomeModule],
+  providers: [ObservableToast],
   templateUrl: './sighting-comments.html',
   styleUrl: './sighting-comments.scss',
 })
@@ -57,7 +58,7 @@ export class SightingComments implements OnInit {
 
   /** Validation error messages */
   contentErrors = {
-    required: 'Comment cannot be empty.'
+    required: 'Content cannot be empty.'
   };
 
   /** Getters */

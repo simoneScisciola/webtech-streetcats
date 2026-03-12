@@ -8,11 +8,16 @@
   <div class="card border-0 shadow-sm my-4">
     <div class="card-body">
 
-      <h5 class="card-title text-body-secondary mb-3">Leave a comment</h5>
+      <!-- Title -->
+      <h5 class="card-title text-body-secondary mb-3">
+        Leave a comment
+      </h5>
 
+      <!-- Form -->
       <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
         <div class="d-flex gap-3 align-items-start">
 
+          <!-- Avatar -->
           <img 
             [src]="authService.avatarUrl()" 
             [alt]="(authService.username() ?? 'User') + ' Icon'" 
@@ -21,10 +26,9 @@
             height="34"
           />
 
-          <!-- Right column: username label + textarea + submit -->
           <div class="flex-grow-1">
 
-            <!-- Comment text -->
+            <!-- Comment Textarea -->
             <textarea
               id="commentContent"
               class="form-control"
@@ -33,9 +37,9 @@
               formControlName="content"
             ></textarea>
 
-            <!-- Inline validation message -->
+            <!-- Error message -->
             @if (content.touched && content.errors) {
-              <div class="text-danger small mt-1">
+              <div class="invalid-feedback d-block">
                 @if (content.errors['required'])  { {{ contentErrors.required }}  }
               </div>
             }
@@ -56,20 +60,21 @@
             </div>
 
           </div>
+
         </div>
       </form>
 
     </div>
   </div>
 
-  <!-- ── Comment list ───────────────────────────────────────────────────── -->
+  <!-- Comments list -->
   @if (loadingComments()) {
+
     <output class="d-flex justify-content-center py-3" aria-label="Loading comments...">
       <span class="spinner-border spinner-border-sm text-primary"></span>
     </output>
-  }
 
-  @if (!loadingComments()) {
+  } @else {
 
     @if (comments().length === 0) {
       <p class="text-center text-body-secondary py-3">
@@ -78,26 +83,31 @@
     }
 
     @for (commentVM of commentsVM(); track commentVM.id) {
-      <div class="d-flex gap-3 mb-3">
+      <div class="d-flex gap-3 my-3">
 
-        <!-- Avatar: initial on a neutral circle -->
-        <div class="bg-secondary text-white rounded-circle d-flex
-                    align-items-center justify-content-center fw-bold flex-shrink-0"
-             style="width:36px; height:36px; font-size:.85rem;"
-             [attr.aria-label]="commentVM.username">
+        <!-- Avatar -->
+        <div
+          class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold flex-shrink-0"
+          style="width:36px; height:36px; font-size:.85rem;"
+          [attr.aria-label]="commentVM.username">
           {{ initial(commentVM.username) }}
         </div>
 
-        <!-- Comment bubble -->
+        <!-- Comment card -->
         <div class="card border-0 bg-body-tertiary flex-grow-1">
           <div class="card-body py-2 px-3">
+
+            <!-- Username + Date -->
             <div class="d-flex align-items-center gap-2 mb-1">
               <span class="fw-semibold small">{{ commentVM.username }}</span>
               <small class="text-body-secondary">
                 {{ commentVM.formattedCreatedAt }}
               </small>
             </div>
+
+            <!-- Content -->
             <p class="mb-0 small">{{ commentVM.content }}</p>
+
           </div>
         </div>
 
