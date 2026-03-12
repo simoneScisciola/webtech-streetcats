@@ -102,8 +102,7 @@ export class SightingComments implements OnInit {
    */
   onSubmit(): void {
     if (this.canSubmit) {
-      const username = this.authService.username();
-      if (!username) {
+      if (!this.authService.isAuthenticated()) {
         console.error('User not authenticated.');
         return;
       }

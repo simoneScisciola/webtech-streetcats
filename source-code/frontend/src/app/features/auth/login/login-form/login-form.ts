@@ -21,6 +21,8 @@ export class LoginForm {
 
   @Output() formSubmitted = new EventEmitter<LoginPayload>();
 
+  // -- State and Signals -----------------------------------------------------
+
   // Field labels
   icons = {
     login: faRightToBracket,
@@ -28,7 +30,9 @@ export class LoginForm {
     lock: faLock
   };
 
-  // Form
+  // -- Form ------------------------------------------------------------------
+
+  /** Reactive form */
   loginForm = new FormGroup({
     username: new FormControl('', [
       Validators.required]),
@@ -36,7 +40,7 @@ export class LoginForm {
       Validators.required]),
   });
 
-  // Error messages
+  /** Validation error messages */
   usernameErrors = {
     required:  'Username required.'
   };
@@ -44,7 +48,7 @@ export class LoginForm {
     required: 'Password required.'
   };
   
-  // Getters
+  /** Getters */
   get username() {
     return this.loginForm.controls.username;
   }
@@ -52,11 +56,18 @@ export class LoginForm {
     return this.loginForm.controls.password;
   }
 
+  // -- Methods ---------------------------------------------------------------
+
+  /** True when the form can be submitted */
+  get canSubmit(): boolean {
+    return this.loginForm.valid;
+  }
+
   /**
    * Manages form submit
    */
   onSubmit(): void {
-    if (this.loginForm.valid) {
+    if (this.canSubmit) {
       // Send fields to upper component
       const { username, password } = this.loginForm.getRawValue();
       this.formSubmitted.emit({ username: username!, password: password! });

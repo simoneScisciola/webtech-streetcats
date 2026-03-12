@@ -26,8 +26,12 @@ export class AddSightingForm {
   /** Emitted when the user clicks on cancel button */
   @Output() cancelButtonClick = new EventEmitter<void>();
 
+  // -- Dependency Injection --------------------------------------------------
+
   private readonly authService = inject(Auth);
   protected readonly sightingsMapState = inject(SightingsMapState);
+
+  // -- Constructor -----------------------------------------------------------
 
   constructor() {
 
@@ -42,6 +46,8 @@ export class AddSightingForm {
     });
   }
 
+  // -- State and Signals -----------------------------------------------------
+
   // Field labels
   icons = {
     binoculars: faBinoculars,
@@ -55,7 +61,9 @@ export class AddSightingForm {
     pick: faLocationCrosshairs
   };
 
-  // Form
+  // -- Form ------------------------------------------------------------------
+
+  /** Reactive form */
   sightingForm = new FormGroup({
     title: new FormControl('', [
       Validators.required]),
@@ -75,7 +83,7 @@ export class AddSightingForm {
     ]),
   });
 
-  // Error messages
+  /** Validation error messages */
   titleErrors = {
     required: 'Title required.',
   };
@@ -93,7 +101,7 @@ export class AddSightingForm {
     max: 'Longitude must be less then 180.',
   };
 
-  // Getters
+  /** Getters */
   get title() {
     return this.sightingForm.controls.title;
   }
@@ -113,6 +121,8 @@ export class AddSightingForm {
     return this.sightingForm.controls.longitude;
   }
 
+  // -- Methods ---------------------------------------------------------------
+
   /**
    * Notifies the parent to activate coordinate-picking mode on the map.
    */
@@ -127,13 +137,17 @@ export class AddSightingForm {
     this.sightingsMapState.stopPicking();
   }
 
+  /** True when the form can be submitted */
+  get canSubmit(): boolean {
+    return this.sightingForm.valid;
+  }
+
   /**
-   * Manages form submit.
+   * Manages form submit
    */
   onSubmit(): void {
-    if (this.sightingForm.valid) {
-      const username = this.authService.username();
-      if (!username) {
+    if (this.canSubmit) {
+      if (!this.authService.isAuthenticated()) {
         console.error('User not authenticated.');
         return;
       }
@@ -148,7 +162,7 @@ export class AddSightingForm {
       payload.append('latitude', String(latitude!));
       payload.append('longitude', String(longitude!));
       if (address) payload.append('address', address);
-      payload.append('username', username);
+      payload.append('username', this.authService.username() ?? "");
 
       this.formSubmitted.emit(payload);
     } else {

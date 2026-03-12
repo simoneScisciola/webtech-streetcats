@@ -21,6 +21,8 @@ export class SignupForm {
 
   @Output() formSubmitted = new EventEmitter<SignupPayload>();
 
+  // -- State and Signals -----------------------------------------------------
+
   // Field labels
   icons = {
     signup: faUserPlus,
@@ -30,7 +32,9 @@ export class SignupForm {
     shield: faShield
   };
 
-  // Form
+  // -- Form ------------------------------------------------------------------
+
+  /** Reactive form */
   signupForm = new FormGroup({
     username: new FormControl('', [
       Validators.required]),
@@ -49,7 +53,7 @@ export class SignupForm {
     validators: passwordMatchValidator,
   });
 
-  // Error messages
+  /** Validation error messages */
   usernameErrors = {
     required:  'Username required.',
   };
@@ -68,7 +72,7 @@ export class SignupForm {
     passwordMismatch: 'Passwords do not match.',
   };
 
-  // Gettes
+  /** Getters */
   get username() {
     return this.signupForm.controls.username;
   }
@@ -91,11 +95,18 @@ export class SignupForm {
     return control;
   }
 
+  // -- Methods ---------------------------------------------------------------
+
+  /** True when the form can be submitted */
+  get canSubmit(): boolean {
+    return this.signupForm.valid;
+  }
+
   /**
    * Manages form submit
    */
   onSubmit(): void {
-    if (this.signupForm.valid) {
+    if (this.canSubmit) {
       // Send fields to upper component
       const { username, email, password } = this.signupForm.getRawValue();
       this.formSubmitted.emit({ username: username!, email: email!, password: password! });
