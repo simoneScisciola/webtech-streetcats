@@ -1,92 +1,148 @@
-
 import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
+import { Auth } from "#core/services/auth/auth"
 import { Comment } from "#core/services/comment/comment"
+import { ObservableToast } from '#core/services/observable-toast/observable-toast';
 import { CommentPayload, CommentResponse, CommentViewModel } from '#shared/types/comment';
 import { Sort } from '#shared/types/query-params';
-
-/**
- * SightingCommentsComponent
- *
- * Self-contained comment section:
- *  - fetches all comments for the sighting on init
- *  - provides a form to post a new comment
- *  - prepends new comments to the list without a full reload
- */
+import { initial } from '#shared/utils/text';
 
 @Component({
   selector: 'app-sighting-comments',
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, FontAwesomeModule],
   templateUrl: './sighting-comments.html',
   styleUrl: './sighting-comments.scss',
 })
 export class SightingComments implements OnInit {
 
-  /** ID of the parent sighting; required so the component is self-sufficient */
+  /** ID of the parent sighting */
   @Input({ required: true }) sightingId!: number;
 
-  private readonly commentService = inject(Comment);
+  // -- Dependency Injection --------------------------------------------------
 
-  
-  comments        = signal<CommentResponse[]>([]);
+  protected readonly authService = inject(Auth);
+  private readonly commentService = inject(Comment);
+  protected readonly observableToastService = inject(ObservableToast);
+
+  // -- State and Signals -----------------------------------------------------
+
+  /** List of comments */
+  comments = signal<CommentResponse[]>([]);
+
+  /** Defines comments retrieve state */
   loadingComments = signal(true);
-  submitting      = signal(false);
+
+  /** Defines comment post submit state */
+  submitting = signal(false);
+
+  /** Current selected sort */
   readonly currentSort = signal<Sort>({ field: 'createdAt', direction: 'desc' });
+
+  // Comments icons
+  icons = {
+    post: faPaperPlane
+  };
+
+  // -- Form ------------------------------------------------------------------
+
+  /** Reactive form */
+  commentForm = new FormGroup({
+    content: new FormControl('', [
+      Validators.required
+    ]),
+  });
+
+  /** Validation error messages */
+  contentErrors = {
+    required: 'Comment cannot be empty.'
+  };
+
+  /** Getters */
+  get content() {
+    return this.commentForm.controls.content;
+  }
+
+  // -- Computed signals ------------------------------------------------------
 
   /** UI-ready comments derived from raw API data. */
   readonly commentsVM = computed<CommentViewModel[]>(
     () => this.comments().map(comment => this.commentService.toCommentViewModel(comment))
   );
 
-  // Two-way bound form fields
-  username = '';
-  content  = '';
+  // -- Utils -----------------------------------------------------------------
+
+  protected readonly initial = initial;
+
+  // -- Lifecycle -------------------------------------------------------------
 
   ngOnInit(): void {
-    // Fetch all comments for this sighting as soon as the component is ready
-    this.commentService.getAll(this.currentSort(), { sightingId: this.sightingId }).subscribe({
-      next: response => {
-        this.comments.set(response.data);
-        this.loadingComments.set(false);
-      },
-      error: () => this.loadingComments.set(false),
-    });
+    // Fetch all comments for this sighting
+    this.commentService.getAll(this.currentSort(), { sightingId: this.sightingId })
+      .subscribe({
+        next: response => {
+          this.comments.set(response.data);
+          this.loadingComments.set(false);
+        },
+        error: () => this.loadingComments.set(false),
+      });
   }
+
+  // -- Methods ---------------------------------------------------------------
 
   /** True when the form can be submitted */
   get canSubmit(): boolean {
-    return this.content.trim().length > 0
-        && this.username.trim().length > 0
-        && !this.submitting();
+    return this.commentForm.valid && !this.submitting();
   }
 
-  /** Posts the new comment and prepends the result to the list on success */
-  submit(): void {
-    if (!this.canSubmit) return;
+  /**
+   * Manages form submit
+   */
+  onSubmit(): void {
+    if (this.canSubmit) {
+      const username = this.authService.username();
+      if (!username) {
+        console.error('User not authenticated.');
+        return;
+      }
 
-    const payload: CommentPayload = {
-      content:    this.content.trim(),
-      username:   this.username.trim(),
-      sightingId: this.sightingId,
-    };
+      this.submitting.set(true);
 
-    this.submitting.set(true);
+      // Build payload
+      const { content } = this.commentForm.getRawValue();
+      const payload: CommentPayload = {
+        content: content!.trim(),
+        username: this.authService.username() ?? "",
+        sightingId: this.sightingId,
+      };
 
-    this.commentService.create(payload).subscribe({
-      next: created => {
-        // Prepend so the new comment appears at the top immediately
-        this.comments.update(prev => [created, ...prev]);
-        this.content = ''; // Reset only the message field; keep the username for convenience
-        this.submitting.set(false);
-      },
-      error: () => this.submitting.set(false),
-    });
-  }
+      // Post comment
+      this.observableToastService.trigger(
+        this.commentService.create(payload),
+        {
+          loading: "Posting comment...",
+          success: "Comment posted successfully.",
+          error: "Comment post failed. Please, try again.",
+          onSuccess: (res) => {
+            console.log("Response:", res);
 
-  /** First letter of a username – used for the avatar placeholder */
-  initial(name: string): string {
-    return name.charAt(0).toUpperCase();
+            // Prepend so the new comment appears at the top immediately
+            this.comments.update(prev => [res, ...prev]);
+            this.commentForm.reset(); // reset the whole form after a successful post
+            this.submitting.set(false);
+          },
+          onError: (err) => {
+            console.error('Comment post failed.', err);
+            this.submitting.set(false);
+          },
+          onRetry: () => this.commentService.create(payload)
+        }
+      )
+    } else {
+      this.commentForm.markAllAsTouched();
+    }
   }
 
 }

@@ -7,7 +7,13 @@
     [attr.aria-label]="'Menu utente di ' + authService.username()"
   >
     <span>Hello, <span class="fw-semibold">{{ authService.username() }}</span></span>
-    <img [src]="authService.avatarUrl()" alt="User Icon" class="rounded-circle" height="32"/>
+    <img 
+      [src]="authService.avatarUrl()" 
+      [alt]="(authService.username() ?? 'User') + ' Icon'" 
+      class="rounded-circle"
+      width="32"
+      height="32"
+    />
   </button>
 
   <!-- Dropdown menu -->

@@ -1,80 +1,78 @@
-<!-- sighting-comments.component.html -->
-
 <section>
 
-  <h5 class="fw-bold mb-4">
-    <i class="fa-solid fa-comments me-2 text-primary"></i>Comments
-  </h5>
+  <h4 class="fw-bold my-4">
+    Comments
+  </h4>
 
-  <!-- ── New comment form ──────────────────────────────────────────────── -->
-  <div class="card border-0 shadow-sm mb-4">
+  <!-- New comment form -->
+  <div class="card border-0 shadow-sm my-4">
     <div class="card-body">
 
-      <h6 class="card-title text-body-secondary mb-3">Leave a comment</h6>
+      <h5 class="card-title text-body-secondary mb-3">Leave a comment</h5>
 
-      <div class="row g-3">
+      <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+        <div class="d-flex gap-3 align-items-start">
 
-        <!-- Username -->
-        <div class="col-12 col-sm-4">
-          <label for="commentUsername" class="form-label">Username</label>
-          <div class="input-group">
-            <span class="input-group-text">
-              <i class="fa-solid fa-user"></i>
-            </span>
-            <input
-              id="commentUsername"
-              type="text"
+          <img 
+            [src]="authService.avatarUrl()" 
+            [alt]="(authService.username() ?? 'User') + ' Icon'" 
+            class="rounded-circle"
+            width="34"
+            height="34"
+          />
+
+          <!-- Right column: username label + textarea + submit -->
+          <div class="flex-grow-1">
+
+            <!-- Comment text -->
+            <textarea
+              id="commentContent"
               class="form-control"
-              placeholder="Your username"
-              [(ngModel)]="username"
-              maxlength="50"
-            />
+              placeholder="Share your thoughts..."
+              rows="2"
+              formControlName="content"
+            ></textarea>
+
+            <!-- Inline validation message -->
+            @if (content.touched && content.errors) {
+              <div class="text-danger small mt-1">
+                @if (content.errors['required'])  { {{ contentErrors.required }}  }
+              </div>
+            }
+
+            <!-- Submit -->
+            <div class="d-flex justify-content-end mt-2">
+              <button type="submit" class="btn btn-primary d-flex align-items-center" [disabled]="!canSubmit">
+                @if (submitting()) {
+                  <output class="spinner-border spinner-border-sm me-2" aria-label="Posting..."></output>
+                  Posting...
+                } @else {
+                  <fa-icon
+                    [icon]="icons.post"
+                    class="me-2">
+                  </fa-icon>Post
+                }
+              </button>
+            </div>
+
           </div>
         </div>
+      </form>
 
-        <!-- Comment text -->
-        <div class="col-12 col-sm-8">
-          <label for="commentContent" class="form-label">Comment</label>
-          <textarea
-            id="commentContent"
-            class="form-control"
-            placeholder="Share your thoughts…"
-            rows="2"
-            [(ngModel)]="content"
-            maxlength="1000"
-          ></textarea>
-        </div>
-
-        <!-- Submit -->
-        <div class="col-12 d-flex justify-content-end">
-          <button class="btn btn-primary" (click)="submit()" [disabled]="!canSubmit">
-            @if (submitting()) {
-              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-              Posting…
-            } @else {
-              <i class="fa-solid fa-paper-plane me-2"></i>Post
-            }
-          </button>
-        </div>
-
-      </div>
     </div>
   </div>
 
   <!-- ── Comment list ───────────────────────────────────────────────────── -->
   @if (loadingComments()) {
-    <div class="text-center py-3">
-      <div class="spinner-border spinner-border-sm text-primary" role="status">
-        <span class="visually-hidden">Loading comments…</span>
-      </div>
-    </div>
+    <output class="d-flex justify-content-center py-3" aria-label="Loading comments...">
+      <span class="spinner-border spinner-border-sm text-primary"></span>
+    </output>
   }
 
   @if (!loadingComments()) {
 
     @if (comments().length === 0) {
       <p class="text-center text-body-secondary py-3">
-        <i class="fa-regular fa-comment-dots d-block fa-2x mb-2"></i>
         No comments yet. Be the first!
       </p>
     }
