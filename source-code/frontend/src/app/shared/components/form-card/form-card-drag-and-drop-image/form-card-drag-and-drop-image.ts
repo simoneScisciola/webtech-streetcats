@@ -16,7 +16,7 @@ import { ImageUpload } from './image-upload/image-upload';
 })
 export class FormCardDragAndDropImage {
 
-  private readonly imageUpload = inject(ImageUpload);
+  private readonly imageUploadService = inject(ImageUpload);
 
   @Input({ required: true }) control!: FormControl; // Associated form control
   @Input({ required: true }) id: string = ''; // Input id
@@ -97,7 +97,7 @@ export class FormCardDragAndDropImage {
    */
   private async processEvent(event: Event | DragEvent): Promise<void> {
 
-    const result = await this.imageUpload.processEvent(event);
+    const result = await this.imageUploadService.processEvent(event);
 
     // Error
     if (!result.success) {

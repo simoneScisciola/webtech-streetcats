@@ -14,8 +14,8 @@ import { Auth } from '#core/services/auth/auth';
 })
 export class ProfileDropdown {
 
-  readonly auth = inject(Auth);
   private readonly router = inject(Router);
+  readonly authService = inject(Auth);
 
   // Font Awesome icons
   icons = {
@@ -23,7 +23,7 @@ export class ProfileDropdown {
   };
 
   onLogout() {
-    this.auth.logout();
+    this.authService.logout();
     this.router.navigate(["/home"]);
   }
 

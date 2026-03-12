@@ -12,7 +12,7 @@ export class User {
 
   // -- Dependency Injection --------------------------------------------------
 
-  private readonly restBackend = inject(RestBackend);
+  private readonly restBackendService = inject(RestBackend);
 
   // -- Utils -----------------------------------------------------------------
 
@@ -53,7 +53,7 @@ export class User {
    * GET /users/:username
    */
   getOne(username: string): Observable<UserResponse> {
-    return this.restBackend.request(
+    return this.restBackendService.request(
       `/users/${username}`,
       'GET'
     ).pipe(
@@ -66,7 +66,7 @@ export class User {
    * PATCH /users/:username
    */
   update(username: string, payload: Partial<UserPayload>): Observable<UserResponse> {
-    return this.restBackend.request(
+    return this.restBackendService.request(
       `/users/${username}`,
       'PATCH',
       payload

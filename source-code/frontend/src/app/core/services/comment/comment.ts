@@ -14,7 +14,7 @@ export class Comment {
 
   // -- Dependency Injection --------------------------------------------------
 
-  private readonly restBackend = inject(RestBackend);
+  private readonly restBackendService = inject(RestBackend);
 
   // -- Utils -----------------------------------------------------------------
   
@@ -55,7 +55,7 @@ export class Comment {
    * POST /comments
    */
   create(payload: CommentPayload): Observable<CommentResponse> {
-    return this.restBackend.request(
+    return this.restBackendService.request(
       '/comments',
       'POST',
       payload
@@ -69,7 +69,7 @@ export class Comment {
    * GET /comments?sightingId=...
    */
   getAll(sort: Sort, params?: { sightingId?: number }): Observable<PaginatedResponse<CommentResponse>> {
-    return this.restBackend.request<PaginatedResponse<CommentResponse>>(
+    return this.restBackendService.request<PaginatedResponse<CommentResponse>>(
       `/comments?sort=${sort.field},${sort.direction}`,
       'GET',
       null,
@@ -87,7 +87,7 @@ export class Comment {
    * PATCH /comments/:id
    */
   update(id: number, payload: Partial<CommentPayload>): Observable<CommentResponse> {
-    return this.restBackend.request(
+    return this.restBackendService.request(
       `/comments/${id}`,
       'PATCH',
       payload
@@ -101,7 +101,7 @@ export class Comment {
    * DELETE /comments/:id
    */
   delete(id: number): Observable<void> {
-    return this.restBackend.request(
+    return this.restBackendService.request(
       `/comments/${id}`,
       'DELETE'
     );

@@ -14,6 +14,6 @@ import { AuthArea } from './auth-area/auth-area';
 })
 export class Header {
 
-  readonly auth = inject(Auth);
+  readonly authService = inject(Auth);
 
 }

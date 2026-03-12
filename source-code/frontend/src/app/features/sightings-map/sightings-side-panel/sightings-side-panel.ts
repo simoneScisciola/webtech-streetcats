@@ -38,11 +38,11 @@ export class SightingsSidePanel {
   /** Tracks if add sighting form should be shown */
   isAddingNewSighting = signal(false);
 
+  private readonly router = inject(Router);
   protected readonly sightingService = inject(Sighting);
   protected readonly sightingsMapState = inject(SightingsMapState);
-  protected readonly auth = inject(Auth);
-  private readonly observableToast = inject(ObservableToast);
-  private readonly router = inject(Router);
+  protected readonly authService = inject(Auth);
+  private readonly observableToastService = inject(ObservableToast);
 
   // Side Panel icons
   icons = {
@@ -68,7 +68,7 @@ export class SightingsSidePanel {
   }
 
   onAddSightingClick(): void {
-    if (!this.auth.isAuthenticated()) {
+    if (!this.authService.isAuthenticated()) {
       toast.error('You must be logged in to add a sighting.');
       return;
     }
@@ -98,7 +98,7 @@ export class SightingsSidePanel {
    * @param payload FormData submitted by the form.
    */
   onAddSightingSubmit(payload: FormData) {
-    this.observableToast.trigger(
+    this.observableToastService.trigger(
       this.sightingService.create(payload),
       {
         loading: "Adding sighting...",

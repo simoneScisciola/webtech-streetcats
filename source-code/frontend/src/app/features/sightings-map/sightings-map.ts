@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 
-import { Sighting } from '#core/services/sighting/sighting';
 import { LeafletMap } from './leaflet-map/leaflet-map';
 import { SightingsSidePanel } from './sightings-side-panel/sightings-side-panel';
 import { ToggleButton } from './toggle-button/toggle-button';
@@ -21,7 +20,6 @@ export class SightingsMap implements OnInit, OnDestroy {
   /** Side panel dimension. */
   sidePanelWidth = "400px";
 
-  private readonly sightingService = inject(Sighting);
   private readonly sightingsMapState = inject(SightingsMapState);
 
   // -- Lifecycle -------------------------------------------------------------

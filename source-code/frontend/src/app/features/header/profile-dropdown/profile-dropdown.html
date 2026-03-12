@@ -4,10 +4,10 @@
     class="btn d-flex align-items-center column-gap-3 text-white bg-transparent border-0 p-0 rounded no-caret"
     ngbDropdownToggle
     type="button"
-    [attr.aria-label]="'Menu utente di ' + auth.username()"
+    [attr.aria-label]="'Menu utente di ' + authService.username()"
   >
-    <span>Hello, <span class="fw-semibold">{{ auth.username() }}</span></span>
-    <img [src]="auth.avatarUrl()" alt="User Icon" class="rounded-circle" height="32"/>
+    <span>Hello, <span class="fw-semibold">{{ authService.username() }}</span></span>
+    <img [src]="authService.avatarUrl()" alt="User Icon" class="rounded-circle" height="32"/>
   </button>
 
   <!-- Dropdown menu -->

@@ -75,7 +75,7 @@
     <app-side-panel-footer>
       <button
         class="btn btn-primary w-100 fw-medium"
-        [class.opacity-50]="!auth.isAuthenticated()"
+        [class.opacity-50]="!authService.isAuthenticated()"
         (click)="onAddSightingClick()">
         <fa-icon [icon]="icons.addSighting" class="me-2"></fa-icon>Add Sighting
       </button>

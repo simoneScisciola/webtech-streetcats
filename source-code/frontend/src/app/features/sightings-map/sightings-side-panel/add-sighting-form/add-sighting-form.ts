@@ -26,7 +26,7 @@ export class AddSightingForm {
   /** Emitted when the user clicks on cancel button */
   @Output() cancelButtonClick = new EventEmitter<void>();
 
-  private readonly auth = inject(Auth);
+  private readonly authService = inject(Auth);
   protected readonly sightingsMapState = inject(SightingsMapState);
 
   constructor() {
@@ -132,7 +132,7 @@ export class AddSightingForm {
    */
   onSubmit(): void {
     if (this.sightingForm.valid) {
-      const username = this.auth.username();
+      const username = this.authService.username();
       if (!username) {
         console.error('User not authenticated.');
         return;

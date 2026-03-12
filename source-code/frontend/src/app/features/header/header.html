@@ -16,7 +16,7 @@
       <app-navbar></app-navbar>
 
       <!-- Auth area -->
-      @if(auth.isAuthenticated()) {
+      @if(authService.isAuthenticated()) {
         <app-profile-dropdown />
       } @else {
         <app-auth-area />

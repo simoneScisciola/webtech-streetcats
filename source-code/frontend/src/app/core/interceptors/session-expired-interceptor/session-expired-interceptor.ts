@@ -7,15 +7,15 @@ import { toast } from 'ngx-sonner';
 import { Auth } from '#core/services/auth/auth';
 
 export const sessionExpiredInterceptor: HttpInterceptorFn = (req, next) => {
-  const auth = inject(Auth);
   const router = inject(Router);
+  const authService = inject(Auth);
 
   return next(req).pipe(
     catchError((error) => {
 
       // Handle expired or invalid session
       if (error instanceof HttpErrorResponse && error.status === 401) {
-        auth.logout();
+        authService.logout();
         toast.error('Session expired. Please log in again.');
         router.navigate(['/log-in']);
       }

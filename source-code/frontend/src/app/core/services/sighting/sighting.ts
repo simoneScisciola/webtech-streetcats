@@ -14,7 +14,7 @@ export class Sighting {
 
   // -- Dependency Injection --------------------------------------------------
 
-  private readonly restBackend = inject(RestBackend);
+  private readonly restBackendService = inject(RestBackend);
 
   // -- Utils -----------------------------------------------------------------
 
@@ -57,7 +57,7 @@ export class Sighting {
    * POST /sightings
    */
   create(payload: FormData): Observable<SightingResponse> {
-    return this.restBackend.uploadForm(
+    return this.restBackendService.uploadForm(
       `/sightings`,
       'POST',
       payload
@@ -71,7 +71,7 @@ export class Sighting {
    * GET /sightings/:id
    */
   getOne(id: number): Observable<SightingResponse> {
-    return this.restBackend.request(
+    return this.restBackendService.request(
       `/sightings/${id}`,
       'GET'
     ).pipe(
@@ -84,7 +84,7 @@ export class Sighting {
    * @param photoUrl relative URL (e.g. /uploads/sightings/photo.jpg)
    */
   getRequestPhotoUrl(photoUrl: string): string {
-    return `${this.restBackend.baseUrl}${photoUrl}`;
+    return `${this.restBackendService.baseUrl}${photoUrl}`;
   }
 
   /**
@@ -92,7 +92,7 @@ export class Sighting {
    * GET /sightings?page=:page&size=:size
    */
   getAll(sort: Sort, page = 0, size = 20): Observable<PaginatedResponse<SightingResponse>> {
-    return this.restBackend.request<PaginatedResponse<SightingResponse>>(
+    return this.restBackendService.request<PaginatedResponse<SightingResponse>>(
       `/sightings?page=${page}&size=${size}&sort=${sort.field},${sort.direction}`,
       'GET'
     ).pipe(
@@ -108,7 +108,7 @@ export class Sighting {
    * PATCH /sightings/:id
    */
   update(id: number, payload: FormData): Observable<SightingResponse> {
-    return this.restBackend.uploadForm(
+    return this.restBackendService.uploadForm(
       `/sightings/${id}`,
       'PATCH',
       payload
@@ -122,7 +122,7 @@ export class Sighting {
    * DELETE /sightings/:id
    */
   delete(id: number): Observable<void> {
-    return this.restBackend.request(
+    return this.restBackendService.request(
       `/sightings/${id}`,
       'DELETE'
     );

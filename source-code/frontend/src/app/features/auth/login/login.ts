@@ -15,17 +15,17 @@ import { LoginForm } from './login-form/login-form';
 })
 export class Login {
 
-  private readonly auth = inject(Auth);
   private readonly router = inject(Router);
-  protected readonly observableToast = inject(ObservableToast);
+  private readonly authService = inject(Auth);
+  protected readonly observableToastService = inject(ObservableToast);
 
   /**
    * Sends login request
    * @param payload submitted credetials
    */
   onLoginSubmit(payload: LoginPayload) {
-    this.observableToast.trigger(
-      this.auth.login(payload),
+    this.observableToastService.trigger(
+      this.authService.login(payload),
       {
         loading: "Logging in...",
         success: "Logged successfully.",
@@ -37,7 +37,7 @@ export class Login {
           this.router.navigate(['/home']);
         },
         onError: (err) => console.error('Login failed.', err),
-        onRetry: () => this.auth.login(payload)
+        onRetry: () => this.authService.login(payload)
       }
     )
   }

@@ -13,7 +13,7 @@ export class Auth {
 
   // -- Dependency Injection --------------------------------------------------
   
-  private readonly restBackend = inject(RestBackend);
+  private readonly restBackendService = inject(RestBackend);
   private readonly userService = inject(User);
 
   // -- State and Signals -----------------------------------------------------
@@ -69,7 +69,7 @@ export class Auth {
 
   // Login function
   login(payload: LoginPayload): Observable<AuthResponse> {
-    return this.restBackend.request<AuthResponse>("/auth", "POST", payload)
+    return this.restBackendService.request<AuthResponse>("/auth", "POST", payload)
       .pipe(
         // On every Observer emit:
         map(raw => this.parseRawResponse(raw)),
@@ -81,7 +81,7 @@ export class Auth {
 
   // Signup function
   signup(payload: SignupPayload): Observable<AuthResponse> {
-    return this.restBackend.request<AuthResponse>("/signup", "POST", payload)
+    return this.restBackendService.request<AuthResponse>("/signup", "POST", payload)
       .pipe(
         // On every Observer emit:
         map(raw => this.parseRawResponse(raw)),

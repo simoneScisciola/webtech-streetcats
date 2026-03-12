@@ -15,17 +15,17 @@ import { SignupForm } from './signup-form/signup-form';
 })
 export class Signup {
 
-  private readonly auth = inject(Auth);
   private readonly router = inject(Router);
-  protected readonly observableToast = inject(ObservableToast);
+  private readonly authService = inject(Auth);
+  protected readonly observableToastService = inject(ObservableToast);
 
   /**
    * Sends sign up request
    * @param payload submitted data
    */
   onSignupSubmit(payload: SignupPayload) {
-    this.observableToast.trigger(
-      this.auth.signup(payload),
+    this.observableToastService.trigger(
+      this.authService.signup(payload),
       {
         loading: "Signing up...",
         success: "Signed up successfully.",
@@ -37,7 +37,7 @@ export class Signup {
           this.router.navigate(['/home']);
         },
         onError: (err) => console.error('Sign up failed.', err),
-        onRetry: () => this.auth.signup(payload)
+        onRetry: () => this.authService.signup(payload)
       }
     )
   }
