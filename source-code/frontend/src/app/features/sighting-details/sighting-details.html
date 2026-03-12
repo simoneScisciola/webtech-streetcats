@@ -163,4 +163,15 @@
     </div>
 
   </div>
+
+  <!-- Edit Floating Action Button -->
+  @if (isOwner) { <!-- Visible only to the sighting owner -->
+    <a
+      class="sighting-edit-fab btn btn-primary rounded-circle shadow"
+      [routerLink]="['/sightings', sighting.id, 'edit']"
+      aria-label="Edit sighting">
+      <fa-icon [icon]="icons.edit" class="fa-lg"></fa-icon>
+    </a>
+  }
+
 }

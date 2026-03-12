@@ -38,9 +38,14 @@ export const routes: Routes = [
     component: Home
   },
   {
-    path: 'sighting/:id/details',
+    path: 'sightings/:id',
     title: "Sighting Details",
     component: SightingDetails
+  },
+  {
+    path: 'sightings/:id/edit',
+    title: "Sighting Edit",
+    component: Home
   },
   {
     path: '**',

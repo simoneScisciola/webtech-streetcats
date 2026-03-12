@@ -89,7 +89,7 @@ export class SightingsSidePanel {
   }
 
   onSightingDetailsClick(sightingId: number): void {
-    this.router.navigate(['/sighting', sightingId, 'details']);
+    this.router.navigate(['/sightings', sightingId]);
   }
 
   /**

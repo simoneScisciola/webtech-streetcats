@@ -428,7 +428,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
    * @param sightingId The ID of the sighting to navigate to.
    */
   onMarkerPopupDetailsClick(sightingId: number): void {
-    this.router.navigate(['/sighting', sightingId, 'details']);
+    this.router.navigate(['/sightings', sightingId]);
   }
 
 }
