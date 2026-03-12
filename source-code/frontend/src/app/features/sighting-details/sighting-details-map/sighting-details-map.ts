@@ -1,15 +1,8 @@
-import { Component, Input, AfterViewInit, OnChanges, OnDestroy, ViewChild, ElementRef, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, AfterViewInit, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import * as L from 'leaflet';
 
 import { Leaflet } from '#core/services/leaflet/leaflet';
 
-/**
- * SightingMapComponent
- *
- * Shows a single non-interactive marker on a Leaflet map.
- * All boilerplate (map init, tile layer, icon definitions) is
- * delegated to LeafletService, keeping this component minimal.
- */
 @Component({
   selector: 'app-sighting-details-map',
   imports: [],
@@ -22,17 +15,28 @@ export class SightingDetailsMap implements AfterViewInit, OnChanges, OnDestroy {
   @Input({ required: true }) longitude!: number;
   @Input() address: string | null = null;
 
-  @ViewChild('mapEl') mapElRef!: ElementRef<HTMLDivElement>;
+  // -- State and Signals -----------------------------------------------------
 
-  private readonly leaflet = inject(Leaflet);
+  /** Leaflet map instance */
+  private map?: L.Map;
 
-  private map: L.Map | null = null;
+  // -- Dependency Injection --------------------------------------------------
 
+  private readonly leafletService = inject(Leaflet);
+
+  // -- Lifecycle -------------------------------------------------------------
+
+  /**
+   * Initialize Leaflet map.
+   * Executed right after DOM building completion.
+   */
   ngAfterViewInit(): void {
-    // Initialise the map once the view DOM is ready
     this.initMap();
   }
 
+  /**
+   * Executed every time an `@Input` value changes.
+   */
   ngOnChanges(changes: SimpleChanges): void {
     // Re-render only if coordinates actually changed and the map already exists
     if (this.map && (changes['latitude'] || changes['longitude'])) {
@@ -40,38 +44,45 @@ export class SightingDetailsMap implements AfterViewInit, OnChanges, OnDestroy {
     }
   }
 
+  /**
+   * Executed when the component is destroyed.
+   */
   ngOnDestroy(): void {
-    // Remove the Leaflet instance to prevent memory leaks
     this.map?.remove();
-    this.map = null;
   }
 
-  // ── Private ───────────────────────────────────────────────────────────────
+  // -- Map management --------------------------------------------------------
 
+  /**
+   * Initialises Leaflet map.
+   */
   private initMap(): void {
     const lat = this.latitude;
     const lng = this.longitude;
 
-    // Guard: skip if coordinates are not valid numbers
-    if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+    // Guard: Skip if coordinates are not valid numbers
+    if (Number.isNaN(lat) || Number.isNaN(lng))
+      return;
 
     // Destroy the previous instance before creating a new one
     this.map?.remove();
 
-    // LeafletService creates the L.Map and attaches the OSM tile layer
-    this.map = this.leaflet.initMap(this.mapElRef.nativeElement, {
-      center: [lat, lng],
-      zoom: 14,
-      scrollWheelZoom: false, // Prevents scroll hijacking inside a scrollable page
+    // Creates the L.Map and attaches the OSM tile layer
+    this.map = this.leafletService.initMap('details-map', {
+      scrollWheelZoom: false // Prevents scroll hijacking inside a scrollable page
     });
+    this.map.setView([lat, lng], 14);
 
-    // Popup: address in bold (when available) + coordinates in small text
+    // Popup
     const popupHtml = this.address
       ? `<strong>${this.address}</strong><br><small>${this.latitude}, ${this.longitude}</small>`
       : `<small>${this.latitude}, ${this.longitude}</small>`;
 
-    // Reuse the shared defaultIcon from LeafletService (same asset as LeafletMap)
-    L.marker([lat, lng], { icon: this.leaflet.defaultIcon })
+    // Add marker
+    L.marker(
+      [lat, lng],
+      { icon: this.leafletService.defaultIcon }
+    )
       .addTo(this.map)
       .bindPopup(popupHtml)
       .openPopup();
