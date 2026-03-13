@@ -1,4 +1,4 @@
-import { Component, inject, signal, Input } from '@angular/core';
+import { Component, inject, signal, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
@@ -14,7 +14,7 @@ import { ImageUpload } from './image-upload/image-upload';
   templateUrl: './form-card-drag-and-drop-image.html',
   styleUrl: './form-card-drag-and-drop-image.scss',
 })
-export class FormCardDragAndDropImage {
+export class FormCardDragAndDropImage implements OnInit {
 
   private readonly imageUploadService = inject(ImageUpload);
 
@@ -23,6 +23,9 @@ export class FormCardDragAndDropImage {
   @Input({ required: true }) label!: string; // Input label
   @Input() icon: IconDefinition | null = null; // Input field icon
   @Input() errors: Record<string, string> = {}; // Map: {validator key, error message}
+
+  /** URL of an existing image to display as the initial preview (e.g. when editing) */
+  @Input() initialPreviewUrl: string | null = null;
 
   // Signals
   protected readonly preview = signal<string | null>(null);
@@ -36,6 +39,13 @@ export class FormCardDragAndDropImage {
     upload: faUpload,
     file: faImage
   };
+
+  ngOnInit(): void {
+    // Pre-populate the preview with the existing image URL, if provided
+    if (this.initialPreviewUrl) {
+      this.preview.set(this.initialPreviewUrl);
+    }
+  }
 
   /**
    * Processes both "click" and "drag and drop" events through processEvent.
@@ -85,9 +95,10 @@ export class FormCardDragAndDropImage {
     this.fileName.set(null);
     this.error.set(null);
 
-    // Reset from
+    // Reset form
     this.control.setValue(null);
     this.control.markAsTouched();
+    this.control.markAsDirty(); // Signals that the user explicitly interacted with the field
   }
 
   /**
@@ -110,6 +121,7 @@ export class FormCardDragAndDropImage {
       // Reset form
       this.control.setValue(null);
       this.control.markAsTouched();
+      this.control.markAsDirty(); // Signals that the user explicitly interacted with the field
       return;
     }
 
@@ -123,5 +135,6 @@ export class FormCardDragAndDropImage {
     // Update form
     this.control.setValue(result.data.file);
     this.control.markAsTouched();
+    this.control.markAsDirty(); // Signals that the user explicitly interacted with the field
   }
 }
