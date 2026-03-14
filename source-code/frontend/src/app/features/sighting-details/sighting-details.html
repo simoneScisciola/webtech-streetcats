@@ -25,7 +25,21 @@
     <!-- Header -->
     <div class="d-flex flex-column align-items-center align-items-sm-start gap-3">
 
-      <h1 class="fw-bold text-break">{{ sighting.title }}</h1>
+      <!-- Title: editable field in edit mode, plain heading in view mode -->
+      @if (isEditMode()) {
+        <app-form-card-field
+          id="title"
+          label="Title"
+          placeholder="Sighting title"
+          [control]="editTitle"
+          [icon]="icons.title"
+          size="lg"
+          [errors]="titleErrors"
+          class="w-100 fs-4">
+        </app-form-card-field>
+      } @else {
+        <h1 class="fw-bold text-break">{{ sighting.title }}</h1>
+      }
 
       <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 w-100">
 
@@ -56,11 +70,23 @@
     <!-- Photo + Map -->
     <div class="row g-3 my-4 mt-1">
 
-      <!-- Photo -->
-      @if (sighting.photoUrl) {
+      <!-- Photo: drag-and-drop uploader in edit mode, static image in view mode -->
+      @if (isEditMode()) {
+        <div class="col-lg-8">
+          <app-form-card-drag-and-drop-image
+            id="photo"
+            label="Photo"
+            [control]="editPhoto"
+            [icon]="icons.photo"
+            [initialPreviewUrl]="sighting.photoUrl ? restBackendService.resolveUrl(sighting.photoUrl) : null"
+            [errors]="photoErrors"
+            class="fs-4">
+          </app-form-card-drag-and-drop-image>
+        </div>
+      } @else if (sighting.photoUrl) {
         <div class="col-lg-8">
           <div class="card border-0 shadow-sm">
-            <div class="sighting-photo-wrapper rounded">
+            <div class="sighting-photo-wrapper bg-body-tertiary overflow-hidden rounded">
               <img
                 [src]="restBackendService.resolveUrl(sighting.photoUrl)"
                 [alt]="sighting.title"
@@ -108,8 +134,19 @@
 
     </div>
 
-    <!-- Description -->
-    @if (sighting.description) {
+    <!-- Description: markdown editor in edit mode, collapsible card in view mode -->
+    @if (isEditMode()) {
+      <div class="my-4">
+        <app-form-card-text-markdown
+          id="description"
+          label="Description"
+          placeholder="(Optional) Describe your sighting..."
+          [control]="editDescription"
+          [icon]="icons.description"
+          class="fs-4">
+        </app-form-card-text-markdown>
+      </div>
+    } @else if (sighting.description) {
       <div class="card border-0 shadow-sm my-4">
         <div class="card-body p-2 p-sm-3">
 
@@ -121,7 +158,7 @@
           <!-- Text -->
           <div class="position-relative">
             <div
-              class="description-body"
+              class="description-body overflow-hidden"
               [class.collapsed]="!isDescriptionExpanded()"
               [class.expanded]="isDescriptionExpanded()"
             >
@@ -157,6 +194,24 @@
       </div>
     }
 
+    <!-- Save edit / Cancel edit buttons -->
+    @if (isEditMode()) {
+      <div class="d-flex gap-2 justify-content-end my-4">
+        <button
+          type="button"
+          class="btn btn-outline-secondary fw-medium"
+          (click)="onCancelEdit()">
+          <fa-icon [icon]="icons.cancel" class="me-2"></fa-icon>Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary fw-medium"
+          (click)="onSaveEdit()">
+          <fa-icon [icon]="icons.save" class="me-2"></fa-icon>Save
+        </button>
+      </div>
+    }
+
     <!-- Comments -->
     <div class="mt-5">
       <app-sighting-comments [sightingId]="sighting.id" />
@@ -165,13 +220,14 @@
   </div>
 
   <!-- Edit Floating Action Button -->
-  @if (isOwner) { <!-- Visible only to the sighting owner -->
-    <a
+  @if (isOwner && !isEditMode()) {
+    <button
+      type="button"
       class="sighting-edit-fab btn btn-primary rounded-circle shadow"
-      [routerLink]="['/sightings', sighting.id, 'edit']"
+      (click)="onFabClick()"
       aria-label="Edit sighting">
       <fa-icon [icon]="icons.edit" class="fa-lg"></fa-icon>
-    </a>
+    </button>
   }
 
 }

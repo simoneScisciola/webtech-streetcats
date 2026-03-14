@@ -18,6 +18,7 @@ export class FormCardField {
   @Input() icon: IconDefinition | null = null; // Input field icon
   @Input() type = 'text'; // Input type
   @Input() placeholder = ''; // Input placeholder
+  @Input() size: 'sm' | 'lg' | null = null; // Input size
   @Input() errors: Record<string, string> = {}; // Map: {validator key, error message}
 
 }

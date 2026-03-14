@@ -152,9 +152,8 @@ export class AddSightingForm {
         return;
       }
 
-      // Send fields to upper component
+      // Build payload
       const { photo, title, description, latitude, longitude, address } = this.sightingForm.getRawValue();
-
       const payload = new FormData();
       payload.append('photo', photo!);
       payload.append('title', title!);
@@ -163,7 +162,8 @@ export class AddSightingForm {
       payload.append('longitude', String(longitude!));
       if (address) payload.append('address', address);
       payload.append('username', this.authService.username() ?? "");
-
+      
+      // Send fields to upper component
       this.formSubmitted.emit(payload);
     } else {
       this.sightingForm.markAllAsTouched();

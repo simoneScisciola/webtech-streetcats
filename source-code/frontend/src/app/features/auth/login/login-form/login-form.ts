@@ -68,8 +68,10 @@ export class LoginForm {
    */
   onSubmit(): void {
     if (this.canSubmit) {
-      // Send fields to upper component
+      // Build payload
       const { username, password } = this.loginForm.getRawValue();
+
+      // Send fields to upper component
       this.formSubmitted.emit({ username: username!, password: password! });
     } else {
       this.loginForm.markAllAsTouched();

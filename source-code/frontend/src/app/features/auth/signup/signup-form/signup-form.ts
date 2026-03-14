@@ -107,8 +107,10 @@ export class SignupForm {
    */
   onSubmit(): void {
     if (this.canSubmit) {
-      // Send fields to upper component
+      // Build payload
       const { username, email, password } = this.signupForm.getRawValue();
+
+      // Send fields to upper component
       this.formSubmitted.emit({ username: username!, email: email!, password: password! });
     } else {
       this.signupForm.markAllAsTouched();

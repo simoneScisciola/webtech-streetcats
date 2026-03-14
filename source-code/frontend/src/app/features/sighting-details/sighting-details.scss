@@ -1,9 +1,6 @@
 // -- Photo --------------------------------------------
 
 .sighting-photo-wrapper {
-  overflow: hidden;
-  background-color: var(--bs-tertiary-bg);
-
   // xs (<576px)
   height: 200px;
 
@@ -36,7 +33,6 @@
 // -- Description --------------------------------------
 
 .description-body {
-  overflow: hidden;
   transition: max-height 0.35s ease;
 
   &.collapsed {
