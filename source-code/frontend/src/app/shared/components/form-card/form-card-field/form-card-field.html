@@ -3,7 +3,12 @@
   <!-- Input label -->
   <label [for]="id" class="form-label fw-semibold">{{ label }}</label>
 
-  <div class="input-group">
+  <div
+    class="input-group"
+    [class.input-group-sm]="size === 'sm'"
+    [class.input-group-lg]="size === 'lg'"
+    [class.has-validation]="control.invalid && control.touched"
+  >
 
     <!-- Input field icon -->
     @if (icon) {
@@ -19,22 +24,20 @@
       [formControl]="control"
       [placeholder]="placeholder"
       class="form-control"
-      [class.form-control-lg]="size === 'lg'"
-      [class.form-control-sm]="size === 'sm'"
       [class.is-invalid]="control.invalid && control.touched"
-      [class.is-valid]="control.valid && control.touched" />
+      [class.is-valid]="control.valid && control.touched"
+    />
 
-  </div>
-
-  <!-- Error message -->
-  @if (control.invalid && control.touched) {
-    @for (error of errors | keyvalue; track error.key) {
-      @if (control.hasError(error.key)) {
-        <div class="invalid-feedback d-block">
-          {{ error.value }}
-        </div>
+    <!-- Error message -->
+    @if (control.invalid && control.touched) {
+      @for (error of errors | keyvalue; track error.key) {
+        @if (control.hasError(error.key)) {
+          <div class="invalid-feedback">
+            {{ error.value }}
+          </div>
+        }
       }
     }
-  }
 
+  </div>
 </div>

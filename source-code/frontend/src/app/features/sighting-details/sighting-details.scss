@@ -1,6 +1,7 @@
 // -- Photo --------------------------------------------
 
-.sighting-photo-wrapper {
+.sighting-photo-wrapper,
+.sighting-edit-photo ::ng-deep .upload-zone {
   // xs (<576px)
   height: 200px;
 

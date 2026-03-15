@@ -35,9 +35,9 @@
           [icon]="icons.title"
           size="lg"
           [errors]="titleErrors"
-          class="w-100 fs-4">
+          class="w-100 fs-5">
         </app-form-card-field>
-      } @else {
+      } @else if (sighting.title) {
         <h1 class="fw-bold text-break">{{ sighting.title }}</h1>
       }
 
@@ -71,8 +71,8 @@
     <div class="row g-3 my-4 mt-1">
 
       <!-- Photo: drag-and-drop uploader in edit mode, static image in view mode -->
-      @if (isEditMode()) {
-        <div class="col-lg-8">
+      <div class="col-lg-8">
+        @if (isEditMode()) {
           <app-form-card-drag-and-drop-image
             id="photo"
             label="Photo"
@@ -80,11 +80,9 @@
             [icon]="icons.photo"
             [initialPreviewUrl]="sighting.photoUrl ? restBackendService.resolveUrl(sighting.photoUrl) : null"
             [errors]="photoErrors"
-            class="fs-4">
+            class="sighting-edit-photo fs-5">
           </app-form-card-drag-and-drop-image>
-        </div>
-      } @else if (sighting.photoUrl) {
-        <div class="col-lg-8">
+        } @else if (sighting.photoUrl) {
           <div class="card border-0 shadow-sm">
             <div class="sighting-photo-wrapper bg-body-tertiary overflow-hidden rounded">
               <img
@@ -94,8 +92,8 @@
               />
             </div>
           </div>
-        </div>
-      }
+        }
+      </div>
 
       <!-- Map -->
       <div class="col-lg">
@@ -108,24 +106,64 @@
             </h4>
 
             <!-- Optional address -->
-            @if (sighting.address) {
+            @if (isEditMode()) {
+              <app-form-card-field
+                id="address"
+                label="Address"
+                placeholder="(Optional) e.g. Vesuvio, Campania, Italy"
+                [control]="editAddress"
+                [icon]="icons.address">
+              </app-form-card-field>
+            } @else if (sighting.address) {
               <p class="fw-semibold my-1">{{ sighting.address }}</p>
             }
 
             <!-- Coordinates -->
-            <p class="d-flex align-items-center font-monospace small text-body-secondary text-break mb-3">
-              <fa-icon
-                [icon]="icons.coordinates"
-                class="d-flex align-items-center me-1">
-              </fa-icon>{{ sighting.latitude }}, {{ sighting.longitude }}
-            </p>
+            @if (isEditMode()) {
+              <div class="row g-2">
+                <app-form-card-field
+                  id="edit-latitude"
+                  label="Latitude"
+                  type="number"
+                  placeholder="e.g. 41.89025436"
+                  [control]="editLatitude"
+                  [icon]="icons.latitude"
+                  size="sm"
+                  [errors]="latitudeErrors"
+                  class="col-sm">
+                </app-form-card-field>
 
-            <!-- Interactive map -->
+                <app-form-card-field
+                  id="edit-longitude"
+                  label="Longitude"
+                  type="number"
+                  placeholder="e.g. 12.49218654"
+                  [control]="editLongitude"
+                  [icon]="icons.longitude"
+                  size="sm"
+                  [errors]="longitudeErrors"
+                  class="col-sm">
+                </app-form-card-field>
+              </div>
+
+              <small class="text-muted d-block mb-3">Drag the map marker to set coordinates.</small>
+            } @else if (sighting.latitude && sighting.longitude) {
+              <p class="d-flex align-items-center font-monospace small text-body-secondary text-break mb-3">
+                <fa-icon
+                  [icon]="icons.coordinates"
+                  class="d-flex align-items-center me-1">
+                </fa-icon>{{ sighting.latitude }}, {{ sighting.longitude }}
+              </p>
+            }
+
+            <!-- Interactive map; marker is draggable in edit mode -->
             <app-sighting-details-map
               class="flex-grow-1"
               [latitude]="sighting.latitude"
               [longitude]="sighting.longitude"
               [address]="sighting.address"
+              [isEditable]="isEditMode()"
+              (coordinatesPicked)="onCoordinatesPicked($event)"
             />
 
           </div>
@@ -135,35 +173,34 @@
     </div>
 
     <!-- Description: markdown editor in edit mode, collapsible card in view mode -->
-    @if (isEditMode()) {
-      <div class="my-4">
-        <app-form-card-text-markdown
-          id="description"
-          label="Description"
-          placeholder="(Optional) Describe your sighting..."
-          [control]="editDescription"
-          [icon]="icons.description"
-          class="fs-4">
-        </app-form-card-text-markdown>
-      </div>
-    } @else if (sighting.description) {
-      <div class="card border-0 shadow-sm my-4">
-        <div class="card-body p-2 p-sm-3">
+    <div class="card border-0 shadow-sm my-4">
+      <div class="card-body p-2 p-sm-3">
 
-          <!-- Title -->
-          <h4 class="card-title text-primary">
-            Description
-          </h4>
+        <!-- Title -->
+        <h4 class="card-title text-primary">
+          Description
+        </h4>
 
-          <!-- Text -->
+        <!-- Text -->
+        @if (isEditMode()) {
+          <app-form-card-text-markdown
+            id="description"
+            label="Description"
+            placeholder="(Optional) Describe your sighting..."
+            [control]="editDescription"
+            [icon]="icons.description" >
+          </app-form-card-text-markdown>
+        } @else if (sighting.description) {
           <div class="position-relative">
             <div
               class="description-body overflow-hidden"
               [class.collapsed]="!isDescriptionExpanded()"
               [class.expanded]="isDescriptionExpanded()"
             >
+
               <!-- Renders the markdown -->
               <div class="card-text" markdown [data]="sighting.description"></div>
+
             </div>
 
             <!-- Gradient fade, visible only while the block is collapsed -->
@@ -175,8 +212,7 @@
           <!-- Toggle button -->
           <button
             class="btn btn-link btn-sm px-0 mt-2 text-primary"
-            (click)="isDescriptionExpanded.set(!isDescriptionExpanded())"
-          >
+            (click)="isDescriptionExpanded.set(!isDescriptionExpanded())" >
             @if (isDescriptionExpanded()) {
               <fa-icon
                 [icon]="icons.readLess"
@@ -189,10 +225,10 @@
               </fa-icon>Read more
             }
           </button>
+        }
 
-        </div>
       </div>
-    }
+    </div>
 
     <!-- Save edit / Cancel edit buttons -->
     @if (isEditMode()) {

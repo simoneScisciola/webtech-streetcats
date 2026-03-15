@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angula
 import { switchMap } from 'rxjs/operators';
 import { MarkdownModule } from 'ngx-markdown';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCircleExclamation, faCalendar, faChevronUp, faChevronDown, faLocationCrosshairs, faPen, faFloppyDisk, faXmark, faTag, faAlignLeft, faImage } from '@fortawesome/free-solid-svg-icons';
+import { faCircleExclamation, faCalendar, faChevronUp, faChevronDown, faLocationCrosshairs, faPen, faFloppyDisk, faXmark, faTag, faAlignLeft, faImage, faLocationDot, faArrowsUpDown, faArrowsLeftRight } from '@fortawesome/free-solid-svg-icons';
 
 import { Auth } from '#core/services/auth/auth';
 import { Sighting } from '#core/services/sighting/sighting';
@@ -13,6 +13,7 @@ import { SightingComments } from './sighting-comments/sighting-comments';
 import { SightingResponse, SightingViewModel } from '#shared/types/sighting';
 import { RestBackend } from '#core/services/rest-backend/rest-backend';
 import { initial } from '#shared/utils/text';
+import { GeoCoords } from '#shared/types/coordinates';
 import { FormCardField } from '#shared/components/form-card/form-card-field/form-card-field';
 import { FormCardTextMarkdown } from '#shared/components/form-card/form-card-text-markdown/form-card-text-markdown';
 import { FormCardDragAndDropImage } from '#shared/components/form-card/form-card-drag-and-drop-image/form-card-drag-and-drop-image';
@@ -52,6 +53,18 @@ export class SightingDetails implements OnInit {
   /** Controls whether the page is in edit mode */
   isEditMode = signal(false);
 
+  /**
+   * Snapshot of the original values taken when edit mode is activated.
+   * Used to detect real changes and avoid sending unchanged fields.
+   */
+  private originalValues = {
+    title: '',
+    description: '',
+    address: '',
+    latitude: 0,
+    longitude: 0
+  };
+
   // Details icons
   icons = {
     // View mode
@@ -68,6 +81,9 @@ export class SightingDetails implements OnInit {
     title: faTag,
     description: faAlignLeft,
     photo: faImage,
+    address: faLocationDot,
+    latitude: faArrowsUpDown,
+    longitude: faArrowsLeftRight,
   };
 
   // -- Computed signals ------------------------------------------------------
@@ -96,6 +112,18 @@ export class SightingDetails implements OnInit {
 
     /** Photo is left null when user wants to keep the existing one */
     photo: new FormControl<File | null>(null),
+
+    address: new FormControl(''),
+    latitude: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(-90),
+      Validators.max(90),
+    ]),
+    longitude: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(-180),
+      Validators.max(180),
+    ]),
   });
 
   /** Validation error messages */
@@ -104,6 +132,16 @@ export class SightingDetails implements OnInit {
   };
   photoErrors = {
     required: 'Photo required.'
+  };
+  latitudeErrors = {
+    required: 'Latitude required.',
+    min: 'Latitude must be greater than -90.',
+    max: 'Latitude must be less than 90.',
+  };
+  longitudeErrors = {
+    required: 'Longitude required.',
+    min: 'Longitude must be greater than -180.',
+    max: 'Longitude must be less than 180.',
   };
 
   /** Getters */
@@ -115,6 +153,15 @@ export class SightingDetails implements OnInit {
   }
   get editPhoto() {
     return this.editForm.controls.photo;
+  }
+  get editAddress() {
+    return this.editForm.controls.address;
+  }
+  get editLatitude() {
+    return this.editForm.controls.latitude;
+  }
+  get editLongitude() {
+    return this.editForm.controls.longitude;
   }
 
   // -- Lifecycle -------------------------------------------------------------
@@ -156,15 +203,21 @@ export class SightingDetails implements OnInit {
    * Activates edit mode, pre-populating the form with the current sighting values.
    */
   onFabClick(): void {
-    const sightingVM = this.sightingVM();
-    if (!sightingVM)
+    const sighting = this.sighting()!;
+    if (!sighting)
       return;
 
+    // Snapshot original values for change comparison on save
+    this.originalValues = {
+      title: sighting.title,
+      description: sighting.description ?? '',
+      address: sighting.address ?? '',
+      latitude: sighting.latitude,
+      longitude: sighting.longitude,
+    };
+
     // Fill editable fields with the existing data
-    this.editForm.patchValue({
-      title: sightingVM.title,
-      description: sightingVM.description ?? '',
-    });
+    this.editForm.patchValue(this.originalValues);
 
     // Photo starts null: the control is dirty only when the user removes or replaces it
     this.editPhoto.setValue(null);
@@ -189,8 +242,17 @@ export class SightingDetails implements OnInit {
   }
 
   /**
+   * Updates latitude and longitude form controls when the map marker is dragged.
+   * @param coords New coordinates emitted by the map component.
+   */
+  onCoordinatesPicked(coords: GeoCoords): void {
+    this.editLatitude.setValue(coords.latitude);
+    this.editLongitude.setValue(coords.longitude);
+  }
+
+  /**
    * Validates and submits the edit form.
-   * Only dirty fields are included in the payload.
+   * Only fields whose value actually changed are included in the payload.
    */
   onSaveEdit(): void {
     // Guard: Photo was removed but no replacement was provided
@@ -210,12 +272,15 @@ export class SightingDetails implements OnInit {
       }
 
       // Build payload
-      const { title, description, photo } = this.editForm.getRawValue();
+      const { title, description, photo, address, latitude, longitude } = this.editForm.getRawValue();
       const payload = new FormData();
-      if (this.editTitle.dirty) payload.append('title', title!);
-      if (this.editDescription.dirty) payload.append('description', description ?? '');
+      if (title !== this.originalValues.title) payload.append('title', title!);
+      if (description !== this.originalValues.description) payload.append('description', description ?? '');
+      if (address !== this.originalValues.address) payload.append('address', address ?? '');
+      if (latitude !== this.originalValues.latitude) payload.append('latitude', String(latitude!));
+      if (longitude !== this.originalValues.longitude) payload.append('longitude', String(longitude!));
       if (this.editPhoto.dirty && photo) payload.append('photo', photo);
-  
+
       // Update sighting
       this.observableToastService.trigger(
         this.sightingService.update(this.sighting()!.id, payload),
