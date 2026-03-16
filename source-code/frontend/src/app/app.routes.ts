@@ -13,11 +13,6 @@ export const routes: Routes = [
     component: Home
   },
   {
-    path: 'sightings-map',
-    title: "Sightings Map",
-    component: SightingsMap
-  },
-  {
     path: 'log-in',
     title: "Log In",
     component: Login
@@ -38,14 +33,19 @@ export const routes: Routes = [
     component: Home
   },
   {
+    path: 'settings',
+    title: "Settings",
+    component: Home
+  },
+  {
+    path: 'sightings-map',
+    title: "Sightings Map",
+    component: SightingsMap
+  },
+  {
     path: 'sightings/:id',
     title: "Sighting Details",
     component: SightingDetails
-  },
-  {
-    path: 'sightings/:id/edit',
-    title: "Sighting Edit",
-    component: Home
   },
   {
     path: '**',
