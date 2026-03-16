@@ -1,6 +1,7 @@
-
 import { Injectable, ApplicationRef, EnvironmentInjector, ComponentRef, Type, createComponent, inject } from '@angular/core';
 import * as L from 'leaflet';
+
+import { GeoCoords } from '#shared/types/coordinates';
 
 /**
  * Shared service for all Leaflet-based components.
@@ -51,7 +52,6 @@ export class Leaflet {
 
   /**
    * Creates a Leaflet map on the given native element and attaches the standard OpenStreetMap tile layer to it.
-   *
    * @param element The native DOM element (or element ID) that hosts the map.
    * @param options Any extra Leaflet MapOptions to forward.
    * @returns The ready-to-use L.Map instance.
@@ -69,6 +69,26 @@ export class Leaflet {
 
     return map;
 
+  }
+
+  /**
+   * Creates a custom marker and adds it to the map.
+   * @param map The map instance to add the marker to.
+   * @param coords Initial position of the marker.
+   * @param icon The icon to display.
+   * @param draggable Whether the marker should be draggable. Defaul is false.
+   * @returns The created L.Marker instance.
+   */
+  createMarker(map: L.Map, coords: GeoCoords, icon: L.Icon, draggable: boolean = false): L.Marker {
+    const marker = L.marker(
+      [coords.latitude, coords.longitude],
+      {
+        icon,
+        draggable
+      }
+    ).addTo(map);
+
+    return marker;
   }
 
   // -- Popup management ------------------------------------------------------

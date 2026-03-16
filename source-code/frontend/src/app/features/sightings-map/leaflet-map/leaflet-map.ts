@@ -22,7 +22,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
   /** Triggers map resize based on panel state */
   @Input() isPanelOpen = false;
 
-  /** Emitted when the user clicks the map while `isPickingCoordinates` is true and when the user selects "Add sighting" from the right-click context menu. */
+  /** Emitted when the user clicks the map while `isPickingCoordinates` is true, when the user selects "Add sighting" from the right-click context menu and when preview marker drag ends. */
   @Output() coordinatesPicked = new EventEmitter();
 
   // -- State and Signals -----------------------------------------------------
@@ -205,10 +205,11 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
 
       // If it isn't in the markerMap (so it is not yet on map)
       if (!this.markersMap.has(sighting.id)) {
-        const marker = L.marker(
-          [sighting.latitude, sighting.longitude],
-          { icon: this.leafletService.defaultIcon }
-        ).addTo(this.map);
+        const coords: GeoCoords = {
+          latitude: sighting.latitude,
+          longitude: sighting.longitude
+        }
+        const marker = this.leafletService.createMarker(this.map, coords, this.leafletService.defaultIcon);
 
         // === Marker Listeners === //
 
@@ -250,14 +251,7 @@ export class LeafletMap implements AfterViewInit, OnDestroy, OnChanges {
     this.previewMarker = undefined;
 
     if (coords !== null) {
-      // Place the custom icon marker at the selected coordinates
-      this.previewMarker = L.marker(
-        [coords.latitude, coords.longitude],
-        {
-          icon: this.leafletService.previewIcon,
-          draggable: true
-        }
-      ).addTo(this.map!);
+      this.previewMarker = this.leafletService.createMarker(this.map!, coords, this.leafletService.previewIcon, true);
 
       // === Marker Listeners === //
 

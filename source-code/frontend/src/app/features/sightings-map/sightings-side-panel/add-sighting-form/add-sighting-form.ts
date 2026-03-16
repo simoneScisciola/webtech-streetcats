@@ -1,7 +1,8 @@
-import { Component, effect, EventEmitter, inject, Output } from '@angular/core';
+import { Component, effect, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBinoculars, faTag, faAlignLeft, faArrowsUpDown, faArrowsLeftRight, faLocationDot, faLocationCrosshairs, faPlus, faImage } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 
 import { Auth } from '#core/services/auth/auth';
 import { SightingsMapState } from '#features/sightings-map/sightings-map-state/sightings-map-state';
@@ -18,7 +19,7 @@ import { FormCardTextMarkdown } from '#shared/components/form-card/form-card-tex
   templateUrl: './add-sighting-form.html',
   styleUrl: './add-sighting-form.scss',
 })
-export class AddSightingForm {
+export class AddSightingForm implements OnInit, OnDestroy {
 
   /** Emitted when the user submites the form */
   @Output() formSubmitted = new EventEmitter<FormData>();
@@ -26,27 +27,10 @@ export class AddSightingForm {
   /** Emitted when the user clicks on cancel button */
   @Output() cancelButtonClick = new EventEmitter<void>();
 
-  // -- Dependency Injection --------------------------------------------------
-
-  private readonly authService = inject(Auth);
-  protected readonly sightingsMapState = inject(SightingsMapState);
-
-  // -- Constructor -----------------------------------------------------------
-
-  constructor() {
-
-    // Opens add-sighting form whenever `previewCoordinates` signal changes
-    effect(() => {
-      const coords = this.sightingsMapState.previewCoordinates();
-      if (coords) {
-        // Apply picked values to the reactive form controls
-        this.latitude.setValue(coords.latitude);
-        this.longitude.setValue(coords.longitude);
-      }
-    });
-  }
-
   // -- State and Signals -----------------------------------------------------
+
+  /** Subscription to lat/lng value changes */
+  private coordsSubscription?: Subscription;
 
   // Field labels
   icons = {
@@ -60,6 +44,52 @@ export class AddSightingForm {
     add: faPlus,
     pick: faLocationCrosshairs
   };
+
+  // -- Dependency Injection --------------------------------------------------
+
+  private readonly authService = inject(Auth);
+  protected readonly sightingsMapState = inject(SightingsMapState);
+
+  // -- Constructor -----------------------------------------------------------
+
+  constructor() {
+    // Opens add-sighting form whenever `previewCoordinates` signal changes
+    effect(() => {
+      const coords = this.sightingsMapState.previewCoordinates();
+      if (coords) {
+        // Apply picked values to the reactive form controls
+        this.latitude.setValue(coords.latitude);
+        this.longitude.setValue(coords.longitude);
+      }
+    });
+  }
+
+  // -- Lifecycle -------------------------------------------------------------
+
+  ngOnInit(): void {
+    // React to any form field change, but we only retrieve lat/lng
+    this.coordsSubscription = this.sightingForm.valueChanges.subscribe(({ latitude: lat, longitude: lng }) => {
+      const previewCoordinates = this.sightingsMapState.previewCoordinates();
+
+      // Guard: if previewCoordinates already matches, the setValue came from the effect (map pick), not from the input field
+      if (previewCoordinates && previewCoordinates.latitude === lat && previewCoordinates.longitude === lng)
+        return; // Skip
+
+      // If both fields are valid
+      if (this.latitude.valid && this.longitude.valid && lat != null && lng != null) {
+        // Update the preview marker on the map
+        this.sightingsMapState.setPreviewCoordinates({ latitude: lat, longitude: lng }, 'form');
+      } else {
+        // At least one field is invalid or empty, so we remove the preview marker
+        this.sightingsMapState.clearPreviewCoordinates();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Prevent memory leaks
+    this.coordsSubscription?.unsubscribe();
+  }
 
   // -- Form ------------------------------------------------------------------
 

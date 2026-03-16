@@ -53,7 +53,7 @@ export class SightingsMap implements OnInit, OnDestroy {
 
   /**
    * Opens the side panel and leaves "pick coordinates" mode.
-   * Used both by map click (pick mode) and right-click context menu.
+   * Used by map click (pick mode), right-click context menu and preview marker drag end.
    * @param coords Latitude / longitude to pre-fill.
    */
   onCoordinatesPicked(): void {
