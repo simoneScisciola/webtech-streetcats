@@ -1,26 +1,31 @@
 <header class="bg-dark text-white">
-  <div class="container-fluid p-3" style="font-size: 1.15rem;">
-    <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-between gap-3">
+  <div class="container-fluid py-3 px-4" style="font-size: 1.15rem;">
+    <div class="row align-items-center gy-3">
 
-      <!-- Logo + App name -->
-      <a class="d-flex align-items-center justify-content-center text-white text-decoration-none" routerLink="/home">
-        <img
-          src="assets/webtech-streetcats.png"
-          alt="Webtech's StreetCats logo"
-          height="32"
-          class="me-3"/>
-        <span class="fs-4 fw-semibold">Webtech's StreetCats</span>
-      </a>
+      <!-- Logo -->
+      <div class="col-12 col-md d-flex justify-content-center justify-content-md-start">
+        <a class="d-flex align-items-center gap-3 text-white text-decoration-none" routerLink="/home">
+          <img
+            src="assets/webtech-streetcats.svg"
+            alt="Webtech's StreetCats"
+            height="44"
+          />
+        </a>
+      </div>
 
       <!-- Navbar ng-bootstrap -->
-      <app-navbar></app-navbar>
+      <div class="col-12 col-md-auto d-flex justify-content-center">
+        <app-navbar></app-navbar>
+      </div>
 
       <!-- Auth area -->
-      @if(authService.isAuthenticated()) {
-        <app-profile-dropdown />
-      } @else {
-        <app-auth-area />
-      }
+      <div class="col-12 col-md d-flex justify-content-center justify-content-md-end">
+        @if(authService.isAuthenticated()) {
+          <app-profile-dropdown />
+        } @else {
+          <app-auth-area />
+        }
+      </div>
 
     </div>
   </div>
