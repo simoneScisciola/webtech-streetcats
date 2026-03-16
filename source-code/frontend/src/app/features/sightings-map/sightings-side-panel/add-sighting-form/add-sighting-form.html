@@ -3,10 +3,11 @@
   <app-form-card-header
     title="New Sighting"
     subtitle="Add a new sighting in the map."
-    [icon]="icons.binoculars">
+    [icon]="icons.binoculars"
+    class="bg-primary">
   </app-form-card-header>
 
-  <app-form-card-body>
+  <app-form-card-body style="background-color: #FEFDFA">
     <form [formGroup]="sightingForm" (ngSubmit)="onSubmit()" novalidate>
       <app-form-card-field
         id="title"

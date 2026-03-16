@@ -3,10 +3,11 @@
   <app-side-panel-header
     title="Sightings"
     [icon]="icons.title"
-    (closeButtonClick)="onClosePanel()">
+    (closeButtonClick)="onClosePanel()"
+    class="bg-primary">
   </app-side-panel-header>
 
-  <app-side-panel-body>
+  <app-side-panel-body class="bg-light">
 
     @if (isAddingNewSighting()) {
 
@@ -72,7 +73,7 @@
   <!-- Footer is only shown when not adding a new sighting -->
   @if (!isAddingNewSighting()) {
 
-    <app-side-panel-footer>
+    <app-side-panel-footer class="bg-light">
       <button
         class="btn btn-primary w-100 fw-medium"
         [class.opacity-50]="!authService.isAuthenticated()"

@@ -3,7 +3,8 @@
   <app-form-card-header
     title="Sign Up"
     subtitle="Join our community!"
-    [icon]="icons.signup">
+    [icon]="icons.signup"
+    class="text-white bg-dark">
   </app-form-card-header>
 
   <app-form-card-body>
@@ -47,7 +48,7 @@
         [errors]="confirmErrors">
       </app-form-card-field>
 
-      <button type="submit" class="btn btn-primary w-100 fw-medium mt-3">
+      <button type="submit" class="btn btn-dark w-100 fw-medium mt-3">
         <fa-icon [icon]="icons.signup" class="me-2"></fa-icon>Sign Up
       </button>
     </form>

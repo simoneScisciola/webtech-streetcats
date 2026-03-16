@@ -1,4 +1,4 @@
-<div class="card mb-3 border-4 position-relative" [style.border-color]="accentColor">
+<div class="card mb-3 border-3 position-relative" [style.border-color]="accentColor">
 
   <!-- Full-card button overlay for map focus -->
   <button
@@ -12,8 +12,8 @@
   <!-- Sighting Card content -->
   <!-- pointer-events: none lets clicks pass through to the overlay button -->
   <div 
-    class="card-body position-relative"
-    style="z-index: 1; pointer-events: none">
+    class="card-body position-relative rounded"
+    style="z-index: 1; pointer-events: none; background-color: #FEFDFA">
     <h6 class="card-title">
       <fa-icon [icon]="icons.title" class="me-2" [style.color]="accentColor"></fa-icon>{{ title }}
     </h6>
