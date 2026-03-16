@@ -19,13 +19,17 @@
   <!-- Dropdown menu -->
   <div ngbDropdownMenu class="shadow-sm">
 
-    <button ngbDropdownItem routerLink="/profile">
-      Profile
-    </button>
+    <span ngbTooltip="Work in progress" container="body">
+      <button ngbDropdownItem routerLink="/profile" disabled>
+        Profile
+      </button>
+    </span>
 
-    <button ngbDropdownItem routerLink="/my-sightings">
-      My Sightings
-    </button>
+    <span ngbTooltip="Work in progress" container="body">
+      <button ngbDropdownItem routerLink="/my-sightings" disabled>
+        My Sightings
+      </button>
+    </span>
 
     <div class="dropdown-divider"></div>
 
