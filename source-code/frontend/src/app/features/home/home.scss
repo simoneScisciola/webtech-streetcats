@@ -1,0 +1,41 @@
+// -- Logo ---------------------------------------------
+
+.hero__logo {
+  filter: drop-shadow(0 0 22px rgba(229, 119, 45, 0.45)); // Glow
+}
+
+// -- Title --------------------------------------------
+
+.hero__title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  animation-delay: 0.25s;
+}
+
+// -- Tagline ------------------------------------------
+
+.hero__tagline {
+  font-size: clamp(0.8rem, 1.8vw, 1.05rem);
+  letter-spacing: 0.2em;
+  color: rgba(250, 250, 249, 0.50);
+  animation-delay: 0.45s;
+}
+
+// -- Call-to-Action group -----------------------------
+
+.hero__actions {
+  animation-delay: 0.65s;
+
+  .btn {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-3px); // Upward lift
+    }
+  }
+}
