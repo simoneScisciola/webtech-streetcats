@@ -159,10 +159,10 @@
             <!-- Interactive map; marker is draggable in edit mode -->
             <app-sighting-details-map
               class="flex-grow-1"
-              [latitude]="sighting.latitude"
-              [longitude]="sighting.longitude"
+              [latitude]="isEditMode() ? (editLatitude.value ?? sighting.latitude) : sighting.latitude"
+              [longitude]="isEditMode() ? (editLongitude.value ?? sighting.longitude) : sighting.longitude"
               [address]="sighting.address"
-              [isEditable]="isEditMode()"
+              [isEditMode]="isEditMode()"
               (coordinatesPicked)="onCoordinatesPicked($event)"
             />
 

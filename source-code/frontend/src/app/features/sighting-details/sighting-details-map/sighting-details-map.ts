@@ -1,7 +1,8 @@
-import { Component, Input, AfterViewInit, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, AfterViewInit, OnChanges, OnDestroy, SimpleChanges, inject, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 
 import { Leaflet } from '#core/services/leaflet/leaflet';
+import { GeoCoords } from '#shared/types/coordinates';
 
 @Component({
   selector: 'app-sighting-details-map',
@@ -14,11 +15,18 @@ export class SightingDetailsMap implements AfterViewInit, OnChanges, OnDestroy {
   @Input({ required: true }) latitude!: number;
   @Input({ required: true }) longitude!: number;
   @Input() address: string | null = null;
+  @Input() isEditMode = false;
+
+  /** Emitted when the user drags the marker to a new position */
+  @Output() coordinatesPicked = new EventEmitter<GeoCoords>();
 
   // -- State and Signals -----------------------------------------------------
 
   /** Leaflet map instance */
   private map?: L.Map;
+
+  /** Marker instance */
+  private marker?: L.Marker;
 
   // -- Dependency Injection --------------------------------------------------
 
@@ -38,9 +46,32 @@ export class SightingDetailsMap implements AfterViewInit, OnChanges, OnDestroy {
    * Executed every time an `@Input` value changes.
    */
   ngOnChanges(changes: SimpleChanges): void {
-    // Re-render only if coordinates actually changed and the map already exists
-    if (this.map && (changes['latitude'] || changes['longitude'])) {
-      this.initMap();
+    if (!this.map || !this.marker)
+      return;
+
+    if (changes['latitude'] || changes['longitude']) {
+      // Always move the marker to reflect the new coordinates
+      this.marker.setLatLng([this.latitude, this.longitude]);
+
+      // If in view mode
+      if (!this.isEditMode) {
+        // Also pan the map and refresh the popup
+        this.map.setView([this.latitude, this.longitude], 12);
+        this.updatePopup();
+      }
+    }
+
+    // Toggle draggability and preview icon, based on edit mode
+    if (changes['isEditMode']) {
+      if (this.isEditMode) {
+        this.marker.setIcon(this.leafletService.previewIcon); // Switch to preview icon in edit mode
+        this.marker.dragging?.enable(); // Enable drag
+        this.marker.closePopup().unbindPopup(); // Remove static popup in edit mode
+      } else {
+        this.marker.setIcon(this.leafletService.defaultIcon); // Restore default icon in view mode
+        this.marker.dragging?.disable(); // Disable drag
+        this.updatePopup(); // Restore static popup in view mode
+      }
     }
   }
 
@@ -64,28 +95,48 @@ export class SightingDetailsMap implements AfterViewInit, OnChanges, OnDestroy {
     if (Number.isNaN(lat) || Number.isNaN(lng))
       return;
 
-    // Destroy the previous instance before creating a new one
-    this.map?.remove();
-
     // Creates the L.Map and attaches the OSM tile layer
     this.map = this.leafletService.initMap('details-map', {
       scrollWheelZoom: false // Prevents scroll hijacking inside a scrollable page
     });
     this.map.setView([lat, lng], 14);
 
-    // Popup
+    // Build a marker at the received coordinates
+    // In edit mode, builds a preview marker instead of the standard one
+    this.marker = this.leafletService.createMarker(
+      this.map,
+      { latitude: lat, longitude: lng },
+      this.isEditMode ? this.leafletService.previewIcon : this.leafletService.defaultIcon,
+      this.isEditMode
+    );
+
+    // === Marker Listeners === //
+
+    // When drag ends, update coordinates
+    this.marker.on('dragend', () => {
+      const position = this.marker!.getLatLng();
+      this.coordinatesPicked.emit({ latitude: position.lat, longitude: position.lng });
+    });
+
+    // If in view mode
+    if (!this.isEditMode) {
+      // Also show the static popup
+      this.updatePopup();
+    }
+  }
+
+  /**
+   * Builds and opens the static read-only popup on the current marker.
+   */
+  private updatePopup(): void {
+    if (!this.marker)
+      return;
+
     const popupHtml = this.address
       ? `<strong>${this.address}</strong><br><small>${this.latitude}, ${this.longitude}</small>`
       : `<small>${this.latitude}, ${this.longitude}</small>`;
 
-    // Add marker
-    L.marker(
-      [lat, lng],
-      { icon: this.leafletService.defaultIcon }
-    )
-      .addTo(this.map)
-      .bindPopup(popupHtml)
-      .openPopup();
+    this.marker.bindPopup(popupHtml).openPopup();
   }
 
 }
