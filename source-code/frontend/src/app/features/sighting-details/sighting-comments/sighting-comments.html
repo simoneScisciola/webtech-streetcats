@@ -68,7 +68,7 @@
   </div>
 
   <!-- Comments list -->
-  @if (loadingComments()) {
+  @if (isLoading()) {
 
     <output class="d-flex justify-content-center py-3" aria-label="Loading comments...">
       <span class="spinner-border spinner-border-sm text-primary"></span>
@@ -113,6 +113,13 @@
 
       </div>
     }
+
+    <!-- Pagination control -->
+    <app-pagination
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      (pageChange)="goToPage($event)">
+    </app-pagination>
 
   }
 

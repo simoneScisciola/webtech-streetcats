@@ -65,12 +65,12 @@ export class Comment {
   }
 
   /**
-   * Get all comments (optionally filtered by sightingId)
-   * GET /comments?sightingId=...
+   * Get a paginated list of comments (optionally filtered by sightingId)
+   * GET /comments?page=:page&size=:size&sightingId=:id
    */
-  getAll(sort: Sort, params?: { sightingId?: number }): Observable<PaginatedResponse<CommentResponse>> {
+  getAll(sort: Sort, page = 0, size = 20, params?: { sightingId?: number }): Observable<PaginatedResponse<CommentResponse>> {
     return this.restBackendService.request<PaginatedResponse<CommentResponse>>(
-      `/comments?sort=${sort.field},${sort.direction}`,
+      `/comments?page=${page}&size=${size}&sort=${sort.field},${sort.direction}`,
       'GET',
       null,
       params

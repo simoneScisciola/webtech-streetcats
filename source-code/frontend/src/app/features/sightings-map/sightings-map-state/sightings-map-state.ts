@@ -116,7 +116,11 @@ export class SightingsMapState implements OnDestroy {
         // Call getAll() and switch to the new Observable, cancelling any previous one if still active.
         // We read currentPage() here so that each tick fetches the page the user is currently on.
         switchMap(() =>
-          this.sightingService.getAll(this.currentSort(), this.currentPage(), this.pageSize()).pipe(
+          this.sightingService.getAll(
+            this.currentSort(),
+            this.currentPage(),
+            this.pageSize()
+          ).pipe(
             catchError((err) => {
               console.error('Sightings sync failed.', err);
               this.isLoading.set(false);
@@ -125,8 +129,7 @@ export class SightingsMapState implements OnDestroy {
             })
           )
         )
-      )
-      .subscribe((response) => {
+      ).subscribe((response) => {
         this.sightings.set(response.data);
 
         // Persist pagination metadata for the pagination component

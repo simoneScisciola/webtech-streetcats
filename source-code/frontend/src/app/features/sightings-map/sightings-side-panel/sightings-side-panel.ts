@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, signal, effect } from '
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'ngx-sonner';
+import { Router } from '@angular/router';
 
 import { Sighting } from '#core/services/sighting/sighting';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
@@ -15,7 +16,6 @@ import { Pagination } from '#shared/components/pagination/pagination';
 import { Auth } from '#core/services/auth/auth';
 import { SightingCard } from './sighting-card/sighting-card';
 import { AddSightingForm } from './add-sighting-form/add-sighting-form';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sightings-side-panel',

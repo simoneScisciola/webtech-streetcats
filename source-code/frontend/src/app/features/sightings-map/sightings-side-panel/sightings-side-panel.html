@@ -60,7 +60,6 @@
 
       <!-- Pagination control -->
       <app-pagination
-        class="mt-auto"
         [currentPage]="sightingsMapState.currentPage()"
         [totalPages]="sightingsMapState.totalPages()"
         (pageChange)="sightingsMapState.goToPage($event)">
