@@ -13,56 +13,73 @@
         Leave a comment
       </h5>
 
-      <!-- Form -->
-      <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
-        <div class="d-flex gap-3 align-items-start">
+      @if (authService.isAuthenticated()) {
 
-          <!-- Avatar -->
-          <img 
-            [src]="authService.avatarUrl()" 
-            [alt]="(authService.username() ?? 'User') + ' Icon'" 
-            class="rounded-circle"
-            width="34"
-            height="34"
-          />
+        <!-- Form -->
+        <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+          <div class="d-flex gap-3 align-items-start">
 
-          <div class="flex-grow-1">
+            <!-- Avatar -->
+            <img 
+              [src]="authService.avatarUrl()" 
+              [alt]="(authService.username() ?? 'User') + ' Icon'" 
+              class="rounded-circle"
+              width="34"
+              height="34"
+            />
 
-            <!-- Comment Textarea -->
-            <textarea
-              id="commentContent"
-              class="form-control"
-              placeholder="Share your thoughts..."
-              rows="2"
-              formControlName="content"
-            ></textarea>
+            <div class="flex-grow-1">
 
-            <!-- Error message -->
-            @if (content.touched && content.errors) {
-              <div class="invalid-feedback d-block">
-                @if (content.errors['required'])  { {{ contentErrors.required }}  }
+              <!-- Comment Textarea -->
+              <textarea
+                id="commentContent"
+                class="form-control"
+                placeholder="Share your thoughts..."
+                rows="2"
+                formControlName="content"
+              ></textarea>
+
+              <!-- Error message -->
+              @if (content.touched && content.errors) {
+                <div class="invalid-feedback d-block">
+                  @if (content.errors['required'])  { {{ contentErrors.required }}  }
+                </div>
+              }
+
+              <!-- Submit -->
+              <div class="d-flex justify-content-end mt-2">
+                <button type="submit" class="btn btn-primary d-flex align-items-center" [disabled]="!canSubmit">
+                  @if (submitting()) {
+                    <output class="spinner-border spinner-border-sm me-2" aria-label="Posting..."></output>
+                    Posting...
+                  } @else {
+                    <fa-icon
+                      [icon]="icons.post"
+                      class="me-2">
+                    </fa-icon>Post
+                  }
+                </button>
               </div>
-            }
 
-            <!-- Submit -->
-            <div class="d-flex justify-content-end mt-2">
-              <button type="submit" class="btn btn-primary d-flex align-items-center" [disabled]="!canSubmit">
-                @if (submitting()) {
-                  <output class="spinner-border spinner-border-sm me-2" aria-label="Posting..."></output>
-                  Posting...
-                } @else {
-                  <fa-icon
-                    [icon]="icons.post"
-                    class="me-2">
-                  </fa-icon>Post
-                }
-              </button>
             </div>
 
           </div>
+        </form>
 
+      } @else {
+
+        <!-- Login prompt -->
+        <div class="d-flex flex-column align-items-center gap-3 text-center mb-2">
+          <p class="text-body-secondary mb-0">
+            Join the community to share your thoughts.
+          </p>
+          <div class="d-flex gap-2">
+            <a routerLink="/sign-up" class="btn btn-outline-dark btn-sm">Sign Up</a>
+            <a routerLink="/log-in" class="btn btn-primary btn-sm">Log In</a>
+          </div>
         </div>
-      </form>
+
+      }
 
     </div>
   </div>

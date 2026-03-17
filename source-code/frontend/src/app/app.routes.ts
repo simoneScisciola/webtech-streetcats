@@ -11,7 +11,7 @@ import { guestGuard } from '#core/guards/guest/guest-guard';
 export const routes: Routes = [
   {
     path: 'home',
-    title: "Webtech's Streetcats",
+    title: "Webtech's StreetCats",
     component: Home
   },
   {

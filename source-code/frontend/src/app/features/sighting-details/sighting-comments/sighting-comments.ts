@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
@@ -15,7 +16,7 @@ import { Pagination } from '#shared/components/pagination/pagination';
 
 @Component({
   selector: 'app-sighting-comments',
-  imports: [ReactiveFormsModule, FontAwesomeModule, Pagination],
+  imports: [RouterLink, ReactiveFormsModule, FontAwesomeModule, Pagination],
   providers: [ObservableToast],
   templateUrl: './sighting-comments.html',
   styleUrl: './sighting-comments.scss',

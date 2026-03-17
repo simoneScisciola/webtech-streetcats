@@ -19,7 +19,7 @@
 
   <!-- Tagline -->
   <p class="hero__tagline fw-light text-uppercase my-3 mb-5 animate__animated animate__fadeInUp">
-    A community-powered map of stray cats.
+    A community-powered map of cats sightings.
   </p>
 
   <!-- CTA group -->
@@ -39,10 +39,12 @@
         </fa-icon>Join the Community
       </a>
     } @else {
-      <a routerLink="/my-sightings" class="btn btn-outline-light btn-lg">
-        <fa-icon [icon]="icons.sightings" class="me-2">
-        </fa-icon>My Sightings
-      </a>
+      <span ngbTooltip="Work in progress" container="body">
+        <button class="btn btn-outline-light btn-lg" disabled>
+          <fa-icon [icon]="icons.sightings" class="me-2">
+          </fa-icon>My Sightings
+        </button>
+      </span>
     }
   </div>
 
