@@ -5,6 +5,8 @@ import { SightingsMap } from '#features/sightings-map/sightings-map';
 import { Login } from '#features/auth/login/login';
 import { Signup } from '#features/auth/signup/signup';
 import { SightingDetails } from '#features/sighting-details/sighting-details';
+import { authGuard } from '#core/guards/auth/auth-guard';
+import { guestGuard } from '#core/guards/guest/guest-guard';
 
 export const routes: Routes = [
   {
@@ -15,27 +17,32 @@ export const routes: Routes = [
   {
     path: 'log-in',
     title: "Log In",
-    component: Login
+    component: Login,
+    canMatch: [guestGuard] // Redirect to /home if already logged in
   },
   {
     path: 'sign-up',
     title: "Sign Up",
-    component: Signup
+    component: Signup,
+    canMatch: [guestGuard] // Redirect to /home if already logged in
   },
   {
     path: 'profile',
     title: "Profile",
-    component: Home
+    component: Home,
+    canMatch: [authGuard] // Redirect to /log-in if not logged in
   },
   {
     path: 'my-sightings',
     title: "My Sightings",
-    component: Home
+    component: Home,
+    canMatch: [authGuard] // Redirect to /log-in if not logged in
   },
   {
     path: 'settings',
     title: "Settings",
-    component: Home
+    component: Home,
+    canMatch: [authGuard] // Redirect to /log-in if not logged in
   },
   {
     path: 'sightings-map',

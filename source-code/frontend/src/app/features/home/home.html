@@ -33,10 +33,17 @@
     </a>
 
     <!-- Secondary CTA -->
-    <a routerLink="/sign-up" class="btn btn-outline-light btn-lg">
-      <fa-icon [icon]="icons.join" class="me-2">
-      </fa-icon>Join the Community
-    </a>
+    @if (!authService.isAuthenticated()) {
+      <a routerLink="/sign-up" class="btn btn-outline-light btn-lg">
+        <fa-icon [icon]="icons.join" class="me-2">
+        </fa-icon>Join the Community
+      </a>
+    } @else {
+      <a routerLink="/my-sightings" class="btn btn-outline-light btn-lg">
+        <fa-icon [icon]="icons.sightings" class="me-2">
+        </fa-icon>My Sightings
+      </a>
+    }
   </div>
 
 </section>
