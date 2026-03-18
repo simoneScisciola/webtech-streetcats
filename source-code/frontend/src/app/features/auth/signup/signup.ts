@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { Auth } from '#core/services/auth/auth';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
+import { NavigationHistory } from '#core/services/navigation-history/navigation-history';
 import { SignupPayload } from '#shared/types/auth';
 import { SignupForm } from './signup-form/signup-form';
 
@@ -17,10 +18,11 @@ export class Signup {
 
   private readonly router = inject(Router);
   private readonly authService = inject(Auth);
+  private readonly navigationHistory = inject(NavigationHistory);
   protected readonly observableToastService = inject(ObservableToast);
 
   /**
-   * Sends sign up request
+   * Sends sign up request.
    * @param payload submitted data
    */
   onSignupSubmit(payload: SignupPayload) {
@@ -33,8 +35,8 @@ export class Signup {
         onSuccess: (res) => {
           console.log("Response:", res);
 
-          // Redirect
-          this.router.navigate(['/home']);
+          // Redirect back to the last non-auth page visited (or /home as fallback)
+          this.router.navigateByUrl(this.navigationHistory.getReturnUrl());
         },
         onError: (err) => console.error('Sign up failed.', err),
         onRetry: () => this.authService.signup(payload)
