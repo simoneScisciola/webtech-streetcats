@@ -16,7 +16,7 @@ RUN npm ci
 
 # Copio tutti i files dalla directory locale alla directory corrente all'interno del container
 COPY . .
-# Build del progetto in modalità di produzione
+# Compilazione del progetto in modalità di produzione, l'output viene generato nella cartella ./dist/frontend/browser
 RUN npm run build
 
 
@@ -25,7 +25,7 @@ RUN npm run build
 # Doc: https://hub.docker.com/_/nginx
 FROM nginx:1.27-alpine AS production
 
-# Copia la build Angular dal container build al path servito da NGINX
+# Copia il bundle JavaScript, compilato dallo stage di build, al path servito da NGINX
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
 # Copio il file template di env variables
