@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, inject, signal, effect } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, effect, OnInit } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'ngx-sonner';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Sighting } from '#core/services/sighting/sighting';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
@@ -24,7 +24,7 @@ import { AddSightingForm } from './add-sighting-form/add-sighting-form';
   templateUrl: './sightings-side-panel.html',
   styleUrl: './sightings-side-panel.scss',
 })
-export class SightingsSidePanel {
+export class SightingsSidePanel implements OnInit {
 
   /** Tracks side panel open state */
   @Input() isPanelOpen = false;
@@ -35,14 +35,19 @@ export class SightingsSidePanel {
   /** Emitted when the side panel has been closed */
   @Output() closePanel = new EventEmitter<void>();
 
-  /** Tracks if add sighting form should be shown */
-  isAddingNewSighting = signal(false);
+  // -- Dependency Injection --------------------------------------------------
 
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   protected readonly sightingService = inject(Sighting);
   protected readonly sightingsMapState = inject(SightingsMapState);
   protected readonly authService = inject(Auth);
   private readonly observableToastService = inject(ObservableToast);
+
+  // -- State and Signals -----------------------------------------------------
+
+  /** Tracks if add sighting form should be shown */
+  isAddingNewSighting = signal(false);
 
   // Side Panel icons
   icons = {
@@ -51,6 +56,8 @@ export class SightingsSidePanel {
     refresh: faRotateRight,
     loading: faSpinner,
   };
+
+  // -- Constructor -----------------------------------------------------------
 
   constructor() {
     // Opens add-sighting form whenever `previewCoordinates` signal changes
@@ -61,6 +68,23 @@ export class SightingsSidePanel {
       }
     });
   }
+
+  // -- Lifecycle -------------------------------------------------------------
+
+  ngOnInit(): void {
+    // Restores the page from the URL query param on component init.
+    // This ensures that navigating back preserves the previously viewed page.
+    // Uses a dedicated 'sightingsPage' param to avoid clashing with other pagination params.
+    const urlPage = this.route.snapshot.queryParamMap.get('sightingsPage');
+    const page = urlPage === null ? 0 : Number.parseInt(urlPage, 10) - 1;
+
+    // Only jump to a non-zero page
+    if (!Number.isNaN(page) && page > 0) {
+      this.sightingsMapState.goToPage(page);
+    }
+  }
+
+  // -- Methods ---------------------------------------------------------------
 
   onClosePanel(): void {
     this.closeAddSightingForm();
@@ -80,8 +104,21 @@ export class SightingsSidePanel {
     this.sightingsMapState.refresh();
   }
 
+  /**
+   * Handles page navigation: updates state, syncs URL, and scrolls to the top of the list.
+   * Writing the 'sightingsPage' to the URL allows the browser back button to restore it via ngOnInit.
+   * @param page 0-based page index selected by the user.
+   */
   onPageChange(page: number): void {
     this.sightingsMapState.goToPage(page);
+
+    // Persist page in the URL without triggering a full navigation
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sightingsPage: page + 1 },
+      queryParamsHandling: 'merge', // Preserve any other existing query params
+    });
+
     document.getElementById('sightings-list-top')?.parentElement?.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll back to the top of the sightings list
   }
 

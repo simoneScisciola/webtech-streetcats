@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
@@ -30,6 +30,8 @@ export class SightingComments implements OnInit {
   protected readonly authService = inject(Auth);
   private readonly commentService = inject(Comment);
   protected readonly observableToastService = inject(ObservableToast);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   // -- State and Signals -----------------------------------------------------
 
@@ -95,6 +97,17 @@ export class SightingComments implements OnInit {
   // -- Lifecycle -------------------------------------------------------------
 
   ngOnInit(): void {
+    // Restore page from URL query param on component init.
+    // This ensures that navigating back preserves the previously viewed page.
+    // Uses a dedicated 'commentsPage' param to avoid clashing with other pagination params.
+    const urlPage = this.route.snapshot.queryParamMap.get('commentsPage');
+    const page = urlPage === null ? 0 : Number.parseInt(urlPage, 10) - 1;
+
+    // Only jump to a non-zero page
+    if (!Number.isNaN(page) && page > 0) {
+      this.currentPage.set(page);
+    }
+
     this.loadPageComments();
   }
 
@@ -103,6 +116,22 @@ export class SightingComments implements OnInit {
   /** True when the form can be submitted */
   get canSubmit(): boolean {
     return this.commentForm.valid && !this.submitting();
+  }
+
+  /**
+   * Handles page navigation: updates state and syncs URL.
+   * Writing the 'commentsPage' to the URL allows the browser back button to restore it via ngOnInit.
+   * @param page 0-based page index selected by the user.
+   */
+  onPageChange(page: number): void {
+    this.goToPage(page);
+
+    // Persist page in the URL without triggering a full navigation
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { commentsPage: page + 1 },
+      queryParamsHandling: 'merge', // Preserve any other existing query params
+    });
   }
 
   /**
