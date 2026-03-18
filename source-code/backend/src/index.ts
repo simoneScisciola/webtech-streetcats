@@ -57,7 +57,7 @@ app.use(express.json({ limit: '100kb' }));
 // Cap each IP to a certain requests number per time window in order to mitigates flooding attacks and brute-force attempts
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15-minute sliding window
-    max: 100, // Maximum requests per window per IP
+    max: 2000, // Maximum requests per window per IP
     standardHeaders: "draft-8", // Return `RateLimit-*` headers (RFC draft 8)
     legacyHeaders: false, // Disable the deprecated `X-RateLimit-*` headers
     message: {

@@ -5,6 +5,7 @@ import { SightingDto } from "#types/dto/SightingDto.js";
 import { ParsedPagination } from "#types/queryParams.js";
 import { findAllPaginated } from "#utils/findAllPaginated.js";
 import { UserController } from "#controllers/UserController.js";
+import { deleteUploadedFile } from '#utils/fileUtils.js';
 
 
 export class SightingController {
@@ -61,6 +62,11 @@ export class SightingController {
             }
         }
 
+        // Delete the old uploaded photo if it is being replaced with a new one
+        if (existingSighting.photoUrl && fullSighting.photoUrl !== existingSighting.photoUrl) {
+            await deleteUploadedFile(existingSighting.photoUrl);
+        }
+
         // Update all fields
         return existingSighting.update({
             id: sentSightingId,
@@ -83,7 +89,6 @@ export class SightingController {
         const existingSighting = await this.findById(sentSightingId);
         if (existingSighting === null) {
             throw new createError.NotFound("Sighting not found.");
-
         }
 
         // Check foreign key existence
@@ -92,6 +97,11 @@ export class SightingController {
             if (userFk === null) {
                 throw new createError.BadRequest("User not found.");
             }
+        }
+
+        // Delete the old uploaded photo if it is being replaced with a new one
+        if (existingSighting.photoUrl && partialSighting.photoUrl !== existingSighting.photoUrl) {
+            await deleteUploadedFile(existingSighting.photoUrl);
         }
 
         // Update only provided fields
@@ -105,8 +115,14 @@ export class SightingController {
 
         const existingSighting = await this.findById(sentId);
 
-        if (existingSighting !== null)
-            await existingSighting.destroy();
+        if (existingSighting !== null) {
+            // Remove the associated photo before deleting the DB record
+            if (existingSighting.photoUrl) {
+                await deleteUploadedFile(existingSighting.photoUrl);
+            }
+
+            await existingSighting.destroy();            
+        }
 
         return existingSighting; // returns a Promise
     }
