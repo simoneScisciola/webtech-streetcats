@@ -20,7 +20,7 @@
     } @else {
 
       <!-- Refresh bar -->
-      <div class="d-flex align-items-center justify-content-between px-3 pb-2 mb-3 border-bottom">
+      <div id="sightings-list-top" class="d-flex align-items-center justify-content-between px-3 pb-2 mb-3 border-bottom">
         <span class="text-muted small">
           @if (this.sightingsMapState.lastUpdatedFormatted()) {
             Last sync at {{ this.sightingsMapState.lastUpdatedFormatted() }}
@@ -62,7 +62,7 @@
       <app-pagination
         [currentPage]="sightingsMapState.currentPage()"
         [totalPages]="sightingsMapState.totalPages()"
-        (pageChange)="sightingsMapState.goToPage($event)">
+        (pageChange)="onPageChange($event)">
       </app-pagination>
 
     }

@@ -80,6 +80,11 @@ export class SightingsSidePanel {
     this.sightingsMapState.refresh();
   }
 
+  onPageChange(page: number): void {
+    this.sightingsMapState.goToPage(page);
+    document.getElementById('sightings-list-top')?.parentElement?.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll back to the top of the sightings list
+  }
+
   onCancelAddSighting(): void {
     this.closeAddSightingForm();
   }

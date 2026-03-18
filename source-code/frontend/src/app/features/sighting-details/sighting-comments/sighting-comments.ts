@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import { catchError, EMPTY } from 'rxjs';
 import { toast } from 'ngx-sonner';
 
 import { Auth } from "#core/services/auth/auth"

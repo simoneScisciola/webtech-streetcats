@@ -5,6 +5,7 @@
 
 body {
   background-color: var(--bs-light);
+  overflow-anchor: none;
 }
 
 router-outlet + * {
