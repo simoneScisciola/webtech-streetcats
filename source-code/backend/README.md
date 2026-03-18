@@ -42,7 +42,7 @@ Per eseguire il backend, è stato predisposto un [package.json](./package.json).
 * `npm run dev` esegue il progetto in modalità sviluppo (variante `npm run dev:docker` per sviluppo in ambiente Docker);
 * `npm run typecheck` esegue il typechecking del progetto (variante `typecheck:watch` per eseguire il typechecking in watch mode; variante `typecheck:watch:docker` per eseguire il typechecking in watch mode in ambiente Docker);
 * `npm run build` compila il progetto in modalità produzione;
-* `npm run start` compila il progetto in modalità produzione e lo serve tramite il server integrato in Node.js;
+* `npm run start` serve la compilazione del progetto tramite il server integrato in Node.js;
 * `npm run test` esegue test unitari;
 
 ## Avviare il development server

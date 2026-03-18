@@ -36,7 +36,7 @@ Per eseguire il frontend, è stato predisposto un [package.json](./package.json)
 * `npm run dev` esegue `generate-env` ed esegue il progetto in modalità sviluppo (variante `npm run dev:docker` per sviluppo in ambiente Docker);
 * `npm run build` esegue `generate-env` e compila il progetto in modalità produzione;
 * `npm run watch` esegue `generate-env`, compila il progetto in modalità sviluppo e resta in ascolto per ricompilare automaticamente al variare dei file;
-* `npm run serve` compila il progetto in modalità produzione e lo serve tramite `http-server` e disabilitando la cache;
+* `npm run serve` serve la compilazione del progetto tramite `http-server` e disabilitando la cache;
 * `npm run test` esegue test unitari;
 * `npm run e2e` esegue test end-to-end;
 * `npm run e2e-report` mostra l'ultimo report dei test end-to-end (variante `e2e-report:docker` per visualizzarlo in ambiente Docker).

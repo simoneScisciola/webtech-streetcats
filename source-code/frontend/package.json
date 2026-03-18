@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "description": "An Angular frontend for the Web Technologies course project: Webtech's StreetCats",
+  "type": "module",
   "scripts": {
     "ng": "ng",
 
@@ -11,7 +12,6 @@
     "predev:docker": "npm run generate-env",
     "prebuild": "npm run generate-env",
     "prewatch": "npm run generate-env",
-    "preserve": "npm run build",
 
     "dev": "ng serve",
     "dev:docker": "ng serve --host 0.0.0.0 --poll 200",
