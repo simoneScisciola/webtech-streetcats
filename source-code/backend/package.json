@@ -7,9 +7,12 @@
   "scripts": {
     "prestart": "npm run build",
 
-    "dev": "CHOKIDAR_USEPOLLING=true tsx watch --clear-screen=false src/index.ts",
+    "dev": "tsx watch --clear-screen=false src/index.ts",
+    "dev:docker": "CHOKIDAR_USEPOLLING=true tsx watch --clear-screen=false src/index.ts",
+
     "typecheck": "tsc --noEmit",
-    "typecheck:watch": "TSC_WATCHFILE=PriorityPollingInterval tsc --noEmit --watch",
+    "typecheck:watch": "tsc --noEmit --watch",
+    "typecheck:watch:docker": "TSC_WATCHFILE=PriorityPollingInterval tsc --noEmit --watch",
 
     "build": "tsc",
     "start": "node dist/index.js",

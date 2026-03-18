@@ -11,6 +11,7 @@
     "predev:docker": "npm run generate-env",
     "prebuild": "npm run generate-env",
     "prewatch": "npm run generate-env",
+    "preserve": "npm run build",
 
     "dev": "ng serve",
     "dev:docker": "ng serve --host 0.0.0.0 --poll 200",

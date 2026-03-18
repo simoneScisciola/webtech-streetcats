@@ -5,7 +5,7 @@
 
 body {
   background-color: var(--bs-light);
-  overflow-anchor: none;
+  overflow-anchor: none; // Disable browser's scroll anchoring behavior, due to scroll issues in sighting details' comments loading
 }
 
 router-outlet + * {
