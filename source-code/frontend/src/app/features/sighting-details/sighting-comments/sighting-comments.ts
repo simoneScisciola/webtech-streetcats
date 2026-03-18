@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 import { toast } from 'ngx-sonner';
 
 import { Auth } from "#core/services/auth/auth"
@@ -20,7 +21,7 @@ import { Pagination } from '#shared/components/pagination/pagination';
   templateUrl: './sighting-comments.html',
   styleUrl: './sighting-comments.scss',
 })
-export class SightingComments implements OnInit {
+export class SightingComments implements OnInit, OnDestroy {
 
   /** ID of the parent sighting */
   @Input({ required: true }) sightingId!: number;
@@ -58,6 +59,9 @@ export class SightingComments implements OnInit {
 
   /** Current selected sort */
   readonly currentSort = signal<Sort>({ field: 'createdAt', direction: 'desc' });
+
+  /** Holds the queryParamMap subscription to unsubscribe on destroy */
+  private queryParamSub?: Subscription;
 
   // Comments icons
   icons = {
@@ -97,18 +101,17 @@ export class SightingComments implements OnInit {
   // -- Lifecycle -------------------------------------------------------------
 
   ngOnInit(): void {
-    // Restore page from URL query param on component init.
-    // This ensures that navigating back preserves the previously viewed page.
-    // Uses a dedicated 'commentsPage' param to avoid clashing with other pagination params.
-    const urlPage = this.route.snapshot.queryParamMap.get('commentsPage');
-    const page = urlPage === null ? 0 : Number.parseInt(urlPage, 10) - 1;
+    // Subscribe to queryParamMap so that browser back/forward navigation (which changes the URL without recreating the component) also triggers a page reload.
+    this.queryParamSub = this.route.queryParamMap.subscribe(params => {
+      const urlPage = params.get('commentsPage');
+      const page = urlPage === null ? 0 : Number.parseInt(urlPage, 10) - 1;
 
-    // Only jump to a non-zero page
-    if (!Number.isNaN(page) && page > 0) {
-      this.currentPage.set(page);
-    }
+      this.goToPage(!Number.isNaN(page) && page > 0 ? page : 0);
+    });
+  }
 
-    this.loadPageComments();
+  ngOnDestroy(): void {
+    this.queryParamSub?.unsubscribe();
   }
 
   // -- Methods ---------------------------------------------------------------
@@ -119,14 +122,12 @@ export class SightingComments implements OnInit {
   }
 
   /**
-   * Handles page navigation: updates state and syncs URL.
-   * Writing the 'commentsPage' to the URL allows the browser back button to restore it via ngOnInit.
+   * Handles page navigation: updates the URL.
+   * The queryParamMap subscription reacts to the URL change and calls goToPage() automatically.
    * @param page 0-based page index selected by the user.
    */
   onPageChange(page: number): void {
-    this.goToPage(page);
-
-    // Persist page in the URL without triggering a full navigation
+    // The queryParamMap subscription will react and call goToPage() automatically.
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { commentsPage: page + 1 },

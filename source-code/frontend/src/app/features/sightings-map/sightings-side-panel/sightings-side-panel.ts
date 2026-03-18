@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, inject, signal, effect, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, signal, effect, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faPaw, faPlus, faRotateRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
 import { toast } from 'ngx-sonner';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { Sighting } from '#core/services/sighting/sighting';
 import { ObservableToast } from '#core/services/observable-toast/observable-toast';
@@ -24,7 +25,7 @@ import { AddSightingForm } from './add-sighting-form/add-sighting-form';
   templateUrl: './sightings-side-panel.html',
   styleUrl: './sightings-side-panel.scss',
 })
-export class SightingsSidePanel implements OnInit {
+export class SightingsSidePanel implements OnInit, OnDestroy {
 
   /** Tracks side panel open state */
   @Input() isPanelOpen = false;
@@ -49,6 +50,9 @@ export class SightingsSidePanel implements OnInit {
   /** Tracks if add sighting form should be shown */
   isAddingNewSighting = signal(false);
 
+  /** Holds the queryParamMap subscription to unsubscribe on destroy */
+  private queryParamSub?: Subscription;
+
   // Side Panel icons
   icons = {
     title: faPaw,
@@ -72,16 +76,17 @@ export class SightingsSidePanel implements OnInit {
   // -- Lifecycle -------------------------------------------------------------
 
   ngOnInit(): void {
-    // Restores the page from the URL query param on component init.
-    // This ensures that navigating back preserves the previously viewed page.
-    // Uses a dedicated 'sightingsPage' param to avoid clashing with other pagination params.
-    const urlPage = this.route.snapshot.queryParamMap.get('sightingsPage');
-    const page = urlPage === null ? 0 : Number.parseInt(urlPage, 10) - 1;
+    // Subscribe to queryParamMap so that browser back/forward navigation (which changes the URL without recreating the component) also triggers a page reload.
+    this.queryParamSub = this.route.queryParamMap.subscribe(params => {
+      const urlPage = params.get('sightingsPage');
+      const page = urlPage === null ? 0 : Number.parseInt(urlPage, 10) - 1;
 
-    // Only jump to a non-zero page
-    if (!Number.isNaN(page) && page > 0) {
-      this.sightingsMapState.goToPage(page);
-    }
+      this.sightingsMapState.goToPage(!Number.isNaN(page) && page > 0 ? page : 0);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.queryParamSub?.unsubscribe();
   }
 
   // -- Methods ---------------------------------------------------------------
@@ -105,14 +110,12 @@ export class SightingsSidePanel implements OnInit {
   }
 
   /**
-   * Handles page navigation: updates state, syncs URL, and scrolls to the top of the list.
-   * Writing the 'sightingsPage' to the URL allows the browser back button to restore it via ngOnInit.
+   * Handles page navigation: updates the URL.
+   * The queryParamMap subscription reacts to the URL change and calls goToPage() automatically.
    * @param page 0-based page index selected by the user.
    */
   onPageChange(page: number): void {
-    this.sightingsMapState.goToPage(page);
-
-    // Persist page in the URL without triggering a full navigation
+    // The queryParamMap subscription will react and call goToPage() automatically.
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { sightingsPage: page + 1 },
