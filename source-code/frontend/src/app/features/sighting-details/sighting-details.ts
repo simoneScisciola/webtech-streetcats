@@ -290,6 +290,8 @@ export class SightingDetails implements OnInit {
           error: "Failed to update sighting. Please, try again.",
           onSuccess: (res) => {
             console.log("Response:", res);
+
+            this.sighting.set(res);
             this.isEditMode.set(false);
           },
           onError: (err) => console.error('Update sighting failed.', err),

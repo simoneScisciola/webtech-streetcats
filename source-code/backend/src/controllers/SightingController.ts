@@ -64,7 +64,15 @@ export class SightingController {
 
         // Delete the old uploaded photo if it is being replaced with a new one
         if (existingSighting.photoUrl && fullSighting.photoUrl !== existingSighting.photoUrl) {
-            await deleteUploadedFile(existingSighting.photoUrl);
+            try {
+                await deleteUploadedFile(existingSighting.photoUrl);
+            } catch (err) {
+                // Old file could not be deleted, so clean up the newly uploaded file to avoid orphans
+                if (fullSighting.photoUrl) {
+                    await deleteUploadedFile(fullSighting.photoUrl);
+                }
+                throw err; // Propagate the original error
+            }
         }
 
         // Update all fields
@@ -101,7 +109,15 @@ export class SightingController {
 
         // Delete the old uploaded photo if it is being replaced with a new one
         if (existingSighting.photoUrl && partialSighting.photoUrl !== existingSighting.photoUrl) {
-            await deleteUploadedFile(existingSighting.photoUrl);
+            try {
+                await deleteUploadedFile(existingSighting.photoUrl);
+            } catch (err) {
+                // Old file could not be deleted, so clean up the newly uploaded file to avoid orphans
+                if (partialSighting.photoUrl) {
+                    await deleteUploadedFile(partialSighting.photoUrl);
+                }
+                throw err; // Propagate the original error
+            }
         }
 
         // Update only provided fields

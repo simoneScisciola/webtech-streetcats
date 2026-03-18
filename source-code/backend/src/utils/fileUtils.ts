@@ -1,6 +1,7 @@
 import fsp from "node:fs/promises"; // Node utility to manage file system, only Promise-based
 import path from "node:path"; // Node utility to manage paths cross-platform
 
+
 /**
  * Deletes a uploaded file from disk given its relative URL (e.g. "/uploads/sightings/foo.jpg").
  * Silently ignores ENOENT (file already gone) and re-throws any other error.
@@ -12,7 +13,7 @@ export async function deleteUploadedFile(relativeUrl: string): Promise<void> {
     const uploadsDir = path.resolve(process.cwd(), "uploads");
 
     // Resolve the full path and normalise it
-    const filepath = path.resolve(process.cwd(), relativeUrl);
+    const filepath = path.resolve(process.cwd(), relativeUrl.replace(/^\//, "")); // Strip leading slash to prevent path.resolve from treating it as absolute
 
     // Guard: Reject anything that escapes the uploads directory
     if (!filepath.startsWith(uploadsDir + path.sep)) {
