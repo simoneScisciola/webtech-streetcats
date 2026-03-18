@@ -2,6 +2,10 @@
     display: flex;
     align-items: center;
 
+    /* Dot grid pattern: 1px dots every 20px */
+    background-image: radial-gradient(#c9c4bb 1px, transparent 1px);
+    background-size: 20px 20px;
+
     @media (min-width: 768px) { // If on desktop, goes full size
       width: 100%;
     }
