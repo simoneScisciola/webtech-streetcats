@@ -44,6 +44,14 @@ services:
       - backend-network
       - frontend-network
 
+    # Allows Firefox to create user namespaces (clone/setns/unshare syscalls) needed for its sandbox.
+    # Uses Playwright's seccomp profile instead of Docker's default, which blocks those syscalls.
+    # Otherwise, the kernel denies user namespace creation and gives EPERM error.
+    # Doc: https://playwright.dev/docs/docker
+    security_opt:
+      - seccomp=./seccomp_profile.json
+    ipc: host # Prevents Chromium from running out of shared memory
+
     # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
     # cap_add:
     #   - SYS_PTRACE
