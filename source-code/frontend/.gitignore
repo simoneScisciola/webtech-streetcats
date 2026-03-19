@@ -3,6 +3,14 @@
 # Environment variables
 src/assets/env.js
 
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# Playwright auth token
+.auth/
+
 # Compiled output
 /dist
 /tmp

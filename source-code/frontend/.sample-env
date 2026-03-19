@@ -1,0 +1,11 @@
+# Frontend
+## NOTE! These development-only variables will override the ones defined through docker-compose
+
+
+## Test e2e
+
+### Sets the backend address for e2e tests
+E2E_BACKEND_ADDRESS=localhost
+
+### Sets the backend port for e2e tests
+E2E_BACKEND_PORT=3000

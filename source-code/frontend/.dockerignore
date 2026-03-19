@@ -1,3 +1,11 @@
+# dotenv environment variable files
+.env
+.env.*
+!.env.example
+
+# Playwright auth token
+.auth/
+
 # Node e dipendenze
 node_modules
 npm-debug.log

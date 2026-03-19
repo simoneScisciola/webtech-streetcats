@@ -102,15 +102,39 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run serve',
+  webServer: [
+    {
+      command: 'npm run start',
 
-    /** Playwright waits for this URL to respond before running any test */
-    url: 'http://localhost:4200',
+      /** Playwright waits for this URL to respond before running any test */
+      url: 'http://localhost:3000/health',
 
-    /**
-     * Reuse an already-running dev server locally to speed up iterations; always start a fresh one on CI for reproducibility
-     */
-    reuseExistingServer: !process.env.CI,
-  },
+      /** Reuse an already-running dev server locally to speed up iterations; always start a fresh one on CI for reproducibility */
+      reuseExistingServer: !process.env.CI,
+
+      /** Relative path to backend project */
+      cwd: '../backend',
+
+      /** Timeout in ms */
+      timeout: 120000, // 2 minutes
+      
+      stdout: 'pipe',
+      stderr: 'pipe',
+    },
+    {
+      command: 'npm run serve',
+
+      /** Playwright waits for this URL to respond before running any test */
+      url: 'http://localhost:4200',
+
+      /** Reuse an already-running dev server locally to speed up iterations; always start a fresh one on CI for reproducibility */
+      reuseExistingServer: !process.env.CI,
+
+      /** Relative path to frontend project */
+      cwd: '.',
+
+      stdout: 'pipe',
+      stderr: 'pipe',
+    },
+  ]
 });

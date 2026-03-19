@@ -5,8 +5,8 @@ import fs from 'node:fs';
 // Authenticates as admin and persists the JWT token to `.auth/token.json`.
 // NOTE! Backend should be already running
 export async function login(request) {
-    const backendAddress = process.env.BACKEND_ADDRESS ?? 'localhost';
-    const backendPort = process.env.BACKEND_PORT ?? '3000';
+    const backendAddress = process.env.E2E_BACKEND_ADDRESS ?? 'localhost';
+    const backendPort = process.env.E2E_BACKEND_PORT ?? '3000';
 
     const res = await request.post(`http://${backendAddress}:${backendPort}/auth`, {
         headers: { 'Content-Type': 'application/json' },
