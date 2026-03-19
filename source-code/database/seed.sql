@@ -3,6 +3,7 @@
 -- Database seed file for the Webtech's StreetCats application.
 -- Generated to match Sequelize model definitions.
 -- Run AFTER Sequelize has synced and created the schema.
+-- WARNING! THIS FILE IS INTENDED FOR TEST AND DEMO ONLY
 -- =============================================================================
 
 -- Wrap everything in a transaction for atomicity.
@@ -22,9 +23,11 @@ ON CONFLICT DO NOTHING;
 -- 2. Users
 -- 2 admins + 5 regular users.
 -- Passwords are bcrypt hashes of "NameSurname01!".
+-- Admin password is "Admin01!".
 -- -----------------------------------------------------------------------------
 INSERT INTO users (username, email, password, fk_rolename, created_at, updated_at)
 VALUES
+    ('admin', 'admin@admin.com', '$2b$12$w6ZXGEpiHsErM0vvroh4K.ehoRtAIENZSqhGPECm79WuX2n2ksuVS', 'ADMIN', '2025-01-01 08:00:00', '2025-01-01 08:00:00'),
     ('mario_rossi', 'mario.rossi@gattirandagi.it', '$2b$12$ZUP/Nct5p/4nPlOXdou1oecojcGo4XL0ViHCDgLqU6rmFyNiznCp2', 'ADMIN', '2025-01-01 08:00:00', '2025-01-01 08:00:00'),
     ('giulia_bianchi', 'giulia.bianchi@gattirandagi.it', '$2b$12$ohTEiE7fq5aYIYEuo9Fu4uUyI3hSUnWpVpAh0K7RmdXFM6YGADDsS', 'ADMIN', '2025-01-01 08:00:00', '2025-01-01 08:00:00'),
     ('luca_ferrari', 'luca.ferrari@example.com', '$2b$12$NGMhwlnr0Qs4DwwkwCtBcuRpkdVmw8EL5ZxDDWdOu0/TTZQJERPjO', 'USER',  '2025-01-01 09:00:00', '2025-01-01 09:00:00'),
