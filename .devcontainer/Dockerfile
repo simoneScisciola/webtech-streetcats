@@ -19,5 +19,5 @@ RUN npm install -g typescript \
 
 # Installa i Playwright browsers e le browser system dependencies
 # Doc: https://playwright.dev/docs/docker#build-your-own-image
-ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/.cache/ms-playwright
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN npx -y playwright@1.58.2 install --with-deps

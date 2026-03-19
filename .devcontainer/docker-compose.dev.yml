@@ -44,12 +44,11 @@ services:
       - backend-network
       - frontend-network
 
-    # Allows Firefox to create user namespaces (clone/setns/unshare syscalls) needed for its sandbox.
-    # Uses Playwright's seccomp profile instead of Docker's default, which blocks those syscalls.
-    # Otherwise, the kernel denies user namespace creation and gives EPERM error.
+    # Best practice from the official Playwright Docker documentation.
     # Doc: https://playwright.dev/docs/docker
+    init: true # Prevents zombie browser processes by ensuring PID=1 handles SIGCHLD correctly
     security_opt:
-      - seccomp=./seccomp_profile.json
+      - seccomp=./seccomp_profile.json # Allows browsers (e.g. Firefox/Chromium) to create user namespaces for their sandbox. Uses Playwright's seccomp profile instead of Docker's default.
     ipc: host # Prevents Chromium from running out of shared memory
 
     # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.

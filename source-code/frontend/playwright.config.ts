@@ -6,9 +6,6 @@ import { defineConfig, devices } from '@playwright/test';
  */
 import dotenv from 'dotenv';
 
-// Read PLAYWRIGHT_SKIP_FIREFOX so that the shell-provided value is not overwritten by a potentially empty entry in the .env file.
-const skipFirefox = !!process.env.PLAYWRIGHT_SKIP_FIREFOX;
-
 /** 
  * Load environment variables from .env file.
  * 'override: true' ensures .env values replace any already-set env vars. 
@@ -72,13 +69,11 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
     },
-    // Skip Firefox when the kernel denies user namespace creation (EPERM).
-    // Common in Docker containers and some CI environments.
-    ...(skipFirefox ? [] : [{
+    {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
       dependencies: ['setup'],
-    }]),
+    },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },

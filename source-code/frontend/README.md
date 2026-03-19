@@ -99,7 +99,15 @@ ng e2e
 
 In alternativa, è possibile usare `npm run e2e`.
 
-Angular CLI non include un end-to-end testing framework di default. Puoi scegliere quello che si adegua ai tuoi bisogni.
+Angular CLI non include un end-to-end testing framework di default. Possiamo scegliere quello che si adegua meglio ai nostri bisogni. Nel nostro caso, abbiamo scelto **Playwright**.
+
+Per cui, eseguiremo i test e2e con:
+
+```bash
+playwright test
+```
+
+ATTENZIONE! Nel caso in cui inizializzassimo Playwright dal Development Container tramite `npm init playwright@<VERSION>`, è importante ricordare che browsers e OS dependencies sono già installate automaticamente dal Dockerfile. Pertanto, dal wizard è necessario saltarne l'installazione (altrimenti incorreremo in errori fuorvianti).
 
 ## Risorse aggiuntive
 
