@@ -19,6 +19,7 @@ import { userRoleRouter } from "#routes/UserRoleRouter.js";
 import { userRouter } from "#routes/UserRouter.js";
 import { sightingRouter } from "#routes/SightingRouter.js";
 import { commentRouter } from "#routes/CommentRouter.js";
+import { healthRouter } from "#routes/HealthRouter.js";
 
 
 const app = express();
@@ -83,6 +84,7 @@ app.use(userRoleRouter);
 app.use(userRouter);
 app.use(sightingRouter);
 app.use(commentRouter);
+app.use(healthRouter);
 app.use(catchAllRouter); // Catch all, if we get here it's a 404
 
 
