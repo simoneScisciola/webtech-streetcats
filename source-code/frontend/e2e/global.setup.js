@@ -1,7 +1,7 @@
 import { test as setup } from '@playwright/test';
 import { execSync } from 'node:child_process';
 
-import { login } from './utils/login';
+import { adminLogin } from './utils/adminLogin';
 
 setup('Setup', async ({ request }) => {
   console.log('Configuring backend...');
@@ -21,7 +21,7 @@ setup('Setup', async ({ request }) => {
   });
 
   // Login as admin and save auth token for cleanup action
-  await login(request);
+  await adminLogin(request);
 
   console.log('Backend configured');
 });

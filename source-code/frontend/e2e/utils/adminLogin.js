@@ -1,20 +1,17 @@
 import { expect } from '@playwright/test';
 import fs from 'node:fs';
 
-// Login helper function
-// Authenticates as admin and persists the JWT token to `.auth/token.json`.
-// NOTE! Backend should be already running
-export async function login(request) {
-    const backendAddress = process.env.BACKEND_ADDRESS ?? 'localhost';
-    const backendPort = process.env.BACKEND_PORT ?? '3000';
+import { sendRequest } from './httpClient';
 
-    const res = await request.post(`http://${backendAddress}:${backendPort}/auth`, {
+// Login helper function
+// Authenticates as admin and persists the JWT token to `.auth/token.json`
+export async function adminLogin(request) {
+    const res = await sendRequest(request, 'POST', '/auth', {
         headers: { 'Content-Type': 'application/json' },
         data: {
             username: 'admin',
             password: 'Admin01!'
         },
-        timeout: 15000,
     });
 
     expect(res.ok(), `Login failed: ${res.status()} ${await res.text()}`).toBeTruthy();
