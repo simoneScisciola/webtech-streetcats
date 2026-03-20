@@ -38,7 +38,7 @@
           class="w-100 fs-5">
         </app-form-card-field>
       } @else if (sighting.title) {
-        <h1 class="fw-bold text-break">{{ sighting.title }}</h1>
+        <h1 data-testid="sighting-title" class="fw-bold text-break">{{ sighting.title }}</h1>
       }
 
       <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2 w-100">
@@ -84,7 +84,7 @@
           </app-form-card-drag-and-drop-image>
         } @else if (sighting.photoUrl) {
           <div class="card border-0 shadow-sm">
-            <div class="sighting-photo-wrapper bg-body-tertiary overflow-hidden rounded">
+            <div data-testid="sighting-image" class="sighting-photo-wrapper bg-body-tertiary overflow-hidden rounded">
               <img
                 [src]="restBackendService.resolveUrl(sighting.photoUrl)"
                 [alt]="sighting.title"
@@ -122,7 +122,7 @@
             @if (isEditMode()) {
               <div class="row g-2">
                 <app-form-card-field
-                  id="edit-latitude"
+                  id="latitude"
                   label="Latitude"
                   type="number"
                   placeholder="e.g. 41.89025436"
@@ -134,7 +134,7 @@
                 </app-form-card-field>
 
                 <app-form-card-field
-                  id="edit-longitude"
+                  id="longitude"
                   label="Longitude"
                   type="number"
                   placeholder="e.g. 12.49218654"
@@ -148,7 +148,7 @@
 
               <small class="text-muted d-block mb-3">Drag the map marker to set coordinates.</small>
             } @else if (sighting.latitude && sighting.longitude) {
-              <p class="d-flex align-items-center font-monospace small text-body-secondary text-break mb-3">
+              <p data-testid="sighting-coordinates" class="d-flex align-items-center font-monospace small text-body-secondary text-break mb-3">
                 <fa-icon
                   [icon]="icons.coordinates"
                   class="d-flex align-items-center me-1">
