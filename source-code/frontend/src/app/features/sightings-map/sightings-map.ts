@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 
 import { LeafletMap } from './leaflet-map/leaflet-map';
 import { SightingsSidePanel } from './sightings-side-panel/sightings-side-panel';
@@ -21,6 +21,18 @@ export class SightingsMap implements OnInit, OnDestroy {
   sidePanelWidth = "400px";
 
   private readonly sightingsMapState = inject(SightingsMapState);
+
+  // -- Constructor -----------------------------------------------------------
+
+  constructor() {
+    // Close the panel as soon as picking mode starts.
+    // The panel will re-open automatically via onCoordinatesPicked() once the user picks a point.
+    effect(() => {
+      if (this.sightingsMapState.isPickingCoordinates()) {
+        this.isPanelOpen.set(false);
+      }
+    });
+  }
 
   // -- Lifecycle -------------------------------------------------------------
 
