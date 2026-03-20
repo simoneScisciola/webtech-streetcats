@@ -45,7 +45,10 @@ const FRONTEND_ADDRESS = process.env.FRONTEND_ADDRESS;
 const FRONTEND_PORT = process.env.FRONTEND_PORT;
 
 app.use(cors({
-    origin: `http://${FRONTEND_ADDRESS}:${FRONTEND_PORT}`,
+    origin:[
+        `http://${FRONTEND_ADDRESS}:${FRONTEND_PORT}`,
+        `http://localhost:4200`, // E2E tests
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
