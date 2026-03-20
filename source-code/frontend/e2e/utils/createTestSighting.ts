@@ -10,7 +10,7 @@ const DUMMY_PHOTO = {
 };
 
 // Test sighting creation helper function
-export async function createTestSighting(request: APIRequestContext, authToken: string) {
+export async function createTestSighting(request: APIRequestContext, authToken: string, username: string) {
     const res = await sendRequest(request, 'POST', '/sightings', {
         headers: { Authorization: `Bearer ${authToken}` },
         multipart: {
@@ -20,7 +20,7 @@ export async function createTestSighting(request: APIRequestContext, authToken: 
             latitude: '41.9028',
             longitude: '12.4964',
             address: 'E2E Address',
-            username: 'E2E',
+            username,
         },
     });
 

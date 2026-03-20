@@ -4,11 +4,14 @@ import { sendRequest } from './httpClient';
 
 // Test user creation helper function
 export async function createTestUser(request: APIRequestContext) {
+    // Use a unique username per worker to avoid conflicts in parallel runs
+    const username = `E2E_${process.env.TEST_WORKER_INDEX ?? '0'}`;
+
     const res = await sendRequest(request, 'POST', '/signup', {
         headers: { 'Content-Type': 'application/json' },
         data: {
-            username: 'E2E',
-            email: 'e2e@e2e.com',
+            username,
+            email: `${username.toLowerCase()}@e2e.com`,
             password: 'E2Ee2e01!'
         },
     });
@@ -17,8 +20,8 @@ export async function createTestUser(request: APIRequestContext) {
 
     const body = await res.json();
 
-    console.log('Test user created');
+    console.log(`Test user ${username} created`);
 
     // Return auth state so the caller can inject it into localStorage after page.goto
-    return { authToken: body.authToken, user: body.user };
+    return { authToken: body.authToken, user: body.user, username };
 }

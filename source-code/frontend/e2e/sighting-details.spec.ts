@@ -10,11 +10,12 @@ test.describe('SightingDetails', () => {
   test.describe('Logged users', () => {
     let authToken: string;
     let user: any;
+    let username: string;
     let sightingId: string;
 
     test.beforeAll(async ({ request }) => {
-      ({ authToken, user } = await createTestUser(request)); // Create test user
-      ({ sightingId } = await createTestSighting(request, authToken)); // Create test sighting
+      ({ authToken, user, username } = await createTestUser(request)); // Create test user
+      ({ sightingId } = await createTestSighting(request, authToken, username)); // Create test sighting
     });
 
     test.afterAll(async ({ request }) => {
@@ -26,11 +27,11 @@ test.describe('SightingDetails', () => {
       if (!resSighting.ok()) {
         console.log(`Cleanup skipped: DELETE /sightings/${sightingId} returned ${resSighting.status()}`);
       }
-      const resUser = await sendRequest(request, 'DELETE', '/users/E2E', {
+      const resUser = await sendRequest(request, 'DELETE', `/users/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!resUser.ok()) {
-        console.log(`Cleanup skipped: DELETE /users/E2E returned ${resUser.status()}`);
+        console.log(`Cleanup skipped: DELETE /users/${username} returned ${resUser.status()}`);
       }
     });
 

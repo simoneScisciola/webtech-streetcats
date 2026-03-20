@@ -45,19 +45,20 @@ test.describe('SightingsMap', () => {
   test.describe('Logged users', () => {
     let authToken: string;
     let user: any;
+    let username: string;
 
     test.beforeAll(async ({ request }) => {
-      ({ authToken, user } = await createTestUser(request)); // Create test user
+      ({ authToken, user, username } = await createTestUser(request)); // Create test user
     });
 
     test.afterAll(async ({ request }) => {
       // Cleanup: Delete the test user
       const { token } = JSON.parse(readFileSync('.auth/token.json', 'utf-8'));
-      const res = await sendRequest(request, 'DELETE', '/users/E2E', {
+      const res = await sendRequest(request, 'DELETE', `/users/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok()) {
-        console.log(`Cleanup skipped: DELETE /users/E2E returned ${res.status()}`);
+        console.log(`Cleanup skipped: DELETE /users/${username} returned ${res.status()}`);
       }
     });
 

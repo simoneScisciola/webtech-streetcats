@@ -7,6 +7,9 @@ import { sendRequest } from './utils/httpClient';
 test.describe.serial('SignUp', () => {
 
   test.describe('Unauthenticated users', () => {
+    // Use a unique username per worker to avoid conflicts in parallel runs
+    const username = `E2E_${process.env.TEST_WORKER_INDEX ?? '0'}`;
+
     test.beforeEach(async ({ page }) => {
       await page.goto('/sign-up'); // Sign up page
     });
@@ -14,11 +17,11 @@ test.describe.serial('SignUp', () => {
     test.afterEach(async ({ request }) => {
       // Cleanup: Delete the test user
       const { token } = JSON.parse(readFileSync('.auth/token.json', 'utf-8'));
-      const res = await sendRequest(request, 'DELETE', '/users/E2E', {
+      const res = await sendRequest(request, 'DELETE', `/users/${username}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok()) {
-        console.log(`Cleanup skipped: DELETE /users/E2E returned ${res.status()}`);
+        console.log(`Cleanup skipped: DELETE /users/${username} returned ${res.status()}`);
       }
     });
 
@@ -45,8 +48,8 @@ test.describe.serial('SignUp', () => {
       const submitButton = formCard.getByRole("button", { name: "Sign Up" });
 
       // Act
-      await usernameInput.fill("E2E");
-      await emailInput.fill("e2e@e2e.com");
+      await usernameInput.fill(username);
+      await emailInput.fill(`${username.toLowerCase()}@e2e.com`);
       await passwordInput.fill("E2Ee2e01!");
       await confirmPasswordInput.fill("E2Ee2e01!");
       await submitButton.click();
