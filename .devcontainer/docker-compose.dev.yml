@@ -74,6 +74,8 @@ services:
       CB_SERVER_URL: http://cloudbeaver:8978/
       CB_ADMIN_NAME: ${CB_ADMIN_NAME:-tecweb-admin} # default: tecweb-admin
       CB_ADMIN_PASSWORD: ${CB_ADMIN_PASSWORD:-admin} # default: admin
+      CLOUDBEAVER_APP_ANONYMOUS_ACCESS_ENABLED: "true" # Allows anonymous access. Anonymous users are assigned to the anonymousUserTeam
+      CLOUDBEAVER_APP_GRANT_CONNECTIONS_ACCESS_TO_ANONYMOUS_TEAM: "true" # Provides access to predefined shared connections for the anonymous team
     ports:
       - ${DEV_CLOUDBEAVER_PORT:-55515}:8978 # default: 55515
     volumes:
