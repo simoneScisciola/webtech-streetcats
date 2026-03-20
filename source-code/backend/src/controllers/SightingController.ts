@@ -23,7 +23,8 @@ export class SightingController {
             }
         }
 
-        return Sighting.create(sentSighting); // returns a Promise
+        // Cast is safe: `validateSightingFields(false)` already guarantees photoUrl is present for POST
+        return Sighting.create(sentSighting as Required<Pick<SightingDto, "photoUrl">> & SightingDto); // returns a Promise
     }
 
     /**
@@ -62,8 +63,13 @@ export class SightingController {
             }
         }
 
-        // Delete the old uploaded photo if it is being replaced with a new one
-        if (existingSighting.photoUrl && fullSighting.photoUrl !== existingSighting.photoUrl) {
+        // Delete the old uploaded photo if it is being replaced with a new one.
+        // `"photoUrl" in partialSighting` guards against treating a missing key (field not sent) as an intentional removal.
+        if (
+            existingSighting.photoUrl &&
+            "photoUrl" in fullSighting &&                       // field was explicitly provided
+            fullSighting.photoUrl !== existingSighting.photoUrl // value actually changed
+        ) {
             try {
                 await deleteUploadedFile(existingSighting.photoUrl);
             } catch (err) {
@@ -107,8 +113,13 @@ export class SightingController {
             }
         }
 
-        // Delete the old uploaded photo if it is being replaced with a new one
-        if (existingSighting.photoUrl && partialSighting.photoUrl !== existingSighting.photoUrl) {
+        // Delete the old uploaded photo if it is being replaced with a new one.
+        // `"photoUrl" in partialSighting` guards against treating a missing key (field not sent) as an intentional removal.
+        if (
+            existingSighting.photoUrl &&
+            "photoUrl" in partialSighting &&                        // field was explicitly provided
+            partialSighting.photoUrl !== existingSighting.photoUrl  // value actually changed
+        ) {
             try {
                 await deleteUploadedFile(existingSighting.photoUrl);
             } catch (err) {

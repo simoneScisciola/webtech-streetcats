@@ -1,6 +1,6 @@
 export interface SightingDto {
     id?: number;
-    photoUrl: string;
+    photoUrl?: string;
     title: string;
     description?: string;
     latitude: number;
