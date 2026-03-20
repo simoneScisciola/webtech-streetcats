@@ -5,7 +5,7 @@ import { sendRequest } from './utils/httpClient';
 import { createTestUser } from './utils/createTestUser';
 import { createTestSighting } from './utils/createTestSighting';
 
-test.describe('SightingDetail', () => {
+test.describe('SightingDetails', () => {
 
   test.describe('Logged users', () => {
     let authToken: string;
@@ -71,4 +71,5 @@ test.describe('SightingDetail', () => {
       await expect(page.locator("input#longitude")).toBeVisible();
     });
   });
+
 });

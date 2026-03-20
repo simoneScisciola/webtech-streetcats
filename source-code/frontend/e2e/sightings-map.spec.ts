@@ -124,4 +124,5 @@ test.describe('SightingsMap', () => {
       }
     });
   });
+
 });
