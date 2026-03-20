@@ -22,6 +22,9 @@ export default defineConfig({
   /** Directory where test files are located. */
   testDir: './e2e',
 
+  /** TypeScript configuration for e2e tests. */
+  tsconfig: './e2e/tsconfig.json',
+
   /* Run tests in files in parallel */
   fullyParallel: true,
 
