@@ -1,5 +1,7 @@
 import { APIRequestContext, expect } from '@playwright/test';
 
+import { sendRequest } from './httpClient';
+
 // Minimal 1x1 transparent PNG used as dummy photo for form submission
 const DUMMY_PHOTO = {
     name: 'photo.png',
@@ -9,7 +11,7 @@ const DUMMY_PHOTO = {
 
 // Test sighting creation helper function
 export async function createTestSighting(request: APIRequestContext, authToken: string) {
-    const res = await request.post(`/sightings`, {
+    const res = await sendRequest(request, 'POST', '/sightings', {
         headers: { Authorization: `Bearer ${authToken}` },
         multipart: {
             photo: DUMMY_PHOTO, // Required by backend
